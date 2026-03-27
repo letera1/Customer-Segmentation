@@ -9,6 +9,11 @@ import joblib
 import numpy as np
 import pandas as pd
 from pathlib import Path
+import sys
+import os
+
+# Add parent directory to path to import src modules
+sys.path.append(str(Path(__file__).parent.parent))
 
 app = FastAPI(
     title="Customer Segmentation API",
@@ -26,8 +31,8 @@ app.add_middleware(
 )
 
 # Load model and scaler at startup
-MODEL_PATH = Path("../data/outputs/segmentation_model.pkl")
-SCALER_PATH = Path("../data/outputs/scaler.pkl")
+MODEL_PATH = Path(__file__).parent.parent / "data" / "outputs" / "segmentation_model.pkl"
+SCALER_PATH = Path(__file__).parent.parent / "data" / "outputs" / "scaler.pkl"
 
 model = None
 scaler = None
@@ -39,12 +44,20 @@ async def load_model():
     try:
         if MODEL_PATH.exists():
             model = joblib.load(MODEL_PATH)
-            print("✓ Model loaded successfully")
+            print(f"✓ Model loaded successfully from {MODEL_PATH}")
+        else:
+            print(f"⚠ Model not found at {MODEL_PATH}")
+            print("  Run 'python train_model.py' first to train the model")
+            
         if SCALER_PATH.exists():
             scaler = joblib.load(SCALER_PATH)
-            print("✓ Scaler loaded successfully")
+            print(f"✓ Scaler loaded successfully from {SCALER_PATH}")
+        else:
+            print(f"⚠ Scaler not found at {SCALER_PATH}")
+            print("  Run 'python train_model.py' first to train the model")
     except Exception as e:
-        print(f"Warning: Could not load model/scaler: {e}")
+        print(f"⚠ Warning: Could not load model/scaler: {e}")
+        print("  Run 'python train_model.py' from the project root directory")
 
 
 class CustomerInput(BaseModel):
