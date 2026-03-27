@@ -301,26 +301,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🌟 Acknowledgments
 
-- Built with ❤️ by the SegmentAI team
+- Built by Letera 
 - Inspired by modern SaaS dashboards
 - Powered by open-source technologies
 
----
 
-## 📞 Support
-
-- 📧 Email: support@segmentai.com
-- 💬 Discord: [Join our community](https://discord.gg/segmentai)
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/segmentai-pro/issues)
-- 📖 Docs: [Documentation](https://docs.segmentai.com)
-
----
 
 <div align="center">
 
 ### ⭐ Star us on GitHub — it motivates us a lot!
 
-Made with 💙 by developers, for developers
+Made for developers, for developers
 
 [⬆ Back to Top](#-segmentai-pro)
 
