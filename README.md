@@ -83,16 +83,21 @@ customer-segmentation/
 pip install -r requirements.txt
 ```
 
-### Step 2: Train the Model
+### Step 2: Train the Model (REQUIRED - Run this first!)
 ```bash
-# Open Jupyter notebook
-jupyter notebook notebooks/customer_segmentation.ipynb
+python train_model.py
+```
 
-# Execute all cells to:
-# - Generate sample customer data
-# - Perform EDA with visualizations
-# - Train K-Means clustering model
-# - Save model artifacts to data/outputs/
+This will:
+- Generate sample customer data (200 records)
+- Train the K-Means clustering model
+- Save model files to `data/outputs/`
+- Takes ~10 seconds
+
+**Alternative:** Use Jupyter notebook for detailed analysis:
+```bash
+jupyter notebook notebooks/customer_segmentation.ipynb
+# Execute all cells
 ```
 
 ### Step 3: Start API Server

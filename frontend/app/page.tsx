@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SegmentationForm from "@/components/SegmentationForm";
 import ResultCard from "@/components/ResultCard";
 import SegmentsList from "@/components/SegmentsList";
@@ -8,6 +8,11 @@ import SegmentsList from "@/components/SegmentsList";
 export default function Home() {
   const [prediction, setPrediction] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handlePredict = async (data: {
     age: number;
@@ -25,18 +30,24 @@ export default function Home() {
       });
 
       if (!response.ok) {
-        throw new Error("Prediction failed");
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Prediction failed");
       }
 
       const result = await response.json();
       setPrediction(result);
     } catch (error) {
       console.error("Error:", error);
-      alert("Failed to get prediction. Make sure the API is running.");
+      const message = error instanceof Error ? error.message : "Unknown error";
+      alert(`Failed to get prediction: ${message}\n\nMake sure:\n1. You ran: python train_model.py\n2. API is running on port 8000`);
     } finally {
       setLoading(false);
     }
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
