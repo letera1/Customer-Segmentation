@@ -302,6 +302,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🌟 Acknowledgments
 
 - Built by Letera 
+- Author Letera Tujo 
+- Email: leteratujo890@gmail.com
 - Inspired by modern SaaS dashboards
 - Powered by open-source technologies
 
