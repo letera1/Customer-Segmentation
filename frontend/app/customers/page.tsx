@@ -193,35 +193,73 @@ export default function Customers() {
         </div>
 
         {/* Table */}
-        <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
+        <div className="overflow-hidden rounded-xl border border-slate-800/50 bg-[#151B2B]">
           <table className="w-full">
             <thead className="border-b border-slate-800 bg-slate-800/50">
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-medium">ID</th>
                 <th className="px-6 py-3 text-left text-sm font-medium">Gender</th>
-                <th className="px-6 py-3 text-left text-sm font-medium">Age</th>
-                <th className="px-6 py-3 text-left text-sm font-medium">Income</th>
-                <th className="px-6 py-3 text-left text-sm font-medium">Spending</th>
+                <th
+                  className="cursor-pointer px-6 py-3 text-left text-sm font-medium hover:text-blue-400"
+                  onClick={() => handleSort("age")}
+                >
+                  Age {sortBy === "age" && (sortOrder === "asc" ? "↑" : "↓")}
+                </th>
+                <th
+                  className="cursor-pointer px-6 py-3 text-left text-sm font-medium hover:text-blue-400"
+                  onClick={() => handleSort("income")}
+                >
+                  Income {sortBy === "income" && (sortOrder === "asc" ? "↑" : "↓")}
+                </th>
+                <th
+                  className="cursor-pointer px-6 py-3 text-left text-sm font-medium hover:text-blue-400"
+                  onClick={() => handleSort("spending")}
+                >
+                  Spending {sortBy === "spending" && (sortOrder === "asc" ? "↑" : "↓")}
+                </th>
                 <th className="px-6 py-3 text-left text-sm font-medium">Segment</th>
                 <th className="px-6 py-3 text-left text-sm font-medium">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
-              {filtered.slice(0, 20).map((customer) => (
-                <tr key={customer.id} className="hover:bg-slate-800/50">
-                  <td className="px-6 py-4 text-sm">{customer.id}</td>
-                  <td className="px-6 py-4 text-sm">{customer.gender}</td>
-                  <td className="px-6 py-4 text-sm">{customer.age}</td>
-                  <td className="px-6 py-4 text-sm">${customer.income}k</td>
-                  <td className="px-6 py-4 text-sm">{customer.spending}/100</td>
+              {paginatedCustomers.map((customer) => (
+                <tr key={customer.id} className="hover:bg-slate-800/50 transition-colors">
+                  <td className="px-6 py-4 text-sm font-medium">#{customer.id}</td>
                   <td className="px-6 py-4 text-sm">
-                    <span className="rounded-full bg-indigo-600/20 px-2 py-1 text-xs">
+                    <span className={customer.gender === "Male" ? "text-blue-400" : "text-pink-400"}>
+                      {customer.gender === "Male" ? "👨" : "👩"} {customer.gender}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm">{customer.age} yrs</td>
+                  <td className="px-6 py-4 text-sm font-medium text-emerald-400">${customer.income}k</td>
+                  <td className="px-6 py-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-24 overflow-hidden rounded-full bg-slate-800">
+                        <div
+                          className="h-full bg-gradient-to-r from-blue-600 to-purple-600"
+                          style={{ width: `${customer.spending}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-slate-400">{customer.spending}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    <span className={`rounded-full px-3 py-1 text-xs font-medium ${
+                      customer.cluster === "0" ? "bg-blue-600/20 text-blue-400" :
+                      customer.cluster === "1" ? "bg-purple-600/20 text-purple-400" :
+                      customer.cluster === "2" ? "bg-emerald-600/20 text-emerald-400" :
+                      customer.cluster === "3" ? "bg-orange-600/20 text-orange-400" :
+                      "bg-pink-600/20 text-pink-400"
+                    }`}>
                       {segmentNames[customer.cluster]}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm">
-                    <button className="text-indigo-400 hover:text-indigo-300">
-                      View
+                    <button
+                      onClick={() => setSelectedCustomer(customer)}
+                      className="text-blue-400 hover:text-blue-300 transition-colors"
+                    >
+                      View Details
                     </button>
                   </td>
                 </tr>
@@ -230,17 +268,107 @@ export default function Customers() {
           </table>
         </div>
 
+        {/* Pagination */}
         <div className="flex items-center justify-between text-sm text-slate-400">
-          <p>Showing {Math.min(20, filtered.length)} of {filtered.length} customers</p>
+          <p>
+            Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+            {Math.min(currentPage * itemsPerPage, filtered.length)} of {filtered.length} customers
+          </p>
           <div className="flex gap-2">
-            <button className="rounded-lg border border-slate-800 px-3 py-1 hover:bg-slate-800">
+            <button
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+              className="rounded-lg border border-slate-800 px-4 py-2 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               Previous
             </button>
-            <button className="rounded-lg border border-slate-800 px-3 py-1 hover:bg-slate-800">
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                const page = i + 1;
+                return (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`rounded-lg px-3 py-2 ${
+                      currentPage === page
+                        ? "bg-blue-600 text-white"
+                        : "border border-slate-800 hover:bg-slate-800"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                );
+              })}
+            </div>
+            <button
+              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+              className="rounded-lg border border-slate-800 px-4 py-2 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               Next
             </button>
           </div>
         </div>
+
+        {/* Customer Detail Modal */}
+        {selectedCustomer && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            onClick={() => setSelectedCustomer(null)}
+          >
+            <div
+              className="w-full max-w-2xl rounded-xl border border-slate-800 bg-[#0B1120] p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-xl font-bold">Customer #{selectedCustomer.id}</h3>
+                <button
+                  onClick={() => setSelectedCustomer(null)}
+                  className="text-slate-400 hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-lg border border-slate-800 bg-[#151B2B] p-4">
+                  <p className="text-sm text-slate-400">Gender</p>
+                  <p className="mt-2 text-lg font-medium">{selectedCustomer.gender}</p>
+                </div>
+                <div className="rounded-lg border border-slate-800 bg-[#151B2B] p-4">
+                  <p className="text-sm text-slate-400">Age</p>
+                  <p className="mt-2 text-lg font-medium">{selectedCustomer.age} years</p>
+                </div>
+                <div className="rounded-lg border border-slate-800 bg-[#151B2B] p-4">
+                  <p className="text-sm text-slate-400">Annual Income</p>
+                  <p className="mt-2 text-lg font-medium text-emerald-400">${selectedCustomer.income}k</p>
+                </div>
+                <div className="rounded-lg border border-slate-800 bg-[#151B2B] p-4">
+                  <p className="text-sm text-slate-400">Spending Score</p>
+                  <p className="mt-2 text-lg font-medium">{selectedCustomer.spending}/100</p>
+                </div>
+                <div className="md:col-span-2 rounded-lg border border-slate-800 bg-[#151B2B] p-4">
+                  <p className="text-sm text-slate-400">Customer Segment</p>
+                  <p className="mt-2 text-lg font-medium">{segmentNames[selectedCustomer.cluster]}</p>
+                  <p className="mt-2 text-sm text-slate-400">
+                    {selectedCustomer.cluster === "0" && "Price-sensitive customers who prefer value deals"}
+                    {selectedCustomer.cluster === "1" && "High-income customers with high spending potential"}
+                    {selectedCustomer.cluster === "2" && "Moderate income with growth opportunities"}
+                    {selectedCustomer.cluster === "3" && "Average income and spending patterns"}
+                    {selectedCustomer.cluster === "4" && "Young customers building their financial base"}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-6 flex gap-2">
+                <button className="flex-1 rounded-lg bg-blue-600 px-4 py-2 font-medium hover:bg-blue-700">
+                  Edit Customer
+                </button>
+                <button className="flex-1 rounded-lg border border-slate-800 px-4 py-2 font-medium hover:bg-slate-800">
+                  View History
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );
