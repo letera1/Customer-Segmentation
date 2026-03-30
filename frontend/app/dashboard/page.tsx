@@ -4,16 +4,65 @@ import { useState } from "react";
 import Layout from "@/components/Layout";
 
 export default function Dashboard() {
+  const [showPredictionForm, setShowPredictionForm] = useState(false);
+  const [predictionData, setPredictionData] = useState({
+    age: "",
+    income: "",
+    spendingScore: "",
+  });
+  const [predictionResult, setPredictionResult] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handlePredict = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:8000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          age: parseInt(predictionData.age),
+          annual_income: parseInt(predictionData.income),
+          spending_score: parseInt(predictionData.spendingScore),
+        }),
+      });
+
+      if (res.ok) {
+        const result = await res.json();
+        setPredictionResult(result);
+        
+        // Save to history
+        const history = JSON.parse(localStorage.getItem("prediction_history") || "[]");
+        history.unshift({
+          ...result,
+          age: predictionData.age,
+          income: predictionData.income,
+          spendingScore: predictionData.spendingScore,
+          timestamp: new Date().toISOString(),
+        });
+        localStorage.setItem("prediction_history", JSON.stringify(history.slice(0, 50)));
+      }
+    } catch (error) {
+      console.error("Prediction failed:", error);
+    }
+    setLoading(false);
+  };
+
   return (
     <Layout>
       <div className="space-y-6">
         {/* Header Section */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold">Analytics report</h2>
+            <h2 className="text-2xl font-bold">Analytics Dashboard</h2>
             <p className="text-sm text-slate-400">Analytics report from 2024 to 2025</p>
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowPredictionForm(true)}
+              className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-medium shadow-lg shadow-blue-500/20"
+            >
+              🔮 New Prediction
+            </button>
             <select className="rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm">
               <option>All devices</option>
             </select>
