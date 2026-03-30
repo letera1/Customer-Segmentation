@@ -1,10 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 
 export default function Analytics() {
   const [timeRange, setTimeRange] = useState("7d");
+  const [metrics, setMetrics] = useState({
+    conversionRate: 3.24,
+    avgSession: "4m 32s",
+    bounceRate: 42.3,
+    pageViews: 125400,
+  });
+  const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Simulate data refresh when time range changes
+    const timer = setTimeout(() => {
+      setMetrics({
+        conversionRate: (Math.random() * 5 + 2).toFixed(2) as any,
+        avgSession: `${Math.floor(Math.random() * 3 + 3)}m ${Math.floor(Math.random() * 60)}s`,
+        bounceRate: (Math.random() * 20 + 35).toFixed(1) as any,
+        pageViews: Math.floor(Math.random() * 50000 + 100000),
+      });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [timeRange]);
 
   return (
     <Layout>
@@ -22,8 +42,8 @@ export default function Analytics() {
                 onClick={() => setTimeRange(range)}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                   timeRange === range
-                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-                    : "bg-slate-800/50 text-slate-400 hover:bg-slate-800"
+                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/20"
+                    : "bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-white"
                 }`}
               >
                 {range}
@@ -34,30 +54,78 @@ export default function Analytics() {
 
         {/* Metrics Grid */}
         <div className="grid gap-6 md:grid-cols-4">
-          <MetricCard title="Conversion Rate" value="3.24%" change="+0.5%" trend="up" />
-          <MetricCard title="Avg Session" value="4m 32s" change="+12s" trend="up" />
-          <MetricCard title="Bounce Rate" value="42.3%" change="-2.1%" trend="down" />
-          <MetricCard title="Page Views" value="125.4K" change="+8.2%" trend="up" />
+          <MetricCard
+            title="Conversion Rate"
+            value={`${metrics.conversionRate}%`}
+            change="+0.5%"
+            trend="up"
+            onClick={() => setSelectedMetric("conversion")}
+            selected={selectedMetric === "conversion"}
+          />
+          <MetricCard
+            title="Avg Session"
+            value={metrics.avgSession}
+            change="+12s"
+            trend="up"
+            onClick={() => setSelectedMetric("session")}
+            selected={selectedMetric === "session"}
+          />
+          <MetricCard
+            title="Bounce Rate"
+            value={`${metrics.bounceRate}%`}
+            change="-2.1%"
+            trend="down"
+            onClick={() => setSelectedMetric("bounce")}
+            selected={selectedMetric === "bounce"}
+          />
+          <MetricCard
+            title="Page Views"
+            value={`${(metrics.pageViews / 1000).toFixed(1)}K`}
+            change="+8.2%"
+            trend="up"
+            onClick={() => setSelectedMetric("views")}
+            selected={selectedMetric === "views"}
+          />
         </div>
 
         {/* Charts Grid */}
         <div className="grid gap-6 lg:grid-cols-2">
-          <UserFlowChart />
+          <UserFlowChart timeRange={timeRange} />
           <DeviceBreakdown />
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <TrafficTrend timeRange={timeRange} />
+          </div>
           <TrafficSources />
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-2">
           <TopPages />
+          <GeographicDistribution />
         </div>
 
         {/* Heatmap */}
         <ActivityHeatmap />
+
+        {/* Real-time Activity */}
+        <RealtimeActivity />
       </div>
     </Layout>
   );
 }
 
-function MetricCard({ title, value, change, trend }: any) {
+function MetricCard({ title, value, change, trend, onClick, selected }: any) {
   return (
-    <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+    <div
+      onClick={onClick}
+      className={`cursor-pointer rounded-xl border p-6 transition-all hover:scale-105 ${
+        selected
+          ? "border-blue-500 bg-gradient-to-br from-blue-600/10 to-purple-600/10 shadow-lg shadow-blue-500/20"
+          : "border-slate-800/50 bg-[#151B2B] hover:border-slate-700"
+      }`}
+    >
       <p className="text-sm text-slate-400">{title}</p>
       <div className="mt-2 flex items-end gap-2">
         <span className="text-3xl font-bold">{value}</span>
@@ -65,6 +133,9 @@ function MetricCard({ title, value, change, trend }: any) {
           {change}
         </span>
       </div>
+      {selected && (
+        <div className="mt-3 h-1 w-full rounded-full bg-gradient-to-r from-blue-600 to-purple-600" />
+      )}
     </div>
   );
 }
