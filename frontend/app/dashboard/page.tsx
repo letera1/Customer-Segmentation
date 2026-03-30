@@ -101,6 +101,126 @@ export default function Dashboard() {
             <WorldMap />
           </div>
         </div>
+
+        {/* Prediction Modal */}
+        {showPredictionForm && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowPredictionForm(false)}
+          >
+            <div
+              className="w-full max-w-md rounded-xl border border-slate-800 bg-[#0B1120] p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-xl font-bold">Customer Segment Prediction</h3>
+                <button
+                  onClick={() => setShowPredictionForm(false)}
+                  className="text-slate-400 hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {!predictionResult ? (
+                <div className="space-y-4">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium">Age</label>
+                    <input
+                      type="number"
+                      value={predictionData.age}
+                      onChange={(e) => setPredictionData({ ...predictionData, age: e.target.value })}
+                      className="w-full rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+                      placeholder="Enter age (18-70)"
+                      min="18"
+                      max="70"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium">Annual Income (k$)</label>
+                    <input
+                      type="number"
+                      value={predictionData.income}
+                      onChange={(e) => setPredictionData({ ...predictionData, income: e.target.value })}
+                      className="w-full rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+                      placeholder="Enter income (15-140)"
+                      min="15"
+                      max="140"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium">Spending Score (1-100)</label>
+                    <input
+                      type="number"
+                      value={predictionData.spendingScore}
+                      onChange={(e) => setPredictionData({ ...predictionData, spendingScore: e.target.value })}
+                      className="w-full rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+                      placeholder="Enter spending score"
+                      min="1"
+                      max="100"
+                    />
+                  </div>
+                  <button
+                    onClick={handlePredict}
+                    disabled={loading || !predictionData.age || !predictionData.income || !predictionData.spendingScore}
+                    className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-3 font-medium shadow-lg shadow-blue-500/20 disabled:opacity-50"
+                  >
+                    {loading ? "Predicting..." : "Generate Prediction"}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="rounded-lg border border-blue-500/30 bg-gradient-to-br from-blue-600/10 to-purple-600/10 p-6 text-center">
+                    <div className="mb-2 text-4xl">
+                      {["💰", "👑", "🎯", "👥", "🌱"][predictionResult.cluster_id]}
+                    </div>
+                    <h4 className="text-xl font-bold">{predictionResult.segment_name}</h4>
+                    <p className="mt-2 text-sm text-slate-400">{predictionResult.segment_description}</p>
+                  </div>
+                  <div className="space-y-2 rounded-lg border border-slate-800 bg-[#151B2B] p-4">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-400">Cluster ID:</span>
+                      <span className="font-medium">{predictionResult.cluster_id}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-400">Age:</span>
+                      <span className="font-medium">{predictionData.age} years</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-400">Income:</span>
+                      <span className="font-medium">${predictionData.income}k</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-400">Spending Score:</span>
+                      <span className="font-medium">{predictionData.spendingScore}/100</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setPredictionResult(null);
+                        setPredictionData({ age: "", income: "", spendingScore: "" });
+                      }}
+                      className="flex-1 rounded-lg border border-slate-800 px-4 py-2 font-medium hover:bg-slate-800"
+                    >
+                      New Prediction
+                    </button>
+                    <button
+                      onClick={() => {
+                        setPredictionResult(null);
+                        setShowPredictionForm(false);
+                        setPredictionData({ age: "", income: "", spendingScore: "" });
+                      }}
+                      className="flex-1 rounded-lg bg-blue-600 px-4 py-2 font-medium hover:bg-blue-700"
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );

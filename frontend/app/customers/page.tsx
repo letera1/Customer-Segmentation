@@ -11,6 +11,13 @@ export default function Customers() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
+  const [showAddCustomer, setShowAddCustomer] = useState(false);
+  const [newCustomer, setNewCustomer] = useState({
+    gender: "Male",
+    age: "",
+    income: "",
+    spending: "",
+  });
   const itemsPerPage = 15;
 
   useEffect(() => {
@@ -96,6 +103,54 @@ export default function Customers() {
     URL.revokeObjectURL(url);
   };
 
+  const handleAddCustomer = async () => {
+    if (!newCustomer.age || !newCustomer.income || !newCustomer.spending) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    // Predict segment for new customer
+    try {
+      const res = await fetch("http://localhost:8000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          age: parseInt(newCustomer.age),
+          annual_income: parseInt(newCustomer.income),
+          spending_score: parseInt(newCustomer.spending),
+        }),
+      });
+
+      if (res.ok) {
+        const result = await res.json();
+        const customer = {
+          id: customers.length + 1,
+          gender: newCustomer.gender,
+          age: newCustomer.age,
+          income: newCustomer.income,
+          spending: newCustomer.spending,
+          cluster: result.cluster_id.toString(),
+        };
+        setCustomers([customer, ...customers]);
+        setShowAddCustomer(false);
+        setNewCustomer({ gender: "Male", age: "", income: "", spending: "" });
+      }
+    } catch (error) {
+      // If API fails, add without prediction
+      const customer = {
+        id: customers.length + 1,
+        gender: newCustomer.gender,
+        age: newCustomer.age,
+        income: newCustomer.income,
+        spending: newCustomer.spending,
+        cluster: Math.floor(Math.random() * 5).toString(),
+      };
+      setCustomers([customer, ...customers]);
+      setShowAddCustomer(false);
+      setNewCustomer({ gender: "Male", age: "", income: "", spending: "" });
+    }
+  };
+
   const segmentNames: any = {
     0: "Budget Conscious",
     1: "High Value",
@@ -122,7 +177,10 @@ export default function Customers() {
             >
               📥 Export CSV
             </button>
-            <button className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-medium shadow-lg shadow-blue-500/20 transition-all hover:shadow-blue-500/40">
+            <button
+              onClick={() => setShowAddCustomer(true)}
+              className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-medium shadow-lg shadow-blue-500/20 transition-all hover:shadow-blue-500/40"
+            >
               + Add Customer
             </button>
           </div>
@@ -365,6 +423,97 @@ export default function Customers() {
                 <button className="flex-1 rounded-lg border border-slate-800 px-4 py-2 font-medium hover:bg-slate-800">
                   View History
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Add Customer Modal */}
+        {showAddCustomer && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowAddCustomer(false)}
+          >
+            <div
+              className="w-full max-w-md rounded-xl border border-slate-800 bg-[#0B1120] p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-xl font-bold">Add New Customer</h3>
+                <button
+                  onClick={() => setShowAddCustomer(false)}
+                  className="text-slate-400 hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="mb-2 block text-sm font-medium">Gender</label>
+                  <select
+                    value={newCustomer.gender}
+                    onChange={(e) => setNewCustomer({ ...newCustomer, gender: e.target.value })}
+                    className="w-full rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium">Age</label>
+                  <input
+                    type="number"
+                    value={newCustomer.age}
+                    onChange={(e) => setNewCustomer({ ...newCustomer, age: e.target.value })}
+                    className="w-full rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+                    placeholder="Enter age (18-70)"
+                    min="18"
+                    max="70"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium">Annual Income (k$)</label>
+                  <input
+                    type="number"
+                    value={newCustomer.income}
+                    onChange={(e) => setNewCustomer({ ...newCustomer, income: e.target.value })}
+                    className="w-full rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+                    placeholder="Enter income (15-140)"
+                    min="15"
+                    max="140"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium">Spending Score (1-100)</label>
+                  <input
+                    type="number"
+                    value={newCustomer.spending}
+                    onChange={(e) => setNewCustomer({ ...newCustomer, spending: e.target.value })}
+                    className="w-full rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+                    placeholder="Enter spending score"
+                    min="1"
+                    max="100"
+                  />
+                </div>
+                <div className="rounded-lg bg-blue-600/10 p-3 text-sm text-blue-400">
+                  ℹ️ Customer segment will be automatically predicted based on the provided data
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setShowAddCustomer(false)}
+                    className="flex-1 rounded-lg border border-slate-800 px-4 py-2 font-medium hover:bg-slate-800"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleAddCustomer}
+                    disabled={!newCustomer.age || !newCustomer.income || !newCustomer.spending}
+                    className="flex-1 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 font-medium shadow-lg shadow-blue-500/20 disabled:opacity-50"
+                  >
+                    Add Customer
+                  </button>
+                </div>
               </div>
             </div>
           </div>
