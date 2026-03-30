@@ -663,6 +663,7 @@ function RealtimeActivity() {
     { user: "User #9012", action: "Downloaded report", time: "12s ago", type: "download" },
     { user: "User #3456", action: "Updated segment", time: "18s ago", type: "update" },
   ]);
+  const [filter, setFilter] = useState<string>("all");
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -680,22 +681,53 @@ function RealtimeActivity() {
     return () => clearInterval(interval);
   }, []);
 
+  const filteredActivities = filter === "all" 
+    ? activities 
+    : activities.filter(a => a.type === filter);
+
   return (
     <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h3 className="font-semibold">Real-time Activity</h3>
-        <div className="flex items-center gap-2">
-          <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-          <span className="text-sm text-emerald-400">Live</span>
+        <div className="flex items-center gap-3">
+          <h3 className="font-semibold">Real-time Activity</h3>
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+            <span className="text-sm text-emerald-400">Live</span>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          {[
+            { label: "All", value: "all" },
+            { label: "Views", value: "view" },
+            { label: "Predictions", value: "predict" },
+            { label: "Downloads", value: "download" },
+          ].map((f) => (
+            <button
+              key={f.value}
+              onClick={() => setFilter(f.value)}
+              className={`rounded-lg px-3 py-1 text-xs font-medium transition-all ${
+                filter === f.value
+                  ? "bg-blue-600 text-white"
+                  : "bg-slate-800/50 text-slate-400 hover:bg-slate-800"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
         </div>
       </div>
       <div className="space-y-2 max-h-96 overflow-y-auto">
-        {activities.map((activity, i) => (
+        {filteredActivities.map((activity, i) => (
           <div
             key={i}
             className="flex items-center gap-3 rounded-lg bg-slate-800/30 p-3 animate-fadeIn"
           >
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600" />
+            <div className={`h-8 w-8 rounded-full ${
+              activity.type === "predict" ? "bg-gradient-to-br from-purple-500 to-pink-600" :
+              activity.type === "download" ? "bg-gradient-to-br from-emerald-500 to-teal-600" :
+              activity.type === "update" ? "bg-gradient-to-br from-orange-500 to-red-600" :
+              "bg-gradient-to-br from-blue-500 to-purple-600"
+            }`} />
             <div className="flex-1">
               <p className="text-sm font-medium">{activity.user}</p>
               <p className="text-xs text-slate-400">{activity.action}</p>
