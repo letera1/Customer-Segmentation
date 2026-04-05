@@ -50,7 +50,7 @@ export default function StatsCards({ stats }: StatsCardsProps) {
       {cards.map((card, index) => (
         <div
           key={index}
-          className="bg-[#141b2d] border border-[#1e293b] rounded-xl p-6 card-hover animate-fadeIn"
+          className="panel p-6 card-hover animate-fadeIn"
           style={{ animationDelay: `${index * 0.1}s` }}
         >
           <div className="flex items-center justify-between mb-4">
