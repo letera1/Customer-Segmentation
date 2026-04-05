@@ -12,9 +12,11 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
   const [spendingScore, setSpendingScore] = useState(65);
   const [loading, setLoading] = useState(false);
   const [prediction, setPrediction] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handlePredict = async () => {
     setLoading(true);
+    setError(null);
     try {
       const response = await fetch("http://localhost:8000/predict", {
         method: "POST",
@@ -26,7 +28,10 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
         }),
       });
 
-      if (!response.ok) throw new Error("Prediction failed");
+      if (!response.ok) {
+        const message = await response.text();
+        throw new Error(message || "Prediction failed");
+      }
 
       const result = await response.json();
       setPrediction(result);
@@ -37,7 +42,7 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
       history.unshift({ ...result, timestamp: new Date().toISOString(), age, income, spendingScore });
       localStorage.setItem("prediction_history", JSON.stringify(history.slice(0, 10)));
     } catch (error) {
-      alert("Failed to get prediction. Make sure API is running and model is trained.");
+      setError("Failed to get prediction. Make sure the API is running and the model is trained.");
     } finally {
       setLoading(false);
     }
@@ -52,18 +57,27 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
   };
 
   return (
-    <div className="bg-[#141b2d] border border-[#1e293b] rounded-xl p-6">
+    <div className="panel p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-white">Customer Analyzer</h2>
-        <span className="text-green-400 text-sm">● Live</span>
+        <div>
+          <h2 className="text-xl font-bold text-white">Customer Analyzer</h2>
+          <p className="mt-1 text-sm text-slate-400">Adjust inputs and predict the segment</p>
+        </div>
+        <span className="text-emerald-400 text-sm">● Live</span>
       </div>
+
+      {error && (
+        <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
+          {error}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Input Section */}
         <div className="space-y-6">
           <div>
             <div className="flex justify-between mb-2">
-              <label className="text-gray-400 text-sm">Age</label>
+              <label className="text-slate-400 text-sm">Age</label>
               <span className="text-white font-medium">{age} years</span>
             </div>
             <input
@@ -72,13 +86,13 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               max="70"
               value={age}
               onChange={(e) => setAge(Number(e.target.value))}
-              className="w-full h-2 bg-[#1e293b] rounded-lg appearance-none cursor-pointer accent-blue-500"
+              className="w-full h-2 bg-slate-800/60 rounded-lg appearance-none cursor-pointer accent-blue-500"
             />
           </div>
 
           <div>
             <div className="flex justify-between mb-2">
-              <label className="text-gray-400 text-sm">Annual Income</label>
+              <label className="text-slate-400 text-sm">Annual Income</label>
               <span className="text-white font-medium">${income}k</span>
             </div>
             <input
@@ -87,13 +101,13 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               max="140"
               value={income}
               onChange={(e) => setIncome(Number(e.target.value))}
-              className="w-full h-2 bg-[#1e293b] rounded-lg appearance-none cursor-pointer accent-green-500"
+              className="w-full h-2 bg-slate-800/60 rounded-lg appearance-none cursor-pointer accent-emerald-500"
             />
           </div>
 
           <div>
             <div className="flex justify-between mb-2">
-              <label className="text-gray-400 text-sm">Spending Score</label>
+              <label className="text-slate-400 text-sm">Spending Score</label>
               <span className="text-white font-medium">{spendingScore}/100</span>
             </div>
             <input
@@ -102,21 +116,21 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               max="100"
               value={spendingScore}
               onChange={(e) => setSpendingScore(Number(e.target.value))}
-              className="w-full h-2 bg-[#1e293b] rounded-lg appearance-none cursor-pointer accent-purple-500"
+              className="w-full h-2 bg-slate-800/60 rounded-lg appearance-none cursor-pointer accent-purple-500"
             />
           </div>
 
           <button
             onClick={handlePredict}
             disabled={loading}
-            className="w-full bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold py-3 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition-all disabled:opacity-50"
+            className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 py-3 font-semibold text-white shadow-sm shadow-blue-500/10 transition-all hover:shadow-md hover:shadow-blue-500/20 disabled:opacity-50"
           >
             {loading ? "Analyzing..." : "🔮 Predict Segment"}
           </button>
         </div>
 
         {/* Result Section */}
-        <div className="bg-[#0a0e1a] rounded-lg p-6 border border-[#1e293b]">
+        <div className="rounded-2xl border border-slate-800/60 bg-slate-950/30 p-6">
           {prediction ? (
             <div className="space-y-4">
               <div
@@ -132,22 +146,26 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
 
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Cluster ID</span>
+                  <span className="text-slate-400">Cluster ID</span>
                   <span className="text-white font-medium">{prediction.cluster_id}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Confidence</span>
-                  <span className="text-green-400 font-medium">{prediction.confidence}</span>
+                  <span className="text-slate-400">Confidence</span>
+                  <span className="text-emerald-400 font-medium">
+                    {typeof prediction.confidence === "number"
+                      ? `${Math.round(prediction.confidence * 100)}%`
+                      : String(prediction.confidence)}
+                  </span>
                 </div>
               </div>
 
-              <div className="bg-[#141b2d] p-4 rounded-lg border border-[#1e293b]">
-                <p className="text-gray-400 text-xs mb-2">RECOMMENDED STRATEGY</p>
+              <div className="rounded-xl border border-slate-800/60 bg-slate-900/40 p-4">
+                <p className="text-slate-400 text-xs mb-2">RECOMMENDED STRATEGY</p>
                 <p className="text-white text-sm">{prediction.marketing_strategy}</p>
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-full text-gray-500">
+            <div className="flex items-center justify-center h-full text-slate-500">
               <div className="text-center">
                 <span className="text-4xl mb-2 block">🎯</span>
                 <p>Enter customer data to analyze</p>
