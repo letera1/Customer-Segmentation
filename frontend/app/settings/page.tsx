@@ -12,6 +12,14 @@ export default function Settings() {
   const [dataRetention, setDataRetention] = useState("90");
   const [saved, setSaved] = useState(false);
 
+  const accentOptions = [
+    { key: "blue", className: "bg-blue-600" },
+    { key: "purple", className: "bg-purple-600" },
+    { key: "emerald", className: "bg-emerald-600" },
+    { key: "pink", className: "bg-pink-600" },
+    { key: "orange", className: "bg-orange-600" },
+  ];
+
   const handleSave = () => {
     localStorage.setItem("settings", JSON.stringify({
       apiEndpoint,
@@ -62,7 +70,7 @@ export default function Settings() {
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* API Configuration */}
-          <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+          <div className="panel p-6">
             <h3 className="mb-4 flex items-center gap-2 font-semibold">
               <span className="text-xl">🔌</span>
               API Configuration
@@ -112,7 +120,7 @@ export default function Settings() {
           </div>
 
           {/* Appearance */}
-          <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+          <div className="panel p-6">
             <h3 className="mb-4 flex items-center gap-2 font-semibold">
               <span className="text-xl">🎨</span>
               Appearance
@@ -157,10 +165,11 @@ export default function Settings() {
               <div>
                 <label className="mb-2 block text-sm font-medium">Theme Accent</label>
                 <div className="flex gap-2">
-                  {["blue", "purple", "emerald", "pink", "orange"].map((color) => (
+                  {accentOptions.map((opt) => (
                     <button
-                      key={color}
-                      className={`h-10 w-10 rounded-lg bg-${color}-600 hover:scale-110 transition-transform`}
+                      key={opt.key}
+                      aria-label={`${opt.key} theme accent`}
+                      className={`h-10 w-10 rounded-lg ${opt.className} hover:scale-110 transition-transform`}
                     />
                   ))}
                 </div>
@@ -169,7 +178,7 @@ export default function Settings() {
           </div>
 
           {/* Data Management */}
-          <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+          <div className="panel p-6">
             <h3 className="mb-4 flex items-center gap-2 font-semibold">
               <span className="text-xl">💾</span>
               Data Management
@@ -205,7 +214,7 @@ export default function Settings() {
           </div>
 
           {/* Security */}
-          <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+          <div className="panel p-6">
             <h3 className="mb-4 flex items-center gap-2 font-semibold">
               <span className="text-xl">🔒</span>
               Security & Privacy
@@ -236,7 +245,7 @@ export default function Settings() {
         </div>
 
         {/* System Info */}
-        <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+        <div className="panel p-6">
           <h3 className="mb-4 flex items-center gap-2 font-semibold">
             <span className="text-xl">ℹ️</span>
             System Information
