@@ -12,6 +12,10 @@ pip install -r ../requirements.txt
 ## Run Server
 
 ```bash
+# From repository root
+uvicorn main:app --reload
+
+# Or from api folder
 uvicorn main:app --reload
 ```
 

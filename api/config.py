@@ -1,13 +1,19 @@
 """
 Configuration management for the API.
 """
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
 from pathlib import Path
 
 
 class Settings(BaseSettings):
     """Application settings with environment variable support."""
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        protected_namespaces=("settings_",),
+    )
     
     # API Settings
     app_name: str = "SegmentAI Pro API"
@@ -41,11 +47,6 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     log_file: str = "logs/api.log"
     
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-
-
 @lru_cache()
 def get_settings() -> Settings:
     """Get cached settings instance."""
