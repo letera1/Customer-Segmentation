@@ -21,7 +21,7 @@ export default function PredictionHistory() {
   };
 
   return (
-    <div className="bg-[#141b2d] border border-[#1e293b] rounded-xl p-6">
+    <div className="panel p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-white">Recent Predictions</h2>
         <button
@@ -40,7 +40,7 @@ export default function PredictionHistory() {
           {history.map((item, index) => (
             <div
               key={index}
-              className="p-3 bg-[#0a0e1a] rounded-lg border border-[#1e293b] hover:border-green-500/30 transition-all"
+              className="rounded-xl border border-slate-800/60 bg-slate-950/30 p-3 transition-all hover:border-green-500/30"
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-2">

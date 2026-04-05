@@ -33,10 +33,10 @@ export default function CustomerInsights() {
   ];
 
   return (
-    <div className="bg-[#141b2d] border border-[#1e293b] rounded-xl p-6">
+    <div className="panel p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-white">Customer Insights</h2>
-        <select className="bg-[#1e293b] text-white text-sm px-3 py-1 rounded-lg border border-[#334155] focus:outline-none">
+        <select className="rounded-lg border border-slate-800/60 bg-slate-900/50 px-3 py-1 text-sm text-white focus:outline-none">
           <option>Last 30 days</option>
           <option>Last 90 days</option>
           <option>Last year</option>
@@ -47,7 +47,7 @@ export default function CustomerInsights() {
         {insights.map((insight, index) => (
           <div
             key={index}
-            className="bg-[#0a0e1a] rounded-lg p-4 border border-[#1e293b] hover:border-green-500/30 transition-all"
+            className="rounded-xl border border-slate-800/60 bg-slate-950/30 p-4 transition-all hover:border-green-500/30"
           >
             <p className="text-gray-400 text-xs mb-2">{insight.metric}</p>
             <div className="flex items-baseline space-x-1">
@@ -66,7 +66,7 @@ export default function CustomerInsights() {
       </div>
 
       {/* Heatmap */}
-      <div className="mt-6 pt-6 border-t border-[#1e293b]">
+      <div className="mt-6 pt-6 border-t border-slate-800/60">
         <h3 className="text-white font-medium mb-4">Activity Heatmap</h3>
         <div className="grid grid-cols-7 gap-2">
           {Array.from({ length: 35 }).map((_, i) => {
@@ -79,7 +79,7 @@ export default function CustomerInsights() {
                     ? "bg-green-500"
                     : intensity > 0.4
                     ? "bg-green-500/50"
-                    : "bg-[#1e293b]"
+                    : "bg-slate-800/60"
                 }`}
                 title={`Day ${i + 1}`}
               ></div>
