@@ -21,7 +21,13 @@ export default function Segments() {
     }
   };
 
-  const colors = ["amber", "purple", "blue", "emerald", "pink"];
+  const accentBgClasses = [
+    "bg-amber-600/10",
+    "bg-purple-600/10",
+    "bg-blue-600/10",
+    "bg-emerald-600/10",
+    "bg-pink-600/10",
+  ];
 
   return (
     <LayoutV2>
@@ -37,10 +43,14 @@ export default function Segments() {
           {segments.map((segment, i) => (
             <div
               key={segment.cluster_id}
-              className="rounded-xl border border-slate-800 bg-slate-900 p-6 hover:border-indigo-600 transition-colors"
+              className="panel card-hover p-6 hover:border-indigo-600 transition-colors"
             >
               <div className="flex items-start justify-between">
-                <div className={`rounded-lg bg-${colors[i]}-600/10 p-3`}>
+                <div
+                  className={`rounded-lg ${
+                    accentBgClasses[i % accentBgClasses.length]
+                  } p-3`}
+                >
                   <span className="text-2xl">
                     {["💰", "👑", "🎯", "👥", "🌱"][i]}
                   </span>
@@ -51,11 +61,11 @@ export default function Segments() {
               </div>
               <h3 className="mt-4 text-xl font-semibold">{segment.name}</h3>
               <p className="mt-2 text-sm text-slate-400">{segment.description}</p>
-              <div className="mt-4 rounded-lg bg-slate-800 p-4">
+              <div className="mt-4 rounded-lg border border-slate-800/60 bg-slate-900/40 p-4">
                 <p className="text-xs font-medium text-slate-400">STRATEGY</p>
                 <p className="mt-1 text-sm">{segment.strategy}</p>
               </div>
-              <button className="mt-4 w-full rounded-lg border border-slate-700 py-2 text-sm font-medium hover:bg-slate-800">
+              <button className="mt-4 w-full rounded-lg border border-slate-800/60 bg-slate-950/20 py-2 text-sm font-medium text-slate-200 hover:bg-slate-900/40">
                 View Details
               </button>
             </div>
