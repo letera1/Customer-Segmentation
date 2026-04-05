@@ -20,6 +20,12 @@ class Settings(BaseSettings):
     
     # CORS Settings
     cors_origins: list[str] = ["http://localhost:3000", "http://localhost:3001"]
+    cors_methods: list[str] = ["GET", "POST", "OPTIONS"]
+    cors_headers: list[str] = ["Authorization", "Content-Type", "X-Requested-With"]
+
+    # Host and request constraints
+    trusted_hosts: list[str] = ["localhost", "127.0.0.1", "*.localhost"]
+    max_request_size_mb: int = 2
     
     # Model Settings
     model_path: Path = Path(__file__).parent.parent / "data" / "outputs" / "segmentation_model.pkl"

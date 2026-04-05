@@ -3,6 +3,7 @@ Refactored FastAPI application with clean architecture.
 """
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 import logging
@@ -17,7 +18,12 @@ from .models import (
     HealthResponse, ErrorResponse
 )
 from .services import model_service, SegmentService
-from .middleware import RateLimitMiddleware, LoggingMiddleware, SecurityHeadersMiddleware
+from .middleware import (
+    RateLimitMiddleware,
+    LoggingMiddleware,
+    SecurityHeadersMiddleware,
+    RequestSizeLimitMiddleware,
+)
 
 # Configure logging
 logging.basicConfig(
@@ -63,8 +69,18 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=settings.cors_methods,
+    allow_headers=settings.cors_headers,
+)
+
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=settings.trusted_hosts,
+)
+
+app.add_middleware(
+    RequestSizeLimitMiddleware,
+    max_size_mb=settings.max_request_size_mb,
 )
 
 if settings.rate_limit_enabled:
@@ -88,7 +104,7 @@ async def http_exception_handler(request, exc):
         status_code=exc.status_code,
         content=ErrorResponse(
             error=exc.detail,
-            detail=str(exc)
+            detail=None
         ).dict()
     )
 
@@ -176,7 +192,7 @@ async def predict_segment(customer: CustomerInput):
         return prediction
     except Exception as e:
         logger.error(f"Prediction error: {e}")
-        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
+        raise HTTPException(status_code=500, detail="Prediction failed")
 
 
 @app.post("/batch-predict", response_model=BatchPredictionResponse, tags=["Predictions"])
@@ -217,7 +233,7 @@ async def batch_predict(request: BatchPredictionRequest):
         
     except Exception as e:
         logger.error(f"Batch prediction error: {e}")
-        raise HTTPException(status_code=500, detail=f"Batch prediction failed: {str(e)}")
+        raise HTTPException(status_code=500, detail="Batch prediction failed")
 
 
 @app.get("/metrics", tags=["Monitoring"])
