@@ -63,7 +63,6 @@ export default function Reports() {
 
   return (
     <LayoutV2>
-        </LayoutV2>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -176,6 +175,6 @@ export default function Reports() {
           </div>
         </div>
       </div>
-    </Layout>
+    </LayoutV2>
   );
 }

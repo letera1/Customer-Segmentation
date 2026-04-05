@@ -148,7 +148,6 @@ export default function Customers() {
 
   return (
     <LayoutV2>
-        </LayoutV2>
       <div className="space-y-6">
         {/* Header Actions */}
         <div className="flex items-center justify-between">
@@ -507,6 +506,6 @@ export default function Customers() {
           </div>
         )}
       </div>
-    </Layout>
+    </LayoutV2>
   );
 }

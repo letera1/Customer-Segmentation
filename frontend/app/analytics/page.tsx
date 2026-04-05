@@ -61,7 +61,6 @@ export default function Analytics() {
 
   return (
     <LayoutV2>
-        </LayoutV2>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -222,7 +221,7 @@ export default function Analytics() {
         {/* Real-time Activity */}
         <RealtimeActivity />
       </div>
-    </Layout>
+    </LayoutV2>
   );
 }
 

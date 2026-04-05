@@ -25,7 +25,6 @@ export default function Segments() {
 
   return (
     <LayoutV2>
-        </LayoutV2>
       <div className="space-y-6">
         <div>
           <h2 className="text-2xl font-semibold">Customer Segments</h2>
@@ -63,6 +62,6 @@ export default function Segments() {
           ))}
         </div>
       </div>
-    </Layout>
+    </LayoutV2>
   );
 }
