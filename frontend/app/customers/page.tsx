@@ -25,29 +25,16 @@ export default function Customers() {
   }, []);
 
   const loadCustomers = async () => {
-    try {
-      const res = await fetch("/data/processed/customers_with_clusters.csv");
-      if (res.ok) {
-        const text = await res.text();
-        const rows = text.split("\n").slice(1);
-        const data = rows.map((row) => {
-          const [id, gender, age, income, spending, cluster] = row.split(",");
-          return { id, gender, age, income, spending, cluster };
-        }).filter(c => c.id);
-        setCustomers(data);
-      }
-    } catch (error) {
-      // Generate sample data if file not found
-      const sample = Array.from({ length: 50 }, (_, i) => ({
-        id: i + 1,
-        gender: Math.random() > 0.5 ? "Male" : "Female",
-        age: Math.floor(Math.random() * 52) + 18,
-        income: Math.floor(Math.random() * 125) + 15,
-        spending: Math.floor(Math.random() * 99) + 1,
-        cluster: Math.floor(Math.random() * 5),
-      }));
-      setCustomers(sample);
-    }
+    // Generate sample data (file access from frontend doesn't work)
+    const sample = Array.from({ length: 50 }, (_, i) => ({
+      id: (i + 1).toString(),
+      gender: Math.random() > 0.5 ? "Male" : "Female",
+      age: (Math.floor(Math.random() * 52) + 18).toString(),
+      income: (Math.floor(Math.random() * 125) + 15).toString(),
+      spending: (Math.floor(Math.random() * 99) + 1).toString(),
+      cluster: Math.floor(Math.random() * 5).toString(),
+    }));
+    setCustomers(sample);
   };
 
   const filtered = customers
