@@ -12,7 +12,7 @@ export default function SegmentDistribution() {
   ]);
 
   return (
-    <div className="bg-[#141b2d] border border-[#1e293b] rounded-xl p-6">
+    <div className="panel p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-white">Segment Distribution</h2>
         <button className="text-gray-400 hover:text-white text-sm">View All →</button>
@@ -42,7 +42,7 @@ export default function SegmentDistribution() {
       </div>
 
       {/* Chart Visualization */}
-      <div className="mt-6 pt-6 border-t border-[#1e293b]">
+      <div className="mt-6 pt-6 border-t border-slate-800/60">
         <div className="flex items-end justify-between h-32 space-x-2">
           {segments.map((segment) => (
             <div key={segment.id} className="flex-1 flex flex-col items-center">
