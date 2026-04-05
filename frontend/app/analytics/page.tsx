@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Layout from "@/components/Layout";
+import LayoutV2 from "@/components/LayoutV2";
 
 export default function Analytics() {
   const [timeRange, setTimeRange] = useState("7d");
@@ -60,7 +60,8 @@ export default function Analytics() {
   }, [timeRange]);
 
   return (
-    <Layout>
+    <LayoutV2>
+        </LayoutV2>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Layout from "@/components/Layout";
+import LayoutV2 from "@/components/LayoutV2";
 
 export default function Reports() {
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
@@ -62,7 +62,8 @@ export default function Reports() {
   ];
 
   return (
-    <Layout>
+    <LayoutV2>
+        </LayoutV2>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Layout from "@/components/Layout";
+import LayoutV2 from "@/components/LayoutV2";
 
 export default function Settings() {
   const [apiEndpoint, setApiEndpoint] = useState("http://localhost:8000");
@@ -40,7 +40,8 @@ export default function Settings() {
   };
 
   return (
-    <Layout>
+    <LayoutV2>
+        </LayoutV2>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">

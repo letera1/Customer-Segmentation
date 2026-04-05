@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Layout from "@/components/Layout";
+import LayoutV2 from "@/components/LayoutV2";
 
 export default function Predictions() {
   const [history, setHistory] = useState<any[]>([]);
@@ -14,7 +14,8 @@ export default function Predictions() {
   }, []);
 
   return (
-    <Layout>
+    <LayoutV2>
+        </LayoutV2>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Layout from "@/components/Layout";
+import LayoutV2 from "@/components/LayoutV2";
 
 export default function Segments() {
   const [segments, setSegments] = useState<any[]>([]);
@@ -24,7 +24,8 @@ export default function Segments() {
   const colors = ["amber", "purple", "blue", "emerald", "pink"];
 
   return (
-    <Layout>
+    <LayoutV2>
+        </LayoutV2>
       <div className="space-y-6">
         <div>
           <h2 className="text-2xl font-semibold">Customer Segments</h2>
