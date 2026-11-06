@@ -88,19 +88,21 @@ export default function StatsCards({ stats }: StatsCardsProps) {
               {card.icon}
             </div>
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
-              <span>↑</span>
+              <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+              </svg>
               <span>{card.change}</span>
             </div>
           </div>
 
           <div className="relative z-10">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-charcoal-400 dark:text-[#848CA2] mb-1">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-sub mb-1">
               {card.title}
             </h3>
-            <p className="text-3xl font-black tracking-tight text-white dark:text-[#ECEEF2]">
+            <p className="text-3xl font-black tracking-tight text-main">
               {card.value}
             </p>
-            <p className="text-[11px] font-medium text-charcoal-500 dark:text-[#5F667A] mt-1.5">
+            <p className="text-[11px] font-medium text-muted mt-1.5">
               {card.subtext}
             </p>
           </div>

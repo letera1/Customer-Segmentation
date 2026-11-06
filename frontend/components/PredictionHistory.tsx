@@ -57,37 +57,41 @@ export default function PredictionHistory() {
             return (
               <div
                 key={index}
-                className="rounded-xl border border-white/[0.06] bg-[#181A20] p-3 transition-all hover:border-white/[0.14]"
+                className="rounded-xl border border-charcoal-700/60 dark:border-white/[0.06] bg-softgray-100/60 dark:bg-[#181A20] p-3 transition-all hover:border-indigo-500/30"
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${badge.dot}`} />
-                    <span className="text-xs font-bold text-white dark:text-[#ECEEF2]">
+                    <span className="text-xs font-bold text-main">
                       {item.segment_name}
                     </span>
-                    <span className="text-[10px] text-[#5F667A] font-bold">
+                    <span className="text-[10px] text-muted font-bold">
                       C{item.cluster_id}
                     </span>
                   </div>
-                  <span className="text-[10px] font-semibold text-[#848CA2]">
+                  <span className="text-[10px] font-semibold text-sub">
                     {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between text-[11px] font-bold text-[#848CA2] bg-[#20222A] px-2.5 py-1 rounded-lg border border-white/[0.04]">
-                  <span>Age: <strong className="text-[#CAD1DE]">{item.age}</strong></span>
-                  <span>Inc: <strong className="text-[#CAD1DE]">${item.income}k</strong></span>
-                  <span>Score: <strong className="text-[#CAD1DE]">{item.spendingScore}</strong></span>
+                <div className="flex items-center justify-between text-[11px] font-bold text-sub bg-white dark:bg-[#20222A] px-2.5 py-1.5 rounded-lg border border-charcoal-700/40 dark:border-white/[0.04]">
+                  <span>Age: <strong className="text-main">{item.age}</strong></span>
+                  <span>Inc: <strong className="text-main">${item.income}k</strong></span>
+                  <span>Score: <strong className="text-main">{item.spendingScore}</strong></span>
                 </div>
               </div>
             );
           })}
         </div>
       ) : (
-        <div className="text-center py-7 text-[#5F667A]">
-          <span className="text-2xl mb-1.5 block">⚡</span>
-          <p className="text-xs font-semibold text-[#848CA2]">No predictions recorded yet</p>
-          <p className="text-[11px] text-[#5F667A] mt-0.5">Use the analyzer to generate classifications</p>
+        <div className="text-center py-8">
+          <div className="w-10 h-10 mx-auto mb-2 rounded-xl border border-charcoal-700/60 dark:border-white/10 bg-charcoal-800/40 dark:bg-[#181A20] flex items-center justify-center text-charcoal-400 dark:text-[#848CA2]">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p className="text-xs font-semibold text-main">No predictions recorded yet</p>
+          <p className="text-[11px] text-muted mt-0.5">Use the analyzer to generate classifications</p>
         </div>
       )}
     </div>

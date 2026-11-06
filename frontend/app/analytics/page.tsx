@@ -8,10 +8,10 @@ export default function Analytics() {
   const [metrics, setMetrics] = useState({
     conversionRate: 3.24,
     avgSession: "4m 32s",
-    bounceRate: 42.3,
+    bounceRate: 41.8,
     pageViews: 125400,
   });
-  const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
+  const [selectedMetric, setSelectedMetric] = useState<string>("conversion");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [comparisonMode, setComparisonMode] = useState(false);
@@ -20,14 +20,14 @@ export default function Analytics() {
     setIsRefreshing(true);
     setTimeout(() => {
       setMetrics({
-        conversionRate: (Math.random() * 5 + 2).toFixed(2) as any,
-        avgSession: `${Math.floor(Math.random() * 3 + 3)}m ${Math.floor(Math.random() * 60)}s`,
-        bounceRate: (Math.random() * 20 + 35).toFixed(1) as any,
-        pageViews: Math.floor(Math.random() * 50000 + 100000),
+        conversionRate: Number((Math.random() * 2 + 2.8).toFixed(2)),
+        avgSession: `${Math.floor(Math.random() * 2 + 3)}m ${Math.floor(Math.random() * 45 + 10)}s`,
+        bounceRate: Number((Math.random() * 8 + 38).toFixed(1)),
+        pageViews: Math.floor(Math.random() * 30000 + 115000),
       });
       setLastUpdated(new Date());
       setIsRefreshing(false);
-    }, 800);
+    }, 600);
   };
 
   const exportData = () => {
@@ -40,468 +40,544 @@ export default function Analytics() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `analytics-${timeRange}-${Date.now()}.json`;
+    a.download = `analytics-report-${timeRange}-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
-  useEffect(() => {
-    // Simulate data refresh when time range changes
-    const timer = setTimeout(() => {
-      setMetrics({
-        conversionRate: (Math.random() * 5 + 2).toFixed(2) as any,
-        avgSession: `${Math.floor(Math.random() * 3 + 3)}m ${Math.floor(Math.random() * 60)}s`,
-        bounceRate: (Math.random() * 20 + 35).toFixed(1) as any,
-        pageViews: Math.floor(Math.random() * 50000 + 100000),
-      });
-      setLastUpdated(new Date());
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [timeRange]);
-
   return (
     <LayoutV2>
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+        {/* Top Header & Executive Controls */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-subtle">
           <div>
-            <h2 className="text-2xl font-bold">Advanced Analytics</h2>
-            <p className="text-sm text-slate-400">
-              Deep insights into customer behavior and trends
-              <span className="ml-3 text-xs text-slate-500">
-                Last updated: {lastUpdated.toLocaleTimeString()}
+            <h1 className="text-2xl font-black tracking-tight text-main">
+              Behavioral & Cohort Analytics
+            </h1>
+            <p className="mt-1 text-xs text-sub font-medium">
+              Enterprise customer journey telemetry, conversion velocity, and segment retention metrics
+              <span className="ml-3 text-[11px] text-muted font-mono">
+                Updated: {lastUpdated.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
               </span>
             </p>
           </div>
-          <div className="flex gap-2">
+
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => setComparisonMode(!comparisonMode)}
-              className={`rounded-lg border px-4 py-2 text-sm font-medium transition-all ${
+              className={`rounded-lg border px-3.5 py-1.5 text-xs font-bold transition-all ${
                 comparisonMode
-                  ? "border-blue-500 bg-blue-600/20 text-blue-400"
-                  : "border-slate-700 bg-slate-800/50 text-slate-300 hover:bg-slate-800"
+                  ? "border-indigo-500/40 bg-indigo-500/10 text-indigo-400"
+                  : "border-subtle bg-surface text-sub hover:text-main"
               }`}
             >
-              {comparisonMode ? "✓ Compare Mode" : "📊 Compare"}
+              {comparisonMode ? "Compare Active" : "Compare Benchmarks"}
             </button>
             <button
               onClick={refreshData}
               disabled={isRefreshing}
-              className="rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm font-medium text-slate-300 transition-all hover:bg-slate-800 hover:text-white disabled:opacity-50"
+              className="rounded-lg border border-subtle bg-surface px-3.5 py-1.5 text-xs font-bold text-sub transition-all hover:text-main disabled:opacity-50"
             >
-              {isRefreshing ? (
-                <span className="flex items-center gap-2">
-                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Refreshing...
-                </span>
-              ) : (
-                "🔄 Refresh"
-              )}
+              {isRefreshing ? "Synchronizing..." : "Sync Stream"}
             </button>
             <button
               onClick={exportData}
-              className="rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm font-medium text-slate-300 transition-all hover:bg-slate-800 hover:text-white"
+              className="rounded-lg border border-subtle bg-surface px-3.5 py-1.5 text-xs font-bold text-sub transition-all hover:text-main"
             >
-              📥 Export Data
+              Export JSON
             </button>
-            {["24h", "7d", "30d", "90d"].map((range) => (
-              <button
-                key={range}
-                onClick={() => setTimeRange(range)}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                  timeRange === range
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-blue-500/20"
-                    : "bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-white"
-                }`}
-              >
-                {range}
-              </button>
-            ))}
+
+            {/* Time Window Selector Pills */}
+            <div className="flex items-center rounded-lg border border-subtle bg-surface p-0.5">
+              {["24h", "7d", "30d", "90d"].map((range) => (
+                <button
+                  key={range}
+                  onClick={() => setTimeRange(range)}
+                  className={`rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wider transition-all ${
+                    timeRange === range
+                      ? "bg-indigo-600 text-white shadow-sm"
+                      : "text-muted hover:text-main"
+                  }`}
+                >
+                  {range}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Metrics Grid */}
-        <div className="grid gap-6 md:grid-cols-4">
+        {/* 4 Core Performance KPI Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             title="Conversion Rate"
             value={`${metrics.conversionRate}%`}
-            change="+0.5%"
-            trend="up"
-            onClick={() => setSelectedMetric("conversion")}
+            change="+0.52%"
+            positive={true}
+            subtext="overall cohort average"
             selected={selectedMetric === "conversion"}
+            onClick={() => setSelectedMetric("conversion")}
             comparisonMode={comparisonMode}
-            previousValue="2.74%"
+            previousValue="2.72%"
           />
           <MetricCard
-            title="Avg Session"
+            title="Avg Session Duration"
             value={metrics.avgSession}
-            change="+12s"
-            trend="up"
-            onClick={() => setSelectedMetric("session")}
+            change="+14s"
+            positive={true}
+            subtext="active engagement dwell"
             selected={selectedMetric === "session"}
+            onClick={() => setSelectedMetric("session")}
             comparisonMode={comparisonMode}
-            previousValue="4m 20s"
+            previousValue="4m 18s"
           />
           <MetricCard
             title="Bounce Rate"
             value={`${metrics.bounceRate}%`}
-            change="-2.1%"
-            trend="down"
-            onClick={() => setSelectedMetric("bounce")}
+            change="-1.9%"
+            positive={true}
+            subtext="single-page exit frequency"
             selected={selectedMetric === "bounce"}
+            onClick={() => setSelectedMetric("bounce")}
             comparisonMode={comparisonMode}
-            previousValue="44.4%"
+            previousValue="43.7%"
           />
           <MetricCard
-            title="Page Views"
-            value={`${(metrics.pageViews / 1000).toFixed(1)}K`}
-            change="+8.2%"
-            trend="up"
-            onClick={() => setSelectedMetric("views")}
+            title="Total Sessions"
+            value={`${(metrics.pageViews / 1000).toFixed(1)}k`}
+            change="+8.4%"
+            positive={true}
+            subtext="recorded visits"
             selected={selectedMetric === "views"}
+            onClick={() => setSelectedMetric("views")}
             comparisonMode={comparisonMode}
-            previousValue="115.8K"
+            previousValue="115.8k"
           />
         </div>
 
-        {/* Charts Grid */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          <UserFlowChart timeRange={timeRange} />
-          <DeviceBreakdown />
-        </div>
+        {/* Executive Conversion Funnel (Professional Replacement for Chunky Bars) */}
+        <ExecutiveFunnel timeRange={timeRange} />
 
-        {/* AI Insights Panel */}
-        <div className="rounded-xl border border-blue-500/30 bg-gradient-to-br from-blue-600/10 to-purple-600/10 p-6">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600">
-              <span className="text-xl">🤖</span>
-            </div>
-            <div>
-              <h3 className="font-semibold">AI-Powered Insights</h3>
-              <p className="text-xs text-slate-400">Automated analysis of your data</p>
-            </div>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="rounded-lg bg-slate-800/50 p-4">
-              <div className="mb-2 text-2xl">📈</div>
-              <p className="text-sm font-medium">Peak Traffic Hours</p>
-              <p className="mt-1 text-xs text-slate-400">Most activity between 2-4 PM EST</p>
-            </div>
-            <div className="rounded-lg bg-slate-800/50 p-4">
-              <div className="mb-2 text-2xl">🎯</div>
-              <p className="text-sm font-medium">Conversion Opportunity</p>
-              <p className="mt-1 text-xs text-slate-400">Mobile users show 15% higher intent</p>
-            </div>
-            <div className="rounded-lg bg-slate-800/50 p-4">
-              <div className="mb-2 text-2xl">⚠️</div>
-              <p className="text-sm font-medium">Attention Needed</p>
-              <p className="mt-1 text-xs text-slate-400">Bounce rate increased on /reports page</p>
-            </div>
-          </div>
-        </div>
-
+        {/* Charts Grid: Traffic Trends & Device Telemetry */}
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <TrafficTrend timeRange={timeRange} />
           </div>
+          <DeviceBreakdown />
+        </div>
+
+        {/* Executive Strategic Observations (Replacing emoji AI box) */}
+        <ExecutiveInsights />
+
+        {/* Tables: Top Routes & Traffic Sources */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          <TopPages />
           <TrafficSources />
         </div>
 
+        {/* Geographic Distribution & Activity Frequency Matrix */}
         <div className="grid gap-6 lg:grid-cols-2">
-          <TopPages />
           <GeographicDistribution />
+          <SystemActivityStream />
         </div>
-
-        {/* Heatmap */}
-        <ActivityHeatmap />
-
-        {/* Real-time Activity */}
-        <RealtimeActivity />
       </div>
     </LayoutV2>
   );
 }
 
-function MetricCard({ title, value, change, trend, onClick, selected, comparisonMode, previousValue }: any) {
+// ----------------------------------------------------------------------
+// 1. MetricCard Component
+// ----------------------------------------------------------------------
+function MetricCard({
+  title,
+  value,
+  change,
+  positive,
+  subtext,
+  selected,
+  onClick,
+  comparisonMode,
+  previousValue,
+}: {
+  title: string;
+  value: string;
+  change: string;
+  positive: boolean;
+  subtext: string;
+  selected: boolean;
+  onClick: () => void;
+  comparisonMode: boolean;
+  previousValue?: string;
+}) {
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer rounded-xl border p-6 transition-all hover:scale-105 ${
+      className={`cursor-pointer rounded-xl border p-5 transition-all duration-200 ${
         selected
-          ? "border-blue-500 bg-gradient-to-br from-blue-600/10 to-purple-600/10 shadow-lg shadow-blue-500/20"
-          : "border-white/[0.07] bg-[#181A20] hover:border-slate-700"
+          ? "border-indigo-500/50 bg-[#1A1D25] dark:bg-[#1A1D25] shadow-lg shadow-black/25 ring-1 ring-indigo-500/30"
+          : "card-bg hover:border-white/[0.14]"
       }`}
     >
-      <p className="text-sm text-slate-400">{title}</p>
-      <div className="mt-2 flex items-end gap-2">
-        <span className="text-3xl font-bold">{value}</span>
-        <span className={`text-sm font-medium ${trend === "up" ? "text-emerald-400" : "text-red-400"}`}>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-sub">
+          {title}
+        </span>
+        <span
+          className={`text-[11px] font-black px-2 py-0.5 rounded-md ${
+            positive
+              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+              : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+          }`}
+        >
           {change}
         </span>
       </div>
-      {comparisonMode && (
-        <div className="mt-3 flex items-center justify-between rounded-lg bg-slate-800/50 p-2">
-          <span className="text-xs text-slate-400">Previous:</span>
-          <span className="text-xs font-medium">{previousValue}</span>
+
+      <div className="text-2xl font-black text-main tracking-tight">
+        {value}
+      </div>
+
+      <div className="text-[11px] text-muted font-medium mt-1">
+        {subtext}
+      </div>
+
+      {comparisonMode && previousValue && (
+        <div className="mt-3 pt-2 border-t border-subtle flex items-center justify-between text-[11px]">
+          <span className="text-muted">Prior Baseline:</span>
+          <span className="font-bold text-sub font-mono">{previousValue}</span>
         </div>
-      )}
-      {selected && (
-        <div className="mt-3 h-1 w-full rounded-full bg-gradient-to-r from-indigo-600 to-purple-600" />
       )}
     </div>
   );
 }
 
-function UserFlowChart({ timeRange }: any) {
-  const [hoveredStep, setHoveredStep] = useState<number | null>(null);
-  
-  const steps = [
-    { name: "Landing Page", value: 85, users: 8500 },
-    { name: "Product View", value: 72, users: 7200 },
-    { name: "Add to Cart", value: 58, users: 5800 },
-    { name: "Checkout", value: 45, users: 4500 },
+// ----------------------------------------------------------------------
+// 2. Executive Conversion Funnel Component (High-End & Professional)
+// ----------------------------------------------------------------------
+function ExecutiveFunnel({ timeRange }: { timeRange: string }) {
+  const funnelStages = [
+    { stage: "01", name: "Landing Exposure", visitors: 10000, conversion: 100.0, drop: 0.0, rate: "Entry Baseline" },
+    { stage: "02", name: "Catalog & Segment Discovery", visitors: 8200, conversion: 82.0, drop: 18.0, rate: "High Intent" },
+    { stage: "03", name: "Product Consideration", visitors: 5600, conversion: 56.0, drop: 26.0, rate: "Cart Action" },
+    { stage: "04", name: "Checkout Initiation", visitors: 3800, conversion: 38.0, drop: 18.0, rate: "Billing Phase" },
+    { stage: "05", name: "Final Transaction & Retention", visitors: 2950, conversion: 29.5, drop: 8.5, rate: "Success Verified" },
   ];
 
   return (
-    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <h3 className="font-semibold">User Flow Funnel</h3>
-        <span className="text-sm text-slate-400">{timeRange}</span>
-      </div>
-      <div className="space-y-4">
-        {steps.map((step, i) => (
-          <div
-            key={i}
-            onMouseEnter={() => setHoveredStep(i)}
-            onMouseLeave={() => setHoveredStep(null)}
-            className="relative"
-          >
-            <div className="mb-2 flex items-center justify-between text-sm">
-              <span className="font-medium">{step.name}</span>
-              <span className="text-slate-400">{step.users.toLocaleString()} users</span>
-            </div>
-            <div className="relative h-10 overflow-hidden rounded-lg bg-slate-800">
-              <div
-                className="h-full bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-500"
-                style={{ width: `${step.value}%` }}
-              />
-              {hoveredStep === i && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-sm font-medium">
-                  {step.value}% conversion
-                </div>
-              )}
-            </div>
-            {i < steps.length - 1 && (
-              <div className="ml-4 mt-2 text-xs text-red-400">
-                ↓ {steps[i].value - steps[i + 1].value}% drop-off
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function DeviceBreakdown() {
-  const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
-  
-  const devices = [
-    { name: "Desktop", value: 45, color: "from-blue-500 to-blue-600", sessions: 45200 },
-    { name: "Mobile", value: 35, color: "from-purple-500 to-purple-600", sessions: 35100 },
-    { name: "Tablet", value: 20, color: "from-pink-500 to-pink-600", sessions: 20050 },
-  ];
-
-  return (
-    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
-      <h3 className="mb-6 font-semibold">Device Breakdown</h3>
-      <div className="mb-6 flex items-center justify-center">
-        <div className="relative h-48 w-48">
-          <svg className="h-full w-full -rotate-90 transform">
-            {devices.map((device, i) => {
-              const offset = devices.slice(0, i).reduce((sum, d) => sum + d.value, 0);
-              const circumference = 2 * Math.PI * 70;
-              const strokeDasharray = `${(device.value / 100) * circumference} ${circumference}`;
-              const strokeDashoffset = -((offset / 100) * circumference);
-              
-              return (
-                <circle
-                  key={i}
-                  cx="96"
-                  cy="96"
-                  r="70"
-                  stroke={`url(#gradient-${i})`}
-                  strokeWidth="20"
-                  fill="none"
-                  strokeDasharray={strokeDasharray}
-                  strokeDashoffset={strokeDashoffset}
-                  className="cursor-pointer transition-all hover:opacity-80"
-                  onClick={() => setSelectedDevice(device.name)}
-                />
-              );
-            })}
-            <defs>
-              {devices.map((device, i) => (
-                <linearGradient key={i} id={`gradient-${i}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor={device.color.split(" ")[0].replace("from-", "#")} />
-                  <stop offset="100%" stopColor={device.color.split(" ")[1].replace("to-", "#")} />
-                </linearGradient>
-              ))}
-            </defs>
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-3xl font-bold">100K</span>
-            <span className="text-xs text-slate-400">Total Sessions</span>
-          </div>
+    <div className="panel p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <div>
+          <h2 className="text-base font-bold tracking-tight text-main">
+            Cohort Journey Conversion Funnel
+          </h2>
+          <p className="text-xs text-sub">
+            End-to-end customer transition efficiency across funnel milestones ({timeRange})
+          </p>
         </div>
-      </div>
-      <div className="space-y-3">
-        {devices.map((device, i) => (
-          <div
-            key={i}
-            onClick={() => setSelectedDevice(device.name)}
-            className={`cursor-pointer rounded-lg p-3 transition-all ${
-              selectedDevice === device.name ? "bg-slate-800" : "bg-slate-800/30 hover:bg-slate-800/50"
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className={`h-3 w-3 rounded-full bg-gradient-to-r ${device.color}`} />
-                <span className="font-medium">{device.name}</span>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-bold">{device.value}%</p>
-                <p className="text-xs text-slate-400">{device.sessions.toLocaleString()}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function TrafficTrend({ timeRange }: any) {
-  const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
-  
-  const generateData = () => {
-    const points = timeRange === "24h" ? 24 : timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90;
-    return Array.from({ length: points }, (_, i) => ({
-      label: i,
-      value: Math.floor(Math.random() * 5000 + 3000),
-    }));
-  };
-
-  const [data] = useState(generateData());
-  const maxValue = Math.max(...data.map(d => d.value));
-
-  return (
-    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <h3 className="font-semibold">Traffic Trend</h3>
-        <div className="flex gap-2 text-xs">
-          <span className="flex items-center gap-1">
-            <div className="h-2 w-2 rounded-full bg-blue-500" />
-            Visitors
+        <div className="flex items-center gap-3 text-xs font-semibold text-sub">
+          <span className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-indigo-500" />
+            Conversion Volume
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#2A2E3B]" />
+            Drop-off Capacity
           </span>
         </div>
       </div>
-      <div className="relative h-64">
-        <svg className="h-full w-full" viewBox="0 0 800 200" preserveAspectRatio="none">
+
+      {/* Structured Clean Table List of Stages */}
+      <div className="space-y-4">
+        {funnelStages.map((stage, idx) => (
+          <div key={idx} className="p-3.5 rounded-xl border border-subtle bg-surface hover:bg-white/[0.02] transition-colors">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-black font-mono px-2 py-0.5 rounded bg-black/20 text-indigo-400 border border-indigo-500/20">
+                  {stage.stage}
+                </span>
+                <span className="text-xs font-bold text-main tracking-tight">
+                  {stage.name}
+                </span>
+                <span className="text-[10px] uppercase font-bold text-muted bg-[#232631] px-2 py-0.5 rounded">
+                  {stage.rate}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-4 text-xs font-mono">
+                <span className="font-bold text-main">
+                  {stage.visitors.toLocaleString()} <span className="text-[11px] font-normal text-muted">users</span>
+                </span>
+                <span className="font-black text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
+                  {stage.conversion.toFixed(1)}%
+                </span>
+                {stage.drop > 0 && (
+                  <span className="text-[11px] font-bold text-rose-400">
+                    -{stage.drop.toFixed(1)}% drop
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Precision Dual-Layer Progress Meter (No oversized chunky blocks) */}
+            <div className="w-full bg-[#14151A] rounded-full h-2 overflow-hidden flex">
+              <div
+                className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
+                style={{ width: `${stage.conversion}%` }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------
+// 3. Traffic Trend Area Chart
+// ----------------------------------------------------------------------
+function TrafficTrend({ timeRange }: { timeRange: string }) {
+  const points = [
+    { label: "00h", value: 3400 },
+    { label: "03h", value: 2800 },
+    { label: "06h", value: 4100 },
+    { label: "09h", value: 7800 },
+    { label: "12h", value: 9600 },
+    { label: "15h", value: 10400 },
+    { label: "18h", value: 8900 },
+    { label: "21h", value: 6200 },
+  ];
+  const maxValue = 11000;
+
+  return (
+    <div className="panel p-6 h-full flex flex-col justify-between">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-base font-bold text-main tracking-tight">
+            Traffic Volume Telemetry
+          </h2>
+          <p className="text-xs text-sub">Continuous session velocity and user throughput</p>
+        </div>
+        <span className="text-xs font-mono font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20">
+          Peak: 10,400 req/hr
+        </span>
+      </div>
+
+      <div className="relative h-56 w-full pt-4">
+        <svg className="h-full w-full overflow-visible" viewBox="0 0 800 200" preserveAspectRatio="none">
           <defs>
-            <linearGradient id="trendGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+            <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#6366F1" stopOpacity="0.35" />
+              <stop offset="100%" stopColor="#6366F1" stopOpacity="0.0" />
             </linearGradient>
           </defs>
-          
-          {/* Area */}
+
+          {/* Area Fill */}
           <path
-            d={`M 0 ${200 - (data[0].value / maxValue) * 180} ${data.map((d, i) => 
-              `L ${(i / (data.length - 1)) * 800} ${200 - (d.value / maxValue) * 180}`
-            ).join(" ")} L 800 200 L 0 200 Z`}
-            fill="url(#trendGradient)"
+            d={`M 0 ${200 - (points[0].value / maxValue) * 180} ${points
+              .map((d, i) => `L ${(i / (points.length - 1)) * 800} ${200 - (d.value / maxValue) * 180}`)
+              .join(" ")} L 800 200 L 0 200 Z`}
+            fill="url(#areaGradient)"
           />
-          
-          {/* Line */}
+
+          {/* Line Stroke */}
           <path
-            d={`M 0 ${200 - (data[0].value / maxValue) * 180} ${data.map((d, i) => 
-              `L ${(i / (data.length - 1)) * 800} ${200 - (d.value / maxValue) * 180}`
-            ).join(" ")}`}
+            d={`M 0 ${200 - (points[0].value / maxValue) * 180} ${points
+              .map((d, i) => `L ${(i / (points.length - 1)) * 800} ${200 - (d.value / maxValue) * 180}`)
+              .join(" ")}`}
             fill="none"
-            stroke="#3b82f6"
-            strokeWidth="3"
+            stroke="#6366F1"
+            strokeWidth="2.5"
             strokeLinecap="round"
           />
-          
-          {/* Points */}
-          {data.map((d, i) => (
+
+          {/* Data Points */}
+          {points.map((d, i) => (
             <circle
               key={i}
-              cx={(i / (data.length - 1)) * 800}
+              cx={(i / (points.length - 1)) * 800}
               cy={200 - (d.value / maxValue) * 180}
-              r={hoveredPoint === i ? "6" : "4"}
-              fill="#3b82f6"
-              stroke="#181A20"
+              r="4"
+              fill="#6366F1"
+              stroke="#131418"
               strokeWidth="2"
-              className="cursor-pointer transition-all"
-              onMouseEnter={() => setHoveredPoint(i)}
-              onMouseLeave={() => setHoveredPoint(null)}
             />
           ))}
         </svg>
-        
-        {hoveredPoint !== null && (
-          <div
-            className="absolute rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm shadow-xl"
-            style={{
-              left: `${(hoveredPoint / (data.length - 1)) * 100}%`,
-              top: `${100 - (data[hoveredPoint].value / maxValue) * 90}%`,
-              transform: "translate(-50%, -100%)",
-              marginTop: "-10px",
-            }}
-          >
-            <p className="font-medium">{data[hoveredPoint].value.toLocaleString()} visitors</p>
-            <p className="text-xs text-slate-400">Point {hoveredPoint + 1}</p>
-          </div>
-        )}
+
+        {/* X-Axis Labels */}
+        <div className="flex justify-between text-[11px] font-mono text-muted mt-3">
+          {points.map((p, i) => (
+            <span key={i}>{p.label}</span>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
+// ----------------------------------------------------------------------
+// 4. Device Breakdown Component
+// ----------------------------------------------------------------------
+function DeviceBreakdown() {
+  const devices = [
+    { name: "Desktop Workstation", share: 52.4, sessions: "65,700", color: "bg-indigo-500" },
+    { name: "Mobile Responsive", share: 34.8, sessions: "43,600", color: "bg-purple-500" },
+    { name: "Tablet Interface", share: 12.8, sessions: "16,100", color: "bg-cyan-500" },
+  ];
+
+  return (
+    <div className="panel p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-base font-bold text-main tracking-tight">Client Device Ratio</h2>
+          <p className="text-xs text-sub">Client browser runtime distribution</p>
+        </div>
+        <span className="text-xs font-mono font-bold text-sub">125.4k Total</span>
+      </div>
+
+      <div className="space-y-4 pt-2">
+        {devices.map((device, i) => (
+          <div key={i} className="p-3 rounded-lg border border-subtle bg-surface">
+            <div className="flex justify-between items-center text-xs mb-2">
+              <span className="font-bold text-main">{device.name}</span>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-sub">{device.sessions}</span>
+                <span className="font-black text-main font-mono">{device.share}%</span>
+              </div>
+            </div>
+            <div className="w-full bg-[#14151A] rounded-full h-1.5 overflow-hidden">
+              <div
+                className={`h-full ${device.color} rounded-full`}
+                style={{ width: `${device.share}%` }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------
+// 5. Executive Insights (No Emojis)
+// ----------------------------------------------------------------------
+function ExecutiveInsights() {
+  const insights = [
+    {
+      label: "COHORT RETENTION",
+      title: "Elevated High-Value Engagement",
+      description: "Cluster #1 (High Value) shows 3.8x higher session depth and consistent weekly recurring interaction.",
+      impact: "High Impact",
+      impactColor: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+    },
+    {
+      label: "CONVERSION VELOCITY",
+      title: "Catalog to Consideration Transition",
+      description: "Drop-off occurs primarily between search and checkout initiation. Recommended strategy: inline cart prompts.",
+      impact: "Optimization Target",
+      impactColor: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+    },
+    {
+      label: "INFRASTRUCTURE TELEMETRY",
+      title: "Model Inference Latency Baseline",
+      description: "Average feature normalization and centroid prediction executing under 3.5ms across all API instances.",
+      impact: "System Healthy",
+      impactColor: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
+    },
+  ];
+
+  return (
+    <div className="panel p-6">
+      <div className="mb-4">
+        <h2 className="text-base font-bold text-main tracking-tight">
+          Executive AI Observations & Strategic Insights
+        </h2>
+        <p className="text-xs text-sub">
+          Synthesized pattern recognitions and algorithmic pipeline health metrics
+        </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        {insights.map((item, idx) => (
+          <div key={idx} className="p-4 rounded-xl border border-subtle bg-surface flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-muted font-mono">
+                  {item.label}
+                </span>
+                <span className={`text-[10px] font-black px-2 py-0.5 rounded border ${item.impactColor}`}>
+                  {item.impact}
+                </span>
+              </div>
+              <h3 className="text-xs font-bold text-main mb-1.5">{item.title}</h3>
+              <p className="text-[11px] text-sub leading-relaxed">{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------
+// 6. Top Visited Pages
+// ----------------------------------------------------------------------
+function TopPages() {
+  const pages = [
+    { path: "/dashboard", views: 48200, avgTime: "3m 42s", bounce: "28.4%", status: "Active" },
+    { path: "/analytics", views: 32100, avgTime: "4m 18s", bounce: "24.1%", status: "Active" },
+    { path: "/customers", views: 24500, avgTime: "2m 55s", bounce: "35.2%", status: "Active" },
+    { path: "/segments", views: 18400, avgTime: "3m 12s", bounce: "22.8%", status: "Active" },
+  ];
+
+  return (
+    <div className="panel p-6">
+      <h2 className="text-base font-bold text-main tracking-tight mb-4">
+        Top Traversed Application Endpoints
+      </h2>
+      <div className="space-y-2.5">
+        {pages.map((page, idx) => (
+          <div key={idx} className="p-3 rounded-lg border border-subtle bg-surface flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2.5">
+              <span className="font-mono text-[11px] text-muted">0{idx + 1}</span>
+              <span className="font-mono font-bold text-main">{page.path}</span>
+            </div>
+            <div className="flex items-center gap-4 text-sub font-mono">
+              <span>{page.views.toLocaleString()} visits</span>
+              <span className="text-muted">{page.avgTime}</span>
+              <span className="text-indigo-400 font-bold">{page.bounce}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------
+// 7. Traffic Sources
+// ----------------------------------------------------------------------
 function TrafficSources() {
   const sources = [
-    { name: "Direct", visitors: 45200, percentage: 38, color: "bg-blue-500" },
-    { name: "Organic Search", visitors: 32800, percentage: 28, color: "bg-purple-500" },
-    { name: "Social Media", visitors: 24100, percentage: 20, color: "bg-pink-500" },
-    { name: "Referral", visitors: 16500, percentage: 14, color: "bg-emerald-500" },
+    { name: "Direct Application API", share: 44.5, count: "55,800", color: "bg-indigo-500" },
+    { name: "Internal Navigation / Portal", share: 32.1, count: "40,250", color: "bg-purple-500" },
+    { name: "External Webhook Integration", share: 15.2, count: "19,050", color: "bg-cyan-500" },
+    { name: "Batch Job Uploads", share: 8.2, count: "10,300", color: "bg-emerald-500" },
   ];
 
   return (
-    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
-      <h3 className="mb-6 font-semibold">Traffic Sources</h3>
-      <div className="space-y-4">
-        {sources.map((source, i) => (
-          <div key={i} className="group cursor-pointer">
-            <div className="mb-2 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className={`h-2 w-2 rounded-full ${source.color}`} />
-                <span className="text-sm font-medium">{source.name}</span>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-bold">{source.percentage}%</p>
-                <p className="text-xs text-slate-400">{source.visitors.toLocaleString()}</p>
-              </div>
+    <div className="panel p-6">
+      <h2 className="text-base font-bold text-main tracking-tight mb-4">
+        Inbound Traffic Ingestion Channels
+      </h2>
+      <div className="space-y-3.5">
+        {sources.map((src, idx) => (
+          <div key={idx} className="p-3 rounded-lg border border-subtle bg-surface">
+            <div className="flex justify-between items-center text-xs mb-1.5">
+              <span className="font-bold text-main">{src.name}</span>
+              <span className="font-mono font-bold text-sub">{src.share}%</span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-slate-800">
-              <div
-                className={`h-full ${source.color} transition-all duration-500 group-hover:opacity-80`}
-                style={{ width: `${source.percentage}%` }}
-              />
+            <div className="w-full bg-[#14151A] rounded-full h-1.5 overflow-hidden">
+              <div className={`h-full ${src.color} rounded-full`} style={{ width: `${src.share}%` }} />
             </div>
           </div>
         ))}
@@ -510,86 +586,32 @@ function TrafficSources() {
   );
 }
 
-function TopPages() {
-  const [sortBy, setSortBy] = useState<"views" | "time">("views");
-  
-  const pages = [
-    { path: "/dashboard", views: 12400, time: "3m 24s", bounce: 32 },
-    { path: "/analytics", views: 8200, time: "4m 12s", bounce: 28 },
-    { path: "/customers", views: 6800, time: "2m 45s", bounce: 45 },
-    { path: "/reports", views: 5100, time: "3m 56s", bounce: 38 },
-    { path: "/segments", views: 4200, time: "5m 18s", bounce: 25 },
-  ];
-
-  const sorted = [...pages].sort((a, b) => 
-    sortBy === "views" ? b.views - a.views : parseInt(b.time) - parseInt(a.time)
-  );
-
-  return (
-    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <h3 className="font-semibold">Top Pages</h3>
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value as any)}
-          className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-1 text-sm"
-        >
-          <option value="views">By Views</option>
-          <option value="time">By Time</option>
-        </select>
-      </div>
-      <div className="space-y-2">
-        {sorted.map((page, i) => (
-          <div
-            key={i}
-            className="flex items-center justify-between rounded-lg bg-slate-800/30 p-3 hover:bg-slate-800/50 transition-colors"
-          >
-            <div className="flex-1">
-              <p className="font-mono text-sm font-medium">{page.path}</p>
-              <div className="mt-1 flex gap-4 text-xs text-slate-400">
-                <span>{page.views.toLocaleString()} views</span>
-                <span>{page.time} avg</span>
-                <span>{page.bounce}% bounce</span>
-              </div>
-            </div>
-            <div className="text-2xl font-bold text-slate-600">#{i + 1}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
+// ----------------------------------------------------------------------
+// 8. Geographic Distribution
+// ----------------------------------------------------------------------
 function GeographicDistribution() {
-  const countries = [
-    { name: "United States", code: "US", users: 45200, percentage: 38 },
-    { name: "United Kingdom", code: "UK", users: 28100, percentage: 24 },
-    { name: "Germany", code: "DE", users: 18500, percentage: 16 },
-    { name: "France", code: "FR", users: 14200, percentage: 12 },
-    { name: "Canada", code: "CA", users: 11800, percentage: 10 },
+  const regions = [
+    { region: "North America (US/CA)", share: 48.5, code: "NA" },
+    { region: "Western Europe (UK/DE/FR)", share: 29.2, code: "EU" },
+    { region: "Asia Pacific (SG/JP/AU)", share: 15.3, code: "APAC" },
+    { region: "Latin America (BR/MX)", share: 7.0, code: "LATAM" },
   ];
 
   return (
-    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
-      <h3 className="mb-6 font-semibold">Geographic Distribution</h3>
+    <div className="panel p-6">
+      <h2 className="text-base font-bold text-main tracking-tight mb-4">
+        Regional Ingestion Demographics
+      </h2>
       <div className="space-y-3">
-        {countries.map((country, i) => (
-          <div key={i} className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-800 text-xs font-bold">
-              {country.code}
+        {regions.map((r, i) => (
+          <div key={i} className="p-3 rounded-lg border border-subtle bg-surface flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2.5">
+              <span className="text-[10px] font-black font-mono px-2 py-0.5 rounded bg-black/20 text-sub border border-subtle">
+                {r.code}
+              </span>
+              <span className="font-bold text-main">{r.region}</span>
             </div>
-            <div className="flex-1">
-              <div className="mb-1 flex justify-between text-sm">
-                <span>{country.name}</span>
-                <span className="text-slate-400">{country.users.toLocaleString()}</span>
-              </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
-                <div
-                  className="h-full bg-gradient-to-r from-indigo-600 to-purple-600"
-                  style={{ width: `${country.percentage}%` }}
-                />
-              </div>
-            </div>
+            <span className="font-mono font-bold text-indigo-400">{r.share}%</span>
           </div>
         ))}
       </div>
@@ -597,142 +619,37 @@ function GeographicDistribution() {
   );
 }
 
-function ActivityHeatmap() {
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const hours = Array.from({ length: 24 }, (_, i) => i);
+// ----------------------------------------------------------------------
+// 9. Realtime System Stream (No Emojis)
+// ----------------------------------------------------------------------
+function SystemActivityStream() {
+  const logs = [
+    { code: "INFO", message: "Inference batch executed (10 records)", time: "00:02" },
+    { code: "AUTH", message: "Session token refreshed successfully", time: "00:14" },
+    { code: "SYNC", message: "Centroid report verified with scikit-learn", time: "00:35" },
+    { code: "METR", message: "Latency benchmark 3.2ms recorded", time: "01:02" },
+  ];
 
   return (
-    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <h3 className="font-semibold">Activity Heatmap</h3>
-        <div className="flex items-center gap-2 text-xs text-slate-400">
-          <span>Less</span>
-          <div className="flex gap-1">
-            {[0.2, 0.4, 0.6, 0.8, 1].map((opacity, i) => (
-              <div
-                key={i}
-                className="h-3 w-3 rounded bg-blue-500"
-                style={{ opacity }}
-              />
-            ))}
-          </div>
-          <span>More</span>
-        </div>
+    <div className="panel p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-base font-bold text-main tracking-tight">
+          System Audit & Event Stream
+        </h2>
+        <span className="flex items-center gap-1.5 text-[11px] font-mono text-emerald-400">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          ONLINE
+        </span>
       </div>
-      <div className="overflow-x-auto">
-        <div className="inline-flex flex-col gap-1">
-          {days.map((day, dayIndex) => (
-            <div key={dayIndex} className="flex items-center gap-1">
-              <div className="w-12 text-xs text-slate-400">{day}</div>
-              <div className="flex gap-1">
-                {hours.map((hour) => {
-                  const intensity = Math.random();
-                  return (
-                    <div
-                      key={hour}
-                      onMouseEnter={() => setSelectedDay(dayIndex * 24 + hour)}
-                      onMouseLeave={() => setSelectedDay(null)}
-                      className={`h-4 w-4 rounded cursor-pointer transition-all ${
-                        intensity > 0.7
-                          ? "bg-blue-500"
-                          : intensity > 0.5
-                          ? "bg-blue-500/70"
-                          : intensity > 0.3
-                          ? "bg-blue-500/40"
-                          : "bg-slate-800"
-                      } ${selectedDay === dayIndex * 24 + hour ? "ring-2 ring-blue-400" : ""}`}
-                      title={`${day} ${hour}:00 - ${Math.floor(intensity * 1000)} events`}
-                    />
-                  );
-                })}
-              </div>
+
+      <div className="space-y-2">
+        {logs.map((log, i) => (
+          <div key={i} className="p-2.5 rounded-lg border border-subtle bg-surface flex items-center justify-between text-xs font-mono">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black text-indigo-400">{log.code}</span>
+              <span className="text-sub truncate max-w-xs">{log.message}</span>
             </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function RealtimeActivity() {
-  const [activities, setActivities] = useState([
-    { user: "User #1234", action: "Viewed dashboard", time: "2s ago", type: "view" },
-    { user: "User #5678", action: "Made prediction", time: "5s ago", type: "predict" },
-    { user: "User #9012", action: "Downloaded report", time: "12s ago", type: "download" },
-    { user: "User #3456", action: "Updated segment", time: "18s ago", type: "update" },
-  ]);
-  const [filter, setFilter] = useState<string>("all");
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const actions = ["Viewed dashboard", "Made prediction", "Downloaded report", "Updated segment", "Viewed analytics"];
-      const types = ["view", "predict", "download", "update", "view"];
-      const newActivity = {
-        user: `User #${Math.floor(Math.random() * 9000 + 1000)}`,
-        action: actions[Math.floor(Math.random() * actions.length)],
-        time: "Just now",
-        type: types[Math.floor(Math.random() * types.length)],
-      };
-      setActivities((prev) => [newActivity, ...prev.slice(0, 9)]);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const filteredActivities = filter === "all" 
-    ? activities 
-    : activities.filter(a => a.type === filter);
-
-  return (
-    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <h3 className="font-semibold">Real-time Activity</h3>
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-            <span className="text-sm text-emerald-400">Live</span>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          {[
-            { label: "All", value: "all" },
-            { label: "Views", value: "view" },
-            { label: "Predictions", value: "predict" },
-            { label: "Downloads", value: "download" },
-          ].map((f) => (
-            <button
-              key={f.value}
-              onClick={() => setFilter(f.value)}
-              className={`rounded-lg px-3 py-1 text-xs font-medium transition-all ${
-                filter === f.value
-                  ? "bg-blue-600 text-white"
-                  : "bg-slate-800/50 text-slate-400 hover:bg-slate-800"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-      </div>
-      <div className="space-y-2 max-h-96 overflow-y-auto">
-        {filteredActivities.map((activity, i) => (
-          <div
-            key={i}
-            className="flex items-center gap-3 rounded-lg bg-slate-800/30 p-3 animate-fadeIn"
-          >
-            <div className={`h-8 w-8 rounded-full ${
-              activity.type === "predict" ? "bg-gradient-to-br from-purple-500 to-pink-600" :
-              activity.type === "download" ? "bg-gradient-to-br from-emerald-500 to-teal-600" :
-              activity.type === "update" ? "bg-gradient-to-br from-orange-500 to-red-600" :
-              "bg-gradient-to-br from-indigo-500 to-purple-600"
-            }`} />
-            <div className="flex-1">
-              <p className="text-sm font-medium">{activity.user}</p>
-              <p className="text-xs text-slate-400">{activity.action}</p>
-            </div>
-            <span className="text-xs text-slate-500">{activity.time}</span>
+            <span className="text-muted text-[10px]">{log.time}</span>
           </div>
         ))}
       </div>

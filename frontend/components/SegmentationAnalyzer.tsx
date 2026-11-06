@@ -38,7 +38,6 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
       setPrediction(result);
       onPredict(result);
 
-      // Save to prediction history in localStorage
       if (typeof window !== "undefined") {
         try {
           const stored = localStorage.getItem("prediction_history");
@@ -53,7 +52,7 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
           });
           localStorage.setItem("prediction_history", JSON.stringify(validHistory.slice(0, 10)));
         } catch {
-          // localStorage failure fallback
+          // fallback
         }
       }
     } catch {
@@ -63,47 +62,47 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
     }
   };
 
-  const segmentBadges: Record<number, { bg: string; border: string; text: string; icon: string }> = {
-    0: { bg: "bg-amber-500/10", border: "border-amber-500/30", text: "text-amber-400", icon: "💰" },
-    1: { bg: "bg-indigo-500/10", border: "border-indigo-500/30", text: "text-indigo-400", icon: "👑" },
-    2: { bg: "bg-cyan-500/10", border: "border-cyan-500/30", text: "text-cyan-400", icon: "🎯" },
-    3: { bg: "bg-emerald-500/10", border: "border-emerald-500/30", text: "text-emerald-400", icon: "👥" },
-    4: { bg: "bg-rose-500/10", border: "border-rose-500/30", text: "text-rose-400", icon: "🌱" },
+  const segmentBadges: Record<number, { bg: string; border: string; text: string; code: string }> = {
+    0: { bg: "bg-amber-500/10", border: "border-amber-500/30", text: "text-amber-400", code: "C0" },
+    1: { bg: "bg-indigo-500/10", border: "border-indigo-500/30", text: "text-indigo-400", code: "C1" },
+    2: { bg: "bg-cyan-500/10", border: "border-cyan-500/30", text: "text-cyan-400", code: "C2" },
+    3: { bg: "bg-emerald-500/10", border: "border-emerald-500/30", text: "text-emerald-400", code: "C3" },
+    4: { bg: "bg-rose-500/10", border: "border-rose-500/30", text: "text-rose-400", code: "C4" },
   };
 
   return (
     <div className="panel p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-5">
         <div>
-          <h2 className="text-lg font-bold tracking-tight text-white dark:text-[#ECEEF2]">
-            AI Customer Segment Analyzer
+          <h2 className="text-base font-bold tracking-tight text-main">
+            Customer Segment Classifier
           </h2>
-          <p className="mt-0.5 text-xs text-[#848CA2]">
-            Adjust behavioral and demographic dimensions for real-time model inference
+          <p className="mt-0.5 text-xs text-sub">
+            Adjust behavioral dimensions for real-time model inference
           </p>
         </div>
-        <div className="flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 border border-emerald-500/25 text-emerald-400">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Inference Ready</span>
+        <div className="flex items-center gap-2 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 border border-emerald-500/25 text-emerald-400">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>Pipeline Online</span>
         </div>
       </div>
 
       {error && (
-        <div className="mb-6 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3.5 text-xs font-semibold text-rose-300">
+        <div className="mb-5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-300">
           {error}
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
         {/* Input Parameters Controls */}
-        <div className="space-y-5 bg-[#181A20] dark:bg-[#181A20] p-5 rounded-xl border border-white/[0.06]">
+        <div className="space-y-4 p-4 rounded-xl border border-subtle bg-surface">
           {/* Age Slider */}
           <div>
-            <div className="flex justify-between items-center mb-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#848CA2]">
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-sub">
                 Customer Age
               </label>
-              <span className="text-xs font-black px-2 py-0.5 rounded-md bg-[#22242C] text-indigo-400 border border-indigo-500/20">
+              <span className="text-xs font-black px-2 py-0.5 rounded bg-black/20 text-indigo-400 border border-indigo-500/20 font-mono">
                 {age} yrs
               </span>
             </div>
@@ -113,21 +112,21 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               max="70"
               value={age}
               onChange={(e) => setAge(Number(e.target.value))}
-              className="w-full h-1.5 bg-[#262934] rounded-lg appearance-none cursor-pointer accent-indigo-500"
+              className="w-full h-1.5 bg-[#14151A] rounded-lg appearance-none cursor-pointer accent-indigo-500"
             />
-            <div className="flex justify-between text-[10px] text-[#5F667A] mt-1 font-semibold">
-              <span>18 yrs</span>
-              <span>70 yrs</span>
+            <div className="flex justify-between text-[10px] text-muted mt-1 font-mono">
+              <span>18</span>
+              <span>70</span>
             </div>
           </div>
 
           {/* Income Slider */}
           <div>
-            <div className="flex justify-between items-center mb-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#848CA2]">
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-sub">
                 Annual Income
               </label>
-              <span className="text-xs font-black px-2 py-0.5 rounded-md bg-[#22242C] text-emerald-400 border border-emerald-500/20">
+              <span className="text-xs font-black px-2 py-0.5 rounded bg-black/20 text-emerald-400 border border-emerald-500/20 font-mono">
                 ${income}k
               </span>
             </div>
@@ -137,9 +136,9 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               max="140"
               value={income}
               onChange={(e) => setIncome(Number(e.target.value))}
-              className="w-full h-1.5 bg-[#262934] rounded-lg appearance-none cursor-pointer accent-emerald-500"
+              className="w-full h-1.5 bg-[#14151A] rounded-lg appearance-none cursor-pointer accent-emerald-500"
             />
-            <div className="flex justify-between text-[10px] text-[#5F667A] mt-1 font-semibold">
+            <div className="flex justify-between text-[10px] text-muted mt-1 font-mono">
               <span>$15k</span>
               <span>$140k</span>
             </div>
@@ -147,11 +146,11 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
 
           {/* Spending Score Slider */}
           <div>
-            <div className="flex justify-between items-center mb-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#848CA2]">
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-sub">
                 Spending Score
               </label>
-              <span className="text-xs font-black px-2 py-0.5 rounded-md bg-[#22242C] text-purple-400 border border-purple-500/20">
+              <span className="text-xs font-black px-2 py-0.5 rounded bg-black/20 text-purple-400 border border-purple-500/20 font-mono">
                 {spendingScore} / 100
               </span>
             </div>
@@ -161,9 +160,9 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               max="100"
               value={spendingScore}
               onChange={(e) => setSpendingScore(Number(e.target.value))}
-              className="w-full h-1.5 bg-[#262934] rounded-lg appearance-none cursor-pointer accent-purple-500"
+              className="w-full h-1.5 bg-[#14151A] rounded-lg appearance-none cursor-pointer accent-purple-500"
             />
-            <div className="flex justify-between text-[10px] text-[#5F667A] mt-1 font-semibold">
+            <div className="flex justify-between text-[10px] text-muted mt-1 font-mono">
               <span>Conservative (1)</span>
               <span>Generous (100)</span>
             </div>
@@ -172,50 +171,50 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
           <button
             onClick={handlePredict}
             disabled={loading}
-            className="w-full mt-2 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 py-3 text-xs font-black uppercase tracking-wider text-white shadow-md shadow-indigo-600/25 transition-all hover:shadow-lg hover:shadow-indigo-600/40 hover:-translate-y-0.5 disabled:opacity-50"
+            className="w-full mt-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-indigo-600/20 transition-all hover:opacity-90 disabled:opacity-50"
           >
-            {loading ? "Analyzing..." : "🔮 Execute Prediction"}
+            {loading ? "Analyzing Dimensions..." : "Execute Segment Prediction"}
           </button>
         </div>
 
         {/* Prediction Results Panel */}
-        <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-5 min-h-[280px] flex flex-col justify-center">
+        <div className="rounded-xl border border-subtle bg-surface p-4 min-h-[250px] flex flex-col justify-center">
           {prediction ? (
-            <div className="space-y-4 animate-fadeIn">
+            <div className="space-y-3.5 animate-fadeIn">
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#848CA2]">
-                    Predicted Segment
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted">
+                    Predicted Classification
                   </span>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-2xl">
-                      {segmentBadges[prediction.cluster_id]?.icon || "🎯"}
+                    <span className="text-xs font-mono font-black px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                      {segmentBadges[prediction.cluster_id]?.code || "C0"}
                     </span>
-                    <h3 className="text-xl font-black text-white dark:text-[#ECEEF2] tracking-tight">
+                    <h3 className="text-lg font-black text-main tracking-tight">
                       {prediction.segment_name}
                     </h3>
                   </div>
                 </div>
-                <span className="px-2.5 py-1 rounded-full text-xs font-black bg-[#22242C] text-[#CAD1DE] border border-white/[0.08]">
+                <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold border border-subtle text-sub">
                   Cluster #{prediction.cluster_id}
                 </span>
               </div>
 
-              <p className="text-xs text-[#848CA2] leading-relaxed">
+              <p className="text-xs text-sub leading-relaxed">
                 {prediction.segment_description}
               </p>
 
               {/* Confidence Percentage Bar */}
-              <div className="space-y-1.5 p-3 rounded-lg bg-[#20222A] border border-white/[0.05]">
+              <div className="space-y-1.5 p-3 rounded-lg border border-subtle bg-black/15">
                 <div className="flex justify-between text-xs font-bold">
-                  <span className="text-[#848CA2]">Confidence Score</span>
-                  <span className="text-emerald-400 font-black">
+                  <span className="text-sub">Confidence Metric</span>
+                  <span className="text-emerald-400 font-mono font-black">
                     {typeof prediction.confidence === "number"
                       ? `${(prediction.confidence * 100).toFixed(1)}%`
                       : String(prediction.confidence)}
                   </span>
                 </div>
-                <div className="w-full bg-[#141519] rounded-full h-1.5 overflow-hidden">
+                <div className="w-full bg-[#14151A] rounded-full h-1.5 overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500"
                     style={{
@@ -230,23 +229,23 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               </div>
 
               {/* Recommended Action Strategy */}
-              <div className="rounded-lg border border-indigo-500/20 bg-indigo-500/10 p-3.5">
+              <div className="rounded-lg border border-indigo-500/20 bg-indigo-500/10 p-3">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-indigo-400 mb-1">
-                  Target Strategy
+                  Strategic Playbook
                 </p>
-                <p className="text-xs font-medium text-white/90 leading-snug">
+                <p className="text-xs font-medium text-main leading-snug">
                   {prediction.marketing_strategy}
                 </p>
               </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center text-center p-6 text-[#5F667A]">
-              <div className="w-14 h-14 rounded-2xl bg-[#20222A] flex items-center justify-center text-2xl mb-3 border border-white/[0.05]">
-                🎯
-              </div>
-              <h4 className="text-sm font-bold text-[#CAD1DE] mb-1">Awaiting Parameters</h4>
-              <p className="text-xs max-w-xs text-[#848CA2]">
-                Configure customer Age, Income, and Spending score to generate real-time AI classification.
+            <div className="flex flex-col items-center justify-center text-center p-6 text-muted">
+              <svg className="w-8 h-8 text-muted mb-2 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h4 className="text-xs font-bold text-main mb-1">Awaiting Telemetry Parameters</h4>
+              <p className="text-[11px] max-w-xs text-sub">
+                Adjust Age, Income, and Spending score to trigger realtime K-Means classification.
               </p>
             </div>
           )}

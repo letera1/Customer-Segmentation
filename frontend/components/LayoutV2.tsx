@@ -13,13 +13,13 @@ type ThemeMode = "dark" | "light";
 const THEME_KEY = "ui_theme";
 const BRIGHTNESS_KEY = "ui_brightness";
 
-// Navigation definition with modern SVG icon components
+// Navigation definition with clean vector SVG iconography
 const navigation = [
   {
     name: "Dashboard",
     href: "/dashboard",
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
       </svg>
     ),
@@ -28,7 +28,7 @@ const navigation = [
     name: "Analytics",
     href: "/analytics",
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
       </svg>
     ),
@@ -37,7 +37,7 @@ const navigation = [
     name: "Customers",
     href: "/customers",
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
       </svg>
     ),
@@ -46,7 +46,7 @@ const navigation = [
     name: "Segments",
     href: "/segments",
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
       </svg>
@@ -56,7 +56,7 @@ const navigation = [
     name: "Predictions",
     href: "/predictions",
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
@@ -65,7 +65,7 @@ const navigation = [
     name: "Reports",
     href: "/reports",
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
     ),
@@ -74,7 +74,7 @@ const navigation = [
     name: "Settings",
     href: "/settings",
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
@@ -132,30 +132,30 @@ export default function LayoutV2({ children }: LayoutProps) {
     () => ({
       shell: isLight ? "bg-[#ECEEF2] text-[#171B23]" : "bg-[#131418] text-[#ECEEF2]",
       sidebar: isLight
-        ? "border-[#D9DDE5] bg-[#F4F5F8]"
-        : "border-[#272A35] bg-[#181A20]",
-      logoBorder: isLight ? "border-[#D9DDE5]" : "border-[#272A35]",
+        ? "border-[#D8DCE4] bg-[#F4F5F8]"
+        : "border-white/[0.07] bg-[#181A20]",
+      logoBorder: isLight ? "border-[#D8DCE4]" : "border-white/[0.07]",
       navInactive: isLight
-        ? "text-[#5E6573] hover:bg-[#EAECEF] hover:text-[#171B23]"
-        : "text-[#828B9F] hover:bg-[#20222A] hover:text-[#ECEEF2]",
-      bottomBorder: isLight ? "border-[#D9DDE5]" : "border-[#272A35]",
+        ? "text-[#4F5666] hover:bg-[#EAECEF] hover:text-[#171B23]"
+        : "text-[#9AA2B2] hover:bg-[#20222A] hover:text-[#ECEEF2]",
+      bottomBorder: isLight ? "border-[#D8DCE4]" : "border-white/[0.07]",
       sidebarButton: isLight
-        ? "bg-[#EAECEF] text-[#5E6573] hover:bg-[#DFE2E8] hover:text-[#171B23]"
-        : "bg-[#20222A] text-[#828B9F] hover:bg-[#282B36] hover:text-white",
+        ? "bg-[#EAECEF] text-[#4F5666] hover:bg-[#DFE2E8] hover:text-[#171B23]"
+        : "bg-[#20222A] text-[#9AA2B2] hover:bg-[#282B36] hover:text-[#ECEEF2]",
       header: isLight
-        ? "border-[#D9DDE5] bg-[#F4F5F8]/85"
-        : "border-[#272A35] bg-[#181A20]/80",
+        ? "border-[#D8DCE4] bg-[#F4F5F8]/90"
+        : "border-white/[0.07] bg-[#181A20]/80",
       title: isLight ? "text-[#171B23]" : "text-[#ECEEF2]",
       search: isLight
-        ? "border-[#D9DDE5] bg-[#FFFFFF] text-[#171B23] placeholder-[#8F96A3] focus:border-indigo-500/70 focus:ring-indigo-500/10"
-        : "border-[#2E323E] bg-[#20222A] text-[#ECEEF2] placeholder-[#5F667A] focus:border-indigo-500/70 focus:ring-indigo-500/20",
+        ? "border-[#D8DCE4] bg-[#FFFFFF] text-[#171B23] placeholder-[#7A8293] focus:border-indigo-500/70"
+        : "border-white/[0.08] bg-[#20222A] text-[#ECEEF2] placeholder-[#646B7C] focus:border-indigo-500/70",
       subtleButton: isLight
-        ? "bg-[#EAECEF] text-[#5E6573] hover:bg-[#DFE2E8] hover:text-[#171B23]"
-        : "bg-[#20222A] text-[#828B9F] hover:bg-[#282B36] hover:text-white",
-      profile: isLight ? "bg-[#EAECEF]" : "bg-[#20222A]",
-      profileMeta: isLight ? "text-[#5E6573]" : "text-[#828B9F]",
+        ? "bg-[#EAECEF] text-[#4F5666] hover:bg-[#DFE2E8] hover:text-[#171B23]"
+        : "bg-[#20222A] text-[#9AA2B2] hover:bg-[#282B36] hover:text-[#ECEEF2]",
+      profile: isLight ? "bg-[#EAECEF] border-[#D8DCE4]" : "bg-[#20222A] border-white/[0.07]",
+      profileMeta: isLight ? "text-[#4F5666]" : "text-[#9AA2B2]",
       main: isLight ? "bg-[#ECEEF2]" : "bg-[#131418]",
-      brightnessLabel: isLight ? "text-[#5E6573]" : "text-[#828B9F]",
+      brightnessLabel: isLight ? "text-[#4F5666]" : "text-[#9AA2B2]",
     }),
     [isLight]
   );
@@ -172,34 +172,34 @@ export default function LayoutV2({ children }: LayoutProps) {
         <div className={`flex h-16 items-center justify-between px-5 border-b ${classes.logoBorder}`}>
           {sidebarOpen ? (
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-700 shadow-md shadow-indigo-600/25">
-                <span className="text-xl font-black text-white tracking-wider">S</span>
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-700 shadow-md shadow-indigo-600/20 text-white font-black text-sm">
+                S
               </div>
               <div>
-                <h1 className="text-base font-bold tracking-tight">SegmentAI</h1>
-                <p className={`text-[11px] font-medium tracking-wide uppercase ${classes.profileMeta}`}>
-                  Pro Studio
+                <h1 className="text-sm font-black tracking-tight leading-none text-main">SegmentAI</h1>
+                <p className="text-[10px] font-bold tracking-wider uppercase text-muted mt-1">
+                  Enterprise
                 </p>
               </div>
             </div>
           ) : (
-            <div className="flex h-10 w-10 mx-auto items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-700 shadow-md shadow-indigo-600/25">
-              <span className="text-xl font-black text-white">S</span>
+            <div className="flex h-9 w-9 mx-auto items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-700 shadow-md shadow-indigo-600/20 text-white font-black text-sm">
+              S
             </div>
           )}
         </div>
 
         {/* Links Navigation */}
-        <nav className="flex-1 space-y-1.5 p-3.5 overflow-y-auto">
+        <nav className="flex-1 space-y-1.5 p-3 overflow-y-auto">
           {navigation.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center gap-3.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                className={`flex items-center gap-3 rounded-xl px-3 py-2 text-xs font-bold transition-all duration-200 ${
                   isActive
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-500/20"
+                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-600/20"
                     : classes.navInactive
                 }`}
                 title={!sidebarOpen ? item.name : undefined}
@@ -213,21 +213,22 @@ export default function LayoutV2({ children }: LayoutProps) {
           })}
         </nav>
 
-        {/* Sidebar Toggle Footnote */}
-        <div className={`border-t ${classes.bottomBorder} p-3.5`}>
+        {/* Sidebar Collapse Action */}
+        <div className={`border-t ${classes.bottomBorder} p-3`}>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className={`flex w-full items-center justify-center rounded-xl py-2.5 text-xs font-bold transition-all ${classes.sidebarButton}`}
+            className={`flex w-full items-center justify-center gap-2 rounded-xl py-2 text-[11px] font-bold transition-all ${classes.sidebarButton}`}
             aria-label="Toggle Sidebar Navigation"
           >
-            {sidebarOpen ? (
-              <span className="flex items-center gap-2">
-                <span>◀</span>
-                <span>Collapse</span>
-              </span>
-            ) : (
-              <span>▶</span>
-            )}
+            <svg
+              className={`w-3.5 h-3.5 transition-transform duration-300 ${!sidebarOpen ? "rotate-180" : ""}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+            </svg>
+            {sidebarOpen && <span>Collapse Sidebar</span>}
           </button>
         </div>
       </aside>
@@ -236,37 +237,39 @@ export default function LayoutV2({ children }: LayoutProps) {
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top Header */}
         <header className={`flex h-16 items-center justify-between border-b px-8 backdrop-blur-md z-10 ${classes.header}`}>
-          <div className="flex items-center gap-4">
-            <h2 className={`text-xl font-bold tracking-tight ${classes.title}`}>
+          <div className="flex items-center gap-3">
+            <h2 className="text-base font-extrabold tracking-tight text-main">
               {navigation.find((item) => item.href === pathname)?.name || "Dashboard"}
             </h2>
           </div>
 
-          <div className="flex items-center gap-3.5">
-            {/* Theme Toggle Button */}
+          <div className="flex items-center gap-3">
+            {/* Theme Toggle Button (Clean Vector Icons, No Emojis) */}
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className={`flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-bold transition-all border ${
-                isLight ? "border-[#D9DDE5]" : "border-[#2E323E]"
-              } ${classes.subtleButton}`}
-              aria-label="Toggle Charcoal Dark and Smooth Light theme"
+              className={`flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-bold transition-all border ${classes.subtleButton}`}
+              aria-label="Toggle Theme"
             >
               {theme === "dark" ? (
                 <>
-                  <span>☀️</span>
-                  <span>Light</span>
+                  <svg className="w-3.5 h-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                  <span>Light Mode</span>
                 </>
               ) : (
                 <>
-                  <span>🌙</span>
+                  <svg className="w-3.5 h-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
                   <span>Charcoal</span>
                 </>
               )}
             </button>
 
             {/* Brightness Adjustment Slider */}
-            <div className="hidden items-center gap-2.5 md:flex px-2 py-1">
-              <span className={`text-xs font-semibold ${classes.brightnessLabel}`}>Brightness</span>
+            <div className="hidden items-center gap-2 md:flex px-2 py-1">
+              <span className="text-[11px] font-bold text-sub">Brightness</span>
               <input
                 type="range"
                 min={0.75}
@@ -274,52 +277,48 @@ export default function LayoutV2({ children }: LayoutProps) {
                 step={0.05}
                 value={brightness}
                 onChange={(e) => setBrightness(clampBrightness(Number.parseFloat(e.target.value)))}
-                className="h-1.5 w-20 cursor-pointer accent-indigo-500 rounded-lg bg-gray-600/40"
+                className="h-1.5 w-16 cursor-pointer accent-indigo-500 rounded-lg bg-gray-600/40"
                 aria-label="Adjust interface brightness"
               />
-              <span className={`w-9 text-right text-xs font-bold ${classes.brightnessLabel}`}>
+              <span className="w-8 text-right text-[11px] font-mono font-bold text-sub">
                 {Math.round(brightness * 100)}%
               </span>
             </div>
 
-            {/* Quick Search with shortcut */}
+            {/* Quick Search */}
             <div className="relative hidden lg:block">
               <input
                 type="text"
-                placeholder="Search segments..."
-                className={`h-9 w-60 rounded-xl border px-4 pl-9 pr-10 text-xs font-medium focus:outline-none focus:ring-2 ${classes.search}`}
+                placeholder="Search telemetry..."
+                className={`h-8 w-52 rounded-xl border px-3 pl-8 pr-8 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-indigo-500 ${classes.search}`}
               />
-              <span className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${classes.brightnessLabel}`}>
-                ⌕
-              </span>
-              <span className={`absolute right-2.5 top-1/2 -translate-y-1/2 rounded border px-1.5 py-0.5 text-[10px] font-bold ${
-                isLight ? "border-gray-300 text-gray-500" : "border-gray-700 text-gray-400"
-              }`}>
-                ⌘K
+              <svg className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-sub" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <span className="absolute right-2 top-1/2 -translate-y-1/2 rounded border border-subtle px-1 py-0.2 text-[9px] font-mono font-bold text-sub">
+                /
               </span>
             </div>
 
-            {/* Notification Bell */}
+            {/* Notification Bell (Clean SVG, No Emoji) */}
             <button
-              className={`relative flex h-9 w-9 items-center justify-center rounded-xl transition-all border ${
-                isLight ? "border-[#D9DDE5]" : "border-[#2E323E]"
-              } ${classes.subtleButton}`}
-              aria-label="Notifications"
+              className={`relative flex h-8 w-8 items-center justify-center rounded-xl transition-all border ${classes.subtleButton}`}
+              aria-label="System Notifications"
             >
-              <span className="text-sm">🔔</span>
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-indigo-500 ring-2 ring-[#181A20]"></span>
+              <svg className="w-3.5 h-3.5 text-sub" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-indigo-500" />
             </button>
 
             {/* User Profile Pill */}
-            <div className={`flex items-center gap-2.5 rounded-xl px-3 py-1.5 border ${
-              isLight ? "border-[#D9DDE5]" : "border-[#2E323E]"
-            } ${classes.profile}`}>
-              <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold">
+            <div className={`flex items-center gap-2 rounded-xl px-2.5 py-1 border ${classes.profile}`}>
+              <div className="h-6 w-6 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-[11px] font-bold">
                 A
               </div>
               <div className="hidden sm:block text-left text-xs">
-                <p className="font-bold tracking-tight">Admin</p>
-                <p className={`text-[10px] ${classes.profileMeta}`}>admin@segmentai.com</p>
+                <p className="font-bold text-main leading-tight">Admin</p>
+                <p className="text-[10px] text-muted leading-none">Superuser</p>
               </div>
             </div>
           </div>
