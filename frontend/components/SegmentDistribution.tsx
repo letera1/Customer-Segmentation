@@ -1,56 +1,76 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function SegmentDistribution() {
-  const [segments, setSegments] = useState([
-    { id: 0, name: "Budget Conscious", count: 45, percentage: 22.5, color: "bg-yellow-500" },
-    { id: 1, name: "High Value", count: 38, percentage: 19, color: "bg-purple-500" },
-    { id: 2, name: "Potential Growth", count: 42, percentage: 21, color: "bg-blue-500" },
-    { id: 3, name: "Average", count: 50, percentage: 25, color: "bg-green-500" },
-    { id: 4, name: "Young Savers", count: 25, percentage: 12.5, color: "bg-pink-500" },
+  const [segments] = useState([
+    { id: 0, name: "Budget Conscious", count: 48, percentage: 19.2, color: "bg-amber-500", barGlow: "from-amber-500 to-amber-600" },
+    { id: 1, name: "High Value", count: 54, percentage: 21.6, color: "bg-indigo-500", barGlow: "from-indigo-500 to-indigo-600" },
+    { id: 2, name: "Potential Growth", count: 51, percentage: 20.4, color: "bg-cyan-500", barGlow: "from-cyan-500 to-cyan-600" },
+    { id: 3, name: "Average Customers", count: 52, percentage: 20.8, color: "bg-emerald-500", barGlow: "from-emerald-500 to-emerald-600" },
+    { id: 4, name: "Young Savers", count: 45, percentage: 18.0, color: "bg-rose-500", barGlow: "from-rose-500 to-rose-600" },
   ]);
 
   return (
     <div className="panel p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-white">Segment Distribution</h2>
-        <button className="text-gray-400 hover:text-white text-sm">View All →</button>
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <h2 className="text-lg font-bold tracking-tight text-white dark:text-[#ECEEF2]">
+            Cohort Segment Distribution
+          </h2>
+          <p className="text-xs text-[#848CA2]">
+            Cluster population breakdown across total active records (250 customers)
+          </p>
+        </div>
+        <span className="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20">
+          5 Personas
+        </span>
       </div>
 
-      <div className="space-y-4">
+      {/* Segment Breakdown Progress Rows */}
+      <div className="space-y-3.5">
         {segments.map((segment) => (
-          <div key={segment.id} className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className={`w-3 h-3 rounded-full ${segment.color}`}></div>
-                <span className="text-white font-medium">{segment.name}</span>
+          <div key={segment.id} className="space-y-1.5 p-2 rounded-xl hover:bg-white/[0.02] transition-colors">
+            <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2.5">
+                <div className={`w-2.5 h-2.5 rounded-full ${segment.color} ring-2 ring-white/10`} />
+                <span className="font-bold text-[#CAD1DE] tracking-tight">{segment.name}</span>
+                <span className="text-[10px] text-[#5F667A] font-semibold">#{segment.id}</span>
               </div>
-              <div className="text-right">
-                <span className="text-white font-bold">{segment.count}</span>
-                <span className="text-gray-400 text-sm ml-2">({segment.percentage}%)</span>
+              <div className="flex items-center gap-2">
+                <span className="font-black text-white dark:text-[#ECEEF2]">{segment.count}</span>
+                <span className="text-[11px] font-bold text-[#848CA2] bg-[#20222A] px-2 py-0.5 rounded-md border border-white/[0.05]">
+                  {segment.percentage.toFixed(1)}%
+                </span>
               </div>
             </div>
-            <div className="w-full bg-[#1e293b] rounded-full h-2">
+
+            {/* Micro Progress Bar */}
+            <div className="w-full bg-[#181A20] dark:bg-[#141519] rounded-full h-1.5 overflow-hidden">
               <div
-                className={`${segment.color} h-2 rounded-full transition-all duration-500`}
-                style={{ width: `${segment.percentage}%` }}
-              ></div>
+                className={`h-full bg-gradient-to-r ${segment.barGlow} rounded-full transition-all duration-700`}
+                style={{ width: `${segment.percentage * 3.5}%` }}
+              />
             </div>
           </div>
         ))}
       </div>
 
-      {/* Chart Visualization */}
-      <div className="mt-6 pt-6 border-t border-slate-800/60">
-        <div className="flex items-end justify-between h-32 space-x-2">
+      {/* Vertical Chart Visualization */}
+      <div className="mt-6 pt-5 border-t border-white/[0.06]">
+        <div className="flex items-end justify-between h-28 gap-3 px-2">
           {segments.map((segment) => (
-            <div key={segment.id} className="flex-1 flex flex-col items-center">
+            <div key={segment.id} className="flex-1 flex flex-col items-center h-full justify-end group">
+              <span className="text-[10px] font-black text-[#CAD1DE] mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                {segment.percentage}%
+              </span>
               <div
-                className={`w-full ${segment.color} rounded-t-lg transition-all duration-500 hover:opacity-80`}
-                style={{ height: `${segment.percentage * 3}%` }}
-              ></div>
-              <span className="text-gray-400 text-xs mt-2">{segment.id}</span>
+                className={`w-full bg-gradient-to-t ${segment.barGlow} rounded-t-lg transition-all duration-500 opacity-85 group-hover:opacity-100 group-hover:scale-y-105`}
+                style={{ height: `${segment.percentage * 3.8}%` }}
+              />
+              <span className="text-[#848CA2] text-[11px] font-bold mt-2">
+                C{segment.id}
+              </span>
             </div>
           ))}
         </div>

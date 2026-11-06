@@ -1,88 +1,136 @@
 "use client";
 
+import { useState } from "react";
+
 export default function CustomerInsights() {
+  const [timeframe, setTimeframe] = useState("Last 30 days");
+
   const insights = [
     {
-      metric: "Average Age",
-      value: "42.3",
-      unit: "years",
-      trend: "+2.1%",
+      metric: "Median Age",
+      value: "41.6",
+      unit: "yrs",
+      trend: "+1.8%",
       positive: true,
+      subtext: "core demographic",
     },
     {
-      metric: "Avg Income",
-      value: "$67.5",
+      metric: "Avg Annual Income",
+      value: "$68.4",
       unit: "k",
-      trend: "+5.3%",
+      trend: "+4.9%",
       positive: true,
+      subtext: "purchasing power",
     },
     {
-      metric: "Avg Spending",
-      value: "58.2",
-      unit: "/100",
-      trend: "-1.2%",
+      metric: "Mean Spending Score",
+      value: "54.7",
+      unit: "/ 100",
+      trend: "-0.8%",
       positive: false,
+      subtext: "index average",
     },
     {
-      metric: "Retention Rate",
-      value: "87.4",
+      metric: "Cohort Retention",
+      value: "89.2",
       unit: "%",
-      trend: "+3.8%",
+      trend: "+3.4%",
       positive: true,
+      subtext: "30-day active rate",
     },
   ];
 
   return (
     <div className="panel p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-white">Customer Insights</h2>
-        <select className="rounded-lg border border-slate-800/60 bg-slate-900/50 px-3 py-1 text-sm text-white focus:outline-none">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <div>
+          <h2 className="text-lg font-bold tracking-tight text-white dark:text-[#ECEEF2]">
+            Behavioral Intelligence & Activity Heatmap
+          </h2>
+          <p className="text-xs text-[#848CA2]">
+            High-level demographic indicators and user classification frequency
+          </p>
+        </div>
+        <select
+          value={timeframe}
+          onChange={(e) => setTimeframe(e.target.value)}
+          className="rounded-xl border border-white/[0.08] bg-[#181A20] px-3.5 py-1.5 text-xs font-bold text-[#CAD1DE] focus:outline-none focus:border-indigo-500/60"
+        >
           <option>Last 30 days</option>
           <option>Last 90 days</option>
-          <option>Last year</option>
+          <option>Year to Date</option>
         </select>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* 4 KPI Insight Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {insights.map((insight, index) => (
           <div
             key={index}
-            className="rounded-xl border border-slate-800/60 bg-slate-950/30 p-4 transition-all hover:border-green-500/30"
+            className="rounded-xl border border-white/[0.07] bg-[#181A20] p-4 card-hover"
           >
-            <p className="text-gray-400 text-xs mb-2">{insight.metric}</p>
-            <div className="flex items-baseline space-x-1">
-              <span className="text-white text-2xl font-bold">{insight.value}</span>
-              <span className="text-gray-400 text-sm">{insight.unit}</span>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#848CA2]">
+                {insight.metric}
+              </span>
+              <span
+                className={`text-[11px] font-black px-2 py-0.5 rounded-md ${
+                  insight.positive
+                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                    : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                }`}
+              >
+                {insight.trend}
+              </span>
             </div>
-            <span
-              className={`text-xs font-medium ${
-                insight.positive ? "text-green-400" : "text-red-400"
-              }`}
-            >
-              {insight.trend}
-            </span>
+
+            <div className="flex items-baseline gap-1 mt-1">
+              <span className="text-2xl font-black tracking-tight text-white dark:text-[#ECEEF2]">
+                {insight.value}
+              </span>
+              <span className="text-xs font-bold text-[#848CA2]">{insight.unit}</span>
+            </div>
+
+            <p className="text-[10px] font-medium text-[#5F667A] mt-1">{insight.subtext}</p>
           </div>
         ))}
       </div>
 
-      {/* Heatmap */}
-      <div className="mt-6 pt-6 border-t border-slate-800/60">
-        <h3 className="text-white font-medium mb-4">Activity Heatmap</h3>
+      {/* Activity Heatmap Grid */}
+      <div className="mt-6 pt-5 border-t border-white/[0.06]">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[#848CA2]">
+            Segmentation Pipeline Activity Matrix (35-Day Window)
+          </h3>
+          <div className="flex items-center gap-2 text-[10px] text-[#5F667A] font-bold">
+            <span>Low</span>
+            <div className="flex gap-1">
+              <div className="w-2.5 h-2.5 rounded bg-[#20222A]" />
+              <div className="w-2.5 h-2.5 rounded bg-emerald-500/30" />
+              <div className="w-2.5 h-2.5 rounded bg-emerald-500/60" />
+              <div className="w-2.5 h-2.5 rounded bg-emerald-400" />
+            </div>
+            <span>High</span>
+          </div>
+        </div>
+
         <div className="grid grid-cols-7 gap-2">
           {Array.from({ length: 35 }).map((_, i) => {
-            const intensity = Math.random();
+            const intensityIndex = (i * 7 + 13) % 10;
             return (
               <div
                 key={i}
-                className={`h-8 rounded ${
-                  intensity > 0.7
-                    ? "bg-green-500"
-                    : intensity > 0.4
-                    ? "bg-green-500/50"
-                    : "bg-slate-800/60"
+                className={`h-7 rounded-lg transition-all hover:scale-105 cursor-pointer border ${
+                  intensityIndex > 7
+                    ? "bg-emerald-400 border-emerald-300 shadow-sm shadow-emerald-500/20"
+                    : intensityIndex > 4
+                    ? "bg-emerald-500/50 border-emerald-500/30"
+                    : intensityIndex > 2
+                    ? "bg-emerald-500/25 border-emerald-500/20"
+                    : "bg-[#20222A] border-white/[0.04]"
                 }`}
-                title={`Day ${i + 1}`}
-              ></div>
+                title={`Day ${i + 1} - Activity Tier ${intensityIndex}`}
+              />
             );
           })}
         </div>
