@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import LayoutV2 from "@/components/LayoutV2";
+import { API_BASE_URL } from "@/lib/config";
 
 export default function Customers() {
   const [customers, setCustomers] = useState<any[]>([]);
@@ -98,7 +99,7 @@ export default function Customers() {
 
     // Predict segment for new customer
     try {
-      const res = await fetch("http://localhost:8000/predict", {
+      const res = await fetch(`${API_BASE_URL}/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
