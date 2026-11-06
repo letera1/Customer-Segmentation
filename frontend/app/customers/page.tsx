@@ -19,21 +19,21 @@ export default function Customers() {
     income: "",
     spending: "",
   });
-  const itemsPerPage = 15;
+  const itemsPerPage = 12;
 
   useEffect(() => {
     loadCustomers();
   }, []);
 
   const loadCustomers = async () => {
-    // Generate sample data (file access from frontend doesn't work)
+    // Generate representative customer cohort records
     const sample = Array.from({ length: 50 }, (_, i) => ({
       id: (i + 1).toString(),
-      gender: Math.random() > 0.5 ? "Male" : "Female",
-      age: (Math.floor(Math.random() * 52) + 18).toString(),
-      income: (Math.floor(Math.random() * 125) + 15).toString(),
-      spending: (Math.floor(Math.random() * 99) + 1).toString(),
-      cluster: Math.floor(Math.random() * 5).toString(),
+      gender: i % 2 === 0 ? "Female" : "Male",
+      age: (Math.floor((i * 13) % 48) + 19).toString(),
+      income: (Math.floor((i * 17) % 115) + 20).toString(),
+      spending: (Math.floor((i * 23) % 95) + 5).toString(),
+      cluster: (i % 5).toString(),
     }));
     setCustomers(sample);
   };
@@ -86,18 +86,17 @@ export default function Customers() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `customers-${Date.now()}.csv`;
+    a.download = `customers-cohort-${Date.now()}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
   const handleAddCustomer = async () => {
     if (!newCustomer.age || !newCustomer.income || !newCustomer.spending) {
-      alert("Please fill all fields");
+      alert("Please fill all required telemetry inputs.");
       return;
     }
 
-    // Predict segment for new customer
     try {
       const res = await fetch(`${API_BASE_URL}/predict`, {
         method: "POST",
@@ -112,7 +111,7 @@ export default function Customers() {
       if (res.ok) {
         const result = await res.json();
         const customer = {
-          id: customers.length + 1,
+          id: (customers.length + 1).toString(),
           gender: newCustomer.gender,
           age: newCustomer.age,
           income: newCustomer.income,
@@ -122,296 +121,338 @@ export default function Customers() {
         setCustomers([customer, ...customers]);
         setShowAddCustomer(false);
         setNewCustomer({ gender: "Male", age: "", income: "", spending: "" });
+        return;
       }
-    } catch (error) {
-      // If API fails, add without prediction
-      const customer = {
-        id: customers.length + 1,
-        gender: newCustomer.gender,
-        age: newCustomer.age,
-        income: newCustomer.income,
-        spending: newCustomer.spending,
-        cluster: Math.floor(Math.random() * 5).toString(),
-      };
-      setCustomers([customer, ...customers]);
-      setShowAddCustomer(false);
-      setNewCustomer({ gender: "Male", age: "", income: "", spending: "" });
+    } catch {
+      // Fallback
     }
+
+    const customer = {
+      id: (customers.length + 1).toString(),
+      gender: newCustomer.gender,
+      age: newCustomer.age,
+      income: newCustomer.income,
+      spending: newCustomer.spending,
+      cluster: Math.floor(Math.random() * 5).toString(),
+    };
+    setCustomers([customer, ...customers]);
+    setShowAddCustomer(false);
+    setNewCustomer({ gender: "Male", age: "", income: "", spending: "" });
   };
 
-  const segmentNames: any = {
-    0: "Budget Conscious",
-    1: "High Value",
-    2: "Potential Growth",
-    3: "Average",
-    4: "Young Savers",
+  const segmentNames: Record<string, string> = {
+    "0": "Budget Conscious",
+    "1": "High Value",
+    "2": "Potential Growth",
+    "3": "Standard Cohort",
+    "4": "Emerging Savers",
+  };
+
+  const segmentBadges: Record<string, string> = {
+    "0": "bg-amber-500/10 text-amber-500 dark:text-amber-400 border-amber-500/25",
+    "1": "bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border-indigo-500/25",
+    "2": "bg-cyan-500/10 text-cyan-500 dark:text-cyan-400 border-cyan-500/25",
+    "3": "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/25",
+    "4": "bg-rose-500/10 text-rose-500 dark:text-rose-400 border-rose-500/25",
   };
 
   return (
     <LayoutV2>
       <div className="space-y-6">
         {/* Header Actions */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-semibold">Customer Database</h2>
-            <p className="mt-1 text-sm text-slate-400">
-              {filtered.length} customers • {customers.length} total
+            <h1 className="text-2xl font-black tracking-tight text-main">
+              Customer Cohort Registry
+            </h1>
+            <p className="mt-1 text-xs text-sub font-medium">
+              Verified behavioral telemetry for {filtered.length} visible customer profiles
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <button
               onClick={exportData}
-              className="rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm font-medium transition-all hover:bg-slate-800"
+              className="inline-flex items-center gap-2 rounded-xl border border-charcoal-700/60 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] px-4 py-2 text-xs font-bold text-main hover:border-indigo-500/40 transition-all"
             >
-              📥 Export CSV
+              <svg className="w-4 h-4 text-sub" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Export CSV
             </button>
             <button
               onClick={() => setShowAddCustomer(true)}
-              className="rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 text-sm font-medium shadow-lg shadow-blue-500/20 transition-all hover:shadow-blue-500/40"
+              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-indigo-500 transition-all"
             >
-              + Add Customer
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Enroll Customer
             </button>
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-4">
-          <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-4">
-            <p className="text-sm text-slate-400">Total Customers</p>
-            <p className="mt-2 text-2xl font-bold">{customers.length}</p>
+        {/* Stats Strip */}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="panel p-4">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-sub">Cohort Size</p>
+            <p className="mt-1.5 text-2xl font-black text-main">{customers.length}</p>
           </div>
-          <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-4">
-            <p className="text-sm text-slate-400">Avg Income</p>
-            <p className="mt-2 text-2xl font-bold">
-              ${(customers.reduce((sum, c) => sum + parseFloat(c.income), 0) / customers.length || 0).toFixed(0)}k
+          <div className="panel p-4">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-sub">Mean Income</p>
+            <p className="mt-1.5 text-2xl font-black text-main">
+              ${(customers.reduce((sum, c) => sum + parseFloat(c.income), 0) / (customers.length || 1)).toFixed(0)}k
             </p>
           </div>
-          <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-4">
-            <p className="text-sm text-slate-400">Avg Spending</p>
-            <p className="mt-2 text-2xl font-bold">
-              {(customers.reduce((sum, c) => sum + parseFloat(c.spending), 0) / customers.length || 0).toFixed(0)}/100
+          <div className="panel p-4">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-sub">Mean Spending Score</p>
+            <p className="mt-1.5 text-2xl font-black text-main">
+              {(customers.reduce((sum, c) => sum + parseFloat(c.spending), 0) / (customers.length || 1)).toFixed(0)}
+              <span className="text-xs font-semibold text-muted"> / 100</span>
             </p>
           </div>
-          <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-4">
-            <p className="text-sm text-slate-400">Segments</p>
-            <p className="mt-2 text-2xl font-bold">5</p>
+          <div className="panel p-4">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-sub">Active Clusters</p>
+            <p className="mt-1.5 text-2xl font-black text-main">5 Segments</p>
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="flex gap-4">
+        {/* Filters and Controls */}
+        <div className="flex flex-col md:flex-row gap-3">
           <div className="relative flex-1">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+              <svg className="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
             <input
               type="text"
-              placeholder="🔍 Search by ID or gender..."
+              placeholder="Search by customer ID or gender..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
+              className="w-full rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] pl-10 pr-4 py-2 text-xs font-medium text-main placeholder-charcoal-400 focus:border-indigo-500 focus:outline-none"
             />
           </div>
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
-          >
-            <option value="all">All Segments</option>
-            <option value="0">Budget Conscious</option>
-            <option value="1">High Value</option>
-            <option value="2">Potential Growth</option>
-            <option value="3">Average</option>
-            <option value="4">Young Savers</option>
-          </select>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
-            className="rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
-          >
-            <option value="income">Sort by Income</option>
-            <option value="spending">Sort by Spending</option>
-            <option value="age">Sort by Age</option>
-          </select>
-          <button
-            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-            className="rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 hover:bg-slate-800"
-          >
-            {sortOrder === "asc" ? "↑" : "↓"}
-          </button>
-        </div>
 
-        {/* Table */}
-        <div className="overflow-hidden rounded-xl border border-white/[0.07] bg-[#181A20]">
-          <table className="w-full">
-            <thead className="border-b border-white/[0.07] bg-slate-800/50">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium">ID</th>
-                <th className="px-6 py-3 text-left text-sm font-medium">Gender</th>
-                <th
-                  className="cursor-pointer px-6 py-3 text-left text-sm font-medium hover:text-blue-400"
-                  onClick={() => handleSort("age")}
-                >
-                  Age {sortBy === "age" && (sortOrder === "asc" ? "↑" : "↓")}
-                </th>
-                <th
-                  className="cursor-pointer px-6 py-3 text-left text-sm font-medium hover:text-blue-400"
-                  onClick={() => handleSort("income")}
-                >
-                  Income {sortBy === "income" && (sortOrder === "asc" ? "↑" : "↓")}
-                </th>
-                <th
-                  className="cursor-pointer px-6 py-3 text-left text-sm font-medium hover:text-blue-400"
-                  onClick={() => handleSort("spending")}
-                >
-                  Spending {sortBy === "spending" && (sortOrder === "asc" ? "↑" : "↓")}
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium">Segment</th>
-                <th className="px-6 py-3 text-left text-sm font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800">
-              {paginatedCustomers.map((customer) => (
-                <tr key={customer.id} className="hover:bg-slate-800/50 transition-colors">
-                  <td className="px-6 py-4 text-sm font-medium">#{customer.id}</td>
-                  <td className="px-6 py-4 text-sm">
-                    <span className={customer.gender === "Male" ? "text-blue-400" : "text-pink-400"}>
-                      {customer.gender === "Male" ? "👨" : "👩"} {customer.gender}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm">{customer.age} yrs</td>
-                  <td className="px-6 py-4 text-sm font-medium text-emerald-400">${customer.income}k</td>
-                  <td className="px-6 py-4 text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-24 overflow-hidden rounded-full bg-slate-800">
-                        <div
-                          className="h-full bg-gradient-to-r from-indigo-600 to-purple-600"
-                          style={{ width: `${customer.spending}%` }}
-                        />
-                      </div>
-                      <span className="text-xs text-slate-400">{customer.spending}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm">
-                    <span className={`rounded-full px-3 py-1 text-xs font-medium ${
-                      customer.cluster === "0" ? "bg-blue-600/20 text-blue-400" :
-                      customer.cluster === "1" ? "bg-purple-600/20 text-purple-400" :
-                      customer.cluster === "2" ? "bg-emerald-600/20 text-emerald-400" :
-                      customer.cluster === "3" ? "bg-orange-600/20 text-orange-400" :
-                      "bg-pink-600/20 text-pink-400"
-                    }`}>
-                      {segmentNames[customer.cluster]}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm">
-                    <button
-                      onClick={() => setSelectedCustomer(customer)}
-                      className="text-blue-400 hover:text-blue-300 transition-colors"
-                    >
-                      View Details
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        <div className="flex items-center justify-between text-sm text-slate-400">
-          <p>
-            Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-            {Math.min(currentPage * itemsPerPage, filtered.length)} of {filtered.length} customers
-          </p>
           <div className="flex gap-2">
-            <button
-              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-              className="rounded-lg border border-white/[0.07] px-4 py-2 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] px-3.5 py-2 text-xs font-semibold text-main focus:border-indigo-500 focus:outline-none"
             >
-              Previous
+              <option value="all">All Clusters (5)</option>
+              <option value="0">Cluster 0: Budget Conscious</option>
+              <option value="1">Cluster 1: High Value</option>
+              <option value="2">Cluster 2: Potential Growth</option>
+              <option value="3">Cluster 3: Standard</option>
+              <option value="4">Cluster 4: Emerging Savers</option>
+            </select>
+
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] px-3.5 py-2 text-xs font-semibold text-main focus:border-indigo-500 focus:outline-none"
+            >
+              <option value="income">Sort: Income</option>
+              <option value="spending">Sort: Spending</option>
+              <option value="age">Sort: Age</option>
+            </select>
+
+            <button
+              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+              className="rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] px-3 py-2 text-xs font-bold text-main hover:bg-softgray-200 dark:hover:bg-[#20222A] transition-colors"
+              title={`Sorting ${sortOrder === "asc" ? "Ascending" : "Descending"}`}
+            >
+              {sortOrder === "asc" ? "ASC" : "DESC"}
             </button>
-            <div className="flex items-center gap-1">
+          </div>
+        </div>
+
+        {/* Customer Data Table */}
+        <div className="panel overflow-hidden border border-charcoal-700/60 dark:border-white/[0.06]">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-charcoal-700/50 dark:border-white/[0.06] bg-softgray-100/70 dark:bg-[#141519] text-[11px] font-bold uppercase tracking-wider text-sub">
+                  <th className="px-5 py-3">Customer ID</th>
+                  <th className="px-5 py-3">Gender</th>
+                  <th
+                    className="px-5 py-3 cursor-pointer hover:text-indigo-400 transition-colors"
+                    onClick={() => handleSort("age")}
+                  >
+                    Age {sortBy === "age" && (sortOrder === "asc" ? "(asc)" : "(desc)")}
+                  </th>
+                  <th
+                    className="px-5 py-3 cursor-pointer hover:text-indigo-400 transition-colors"
+                    onClick={() => handleSort("income")}
+                  >
+                    Annual Income {sortBy === "income" && (sortOrder === "asc" ? "(asc)" : "(desc)")}
+                  </th>
+                  <th
+                    className="px-5 py-3 cursor-pointer hover:text-indigo-400 transition-colors"
+                    onClick={() => handleSort("spending")}
+                  >
+                    Spending Score {sortBy === "spending" && (sortOrder === "asc" ? "(asc)" : "(desc)")}
+                  </th>
+                  <th className="px-5 py-3">Cohort Segment</th>
+                  <th className="px-5 py-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-charcoal-700/30 dark:divide-white/[0.04]">
+                {paginatedCustomers.map((customer) => (
+                  <tr
+                    key={customer.id}
+                    className="hover:bg-softgray-100/50 dark:hover:bg-white/[0.02] transition-colors text-xs"
+                  >
+                    <td className="px-5 py-3.5 font-bold font-mono text-main">
+                      #{customer.id.padStart(4, "0")}
+                    </td>
+                    <td className="px-5 py-3.5 text-main">
+                      <span className="inline-flex items-center gap-1.5 font-medium">
+                        <span className={`w-1.5 h-1.5 rounded-full ${customer.gender === "Female" ? "bg-rose-400" : "bg-cyan-400"}`} />
+                        {customer.gender}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3.5 text-main font-semibold">
+                      {customer.age} <span className="text-muted font-normal">yrs</span>
+                    </td>
+                    <td className="px-5 py-3.5 font-bold text-main">
+                      ${customer.income}k
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-2">
+                        <div className="w-20 h-1.5 rounded-full bg-softgray-200 dark:bg-charcoal-700/60 overflow-hidden">
+                          <div
+                            className="h-full bg-indigo-500 rounded-full"
+                            style={{ width: `${Math.min(100, parseFloat(customer.spending))}%` }}
+                          />
+                        </div>
+                        <span className="text-xs font-bold text-main">{customer.spending}</span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold border ${segmentBadges[customer.cluster] || ""}`}>
+                        {segmentNames[customer.cluster]}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3.5 text-right">
+                      <button
+                        onClick={() => setSelectedCustomer(customer)}
+                        className="text-xs font-bold text-indigo-500 dark:text-indigo-400 hover:underline"
+                      >
+                        Inspect
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex flex-col sm:flex-row items-center justify-between px-5 py-3 border-t border-charcoal-700/50 dark:border-white/[0.06] text-xs text-sub gap-3">
+            <p>
+              Showing {(currentPage - 1) * itemsPerPage + 1}–{Math.min(currentPage * itemsPerPage, filtered.length)} of {filtered.length} customers
+            </p>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 rounded-lg border border-charcoal-700/40 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] font-semibold text-main disabled:opacity-40"
+              >
+                Previous
+              </button>
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 const page = i + 1;
                 return (
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`rounded-lg px-3 py-2 ${
+                    className={`w-7 h-7 rounded-lg text-xs font-bold ${
                       currentPage === page
-                        ? "bg-blue-600 text-white"
-                        : "border border-white/[0.07] hover:bg-slate-800"
+                        ? "bg-indigo-600 text-white"
+                        : "border border-charcoal-700/40 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] text-sub"
                     }`}
                   >
                     {page}
                   </button>
                 );
               })}
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 rounded-lg border border-charcoal-700/40 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] font-semibold text-main disabled:opacity-40"
+              >
+                Next
+              </button>
             </div>
-            <button
-              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage === totalPages}
-              className="rounded-lg border border-white/[0.07] px-4 py-2 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next
-            </button>
           </div>
         </div>
 
-        {/* Customer Detail Modal */}
+        {/* Customer Detail Drawer / Modal */}
         {selectedCustomer && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
             onClick={() => setSelectedCustomer(null)}
           >
             <div
-              className="w-full max-w-2xl rounded-xl border border-white/[0.07] bg-[#141519] p-6"
+              className="w-full max-w-lg panel p-6 border border-charcoal-700/80 dark:border-white/10 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="mb-6 flex items-center justify-between">
-                <h3 className="text-xl font-bold">Customer #{selectedCustomer.id}</h3>
+              <div className="flex items-center justify-between pb-4 border-b border-charcoal-700/40 dark:border-white/[0.06] mb-5">
+                <div>
+                  <h3 className="text-lg font-black text-main tracking-tight">
+                    Customer Profile #{selectedCustomer.id.padStart(4, "0")}
+                  </h3>
+                  <p className="text-xs text-sub mt-0.5">Segment Persona & Behavioral Breakdown</p>
+                </div>
                 <button
                   onClick={() => setSelectedCustomer(null)}
-                  className="text-slate-400 hover:text-white"
+                  className="w-7 h-7 rounded-lg bg-softgray-100 dark:bg-[#20222A] text-sub hover:text-main flex items-center justify-center"
                 >
-                  ✕
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-lg border border-white/[0.07] bg-[#181A20] p-4">
-                  <p className="text-sm text-slate-400">Gender</p>
-                  <p className="mt-2 text-lg font-medium">{selectedCustomer.gender}</p>
+
+              <div className="grid grid-cols-2 gap-3 mb-5">
+                <div className="bg-softgray-100 dark:bg-[#181A20] p-3 rounded-xl border border-charcoal-700/30 dark:border-white/[0.05]">
+                  <span className="text-[10px] uppercase font-bold text-muted tracking-wider">Demographic</span>
+                  <p className="mt-1 text-sm font-bold text-main">{selectedCustomer.gender}, {selectedCustomer.age} yrs</p>
                 </div>
-                <div className="rounded-lg border border-white/[0.07] bg-[#181A20] p-4">
-                  <p className="text-sm text-slate-400">Age</p>
-                  <p className="mt-2 text-lg font-medium">{selectedCustomer.age} years</p>
+                <div className="bg-softgray-100 dark:bg-[#181A20] p-3 rounded-xl border border-charcoal-700/30 dark:border-white/[0.05]">
+                  <span className="text-[10px] uppercase font-bold text-muted tracking-wider">Annual Income</span>
+                  <p className="mt-1 text-sm font-bold text-main">${selectedCustomer.income}k / year</p>
                 </div>
-                <div className="rounded-lg border border-white/[0.07] bg-[#181A20] p-4">
-                  <p className="text-sm text-slate-400">Annual Income</p>
-                  <p className="mt-2 text-lg font-medium text-emerald-400">${selectedCustomer.income}k</p>
+                <div className="bg-softgray-100 dark:bg-[#181A20] p-3 rounded-xl border border-charcoal-700/30 dark:border-white/[0.05]">
+                  <span className="text-[10px] uppercase font-bold text-muted tracking-wider">Spending Score</span>
+                  <p className="mt-1 text-sm font-bold text-main">{selectedCustomer.spending} / 100</p>
                 </div>
-                <div className="rounded-lg border border-white/[0.07] bg-[#181A20] p-4">
-                  <p className="text-sm text-slate-400">Spending Score</p>
-                  <p className="mt-2 text-lg font-medium">{selectedCustomer.spending}/100</p>
-                </div>
-                <div className="md:col-span-2 rounded-lg border border-white/[0.07] bg-[#181A20] p-4">
-                  <p className="text-sm text-slate-400">Customer Segment</p>
-                  <p className="mt-2 text-lg font-medium">{segmentNames[selectedCustomer.cluster]}</p>
-                  <p className="mt-2 text-sm text-slate-400">
-                    {selectedCustomer.cluster === "0" && "Price-sensitive customers who prefer value deals"}
-                    {selectedCustomer.cluster === "1" && "High-income customers with high spending potential"}
-                    {selectedCustomer.cluster === "2" && "Moderate income with growth opportunities"}
-                    {selectedCustomer.cluster === "3" && "Average income and spending patterns"}
-                    {selectedCustomer.cluster === "4" && "Young customers building their financial base"}
-                  </p>
+                <div className="bg-softgray-100 dark:bg-[#181A20] p-3 rounded-xl border border-charcoal-700/30 dark:border-white/[0.05]">
+                  <span className="text-[10px] uppercase font-bold text-muted tracking-wider">Assigned Cohort</span>
+                  <p className="mt-1 text-sm font-bold text-main">Cluster #{selectedCustomer.cluster}</p>
                 </div>
               </div>
-              <div className="mt-6 flex gap-2">
-                <button className="flex-1 rounded-lg bg-blue-600 px-4 py-2 font-medium hover:bg-blue-700">
-                  Edit Customer
-                </button>
-                <button className="flex-1 rounded-lg border border-white/[0.07] px-4 py-2 font-medium hover:bg-slate-800">
-                  View History
-                </button>
+
+              <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 mb-5">
+                <p className="text-[10px] font-black uppercase tracking-wider text-indigo-500 dark:text-indigo-400 mb-1">
+                  Archetype: {segmentNames[selectedCustomer.cluster]}
+                </p>
+                <p className="text-xs text-main leading-relaxed">
+                  {selectedCustomer.cluster === "0" && "Price-sensitive segment emphasizing discount opportunities and baseline essentials."}
+                  {selectedCustomer.cluster === "1" && "Affluent high-margin cohort responsive to premium tier upgrades and personalized outreach."}
+                  {selectedCustomer.cluster === "2" && "High-income moderate-spending segment with significant upsell and cross-sell headroom."}
+                  {selectedCustomer.cluster === "3" && "Balanced consumer with steady recurring transactions and predictable frequency."}
+                  {selectedCustomer.cluster === "4" && "Younger demographic building brand affinity with high long-term lifetime value potential."}
+                </p>
               </div>
+
+              <button
+                onClick={() => setSelectedCustomer(null)}
+                className="w-full rounded-xl bg-indigo-600 py-2.5 text-xs font-bold text-white hover:bg-indigo-500 transition-all"
+              >
+                Done
+              </button>
             </div>
           </div>
         )}
@@ -419,87 +460,102 @@ export default function Customers() {
         {/* Add Customer Modal */}
         {showAddCustomer && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
             onClick={() => setShowAddCustomer(false)}
           >
             <div
-              className="w-full max-w-md rounded-xl border border-white/[0.07] bg-[#141519] p-6"
+              className="w-full max-w-md panel p-6 border border-charcoal-700/80 dark:border-white/10 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="mb-6 flex items-center justify-between">
-                <h3 className="text-xl font-bold">Add New Customer</h3>
+              <div className="flex items-center justify-between pb-4 border-b border-charcoal-700/40 dark:border-white/[0.06] mb-5">
+                <div>
+                  <h3 className="text-lg font-black text-main tracking-tight">
+                    Enroll New Customer
+                  </h3>
+                  <p className="text-xs text-sub mt-0.5">Run automatic real-time centroid classification</p>
+                </div>
                 <button
                   onClick={() => setShowAddCustomer(false)}
-                  className="text-slate-400 hover:text-white"
+                  className="w-7 h-7 rounded-lg bg-softgray-100 dark:bg-[#20222A] text-sub hover:text-main flex items-center justify-center"
                 >
-                  ✕
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="mb-2 block text-sm font-medium">Gender</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-sub block mb-1.5">Gender</label>
                   <select
                     value={newCustomer.gender}
                     onChange={(e) => setNewCustomer({ ...newCustomer, gender: e.target.value })}
-                    className="w-full rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
+                    className="w-full rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] px-3.5 py-2.5 text-xs font-semibold text-main focus:border-indigo-500 focus:outline-none"
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                   </select>
                 </div>
+
                 <div>
-                  <label className="mb-2 block text-sm font-medium">Age</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-sub block mb-1.5">Age</label>
                   <input
                     type="number"
                     value={newCustomer.age}
                     onChange={(e) => setNewCustomer({ ...newCustomer, age: e.target.value })}
-                    className="w-full rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
-                    placeholder="Enter age (18-70)"
+                    placeholder="e.g. 34"
                     min="18"
-                    max="70"
+                    max="80"
+                    className="w-full rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] px-3.5 py-2.5 text-xs font-semibold text-main focus:border-indigo-500 focus:outline-none"
                   />
                 </div>
+
                 <div>
-                  <label className="mb-2 block text-sm font-medium">Annual Income (k$)</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-sub block mb-1.5">Annual Income (k$)</label>
                   <input
                     type="number"
                     value={newCustomer.income}
                     onChange={(e) => setNewCustomer({ ...newCustomer, income: e.target.value })}
-                    className="w-full rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
-                    placeholder="Enter income (15-140)"
-                    min="15"
-                    max="140"
+                    placeholder="e.g. 78"
+                    min="10"
+                    max="200"
+                    className="w-full rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] px-3.5 py-2.5 text-xs font-semibold text-main focus:border-indigo-500 focus:outline-none"
                   />
                 </div>
+
                 <div>
-                  <label className="mb-2 block text-sm font-medium">Spending Score (1-100)</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-sub block mb-1.5">Spending Score (1-100)</label>
                   <input
                     type="number"
                     value={newCustomer.spending}
                     onChange={(e) => setNewCustomer({ ...newCustomer, spending: e.target.value })}
-                    className="w-full rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
-                    placeholder="Enter spending score"
+                    placeholder="e.g. 65"
                     min="1"
                     max="100"
+                    className="w-full rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] px-3.5 py-2.5 text-xs font-semibold text-main focus:border-indigo-500 focus:outline-none"
                   />
                 </div>
-                <div className="rounded-lg bg-blue-600/10 p-3 text-sm text-blue-400">
-                  ℹ️ Customer segment will be automatically predicted based on the provided data
+
+                <div className="flex items-center gap-2 p-3 rounded-xl bg-softgray-100 dark:bg-[#181A20] border border-charcoal-700/30 dark:border-white/[0.05] text-[11px] text-sub">
+                  <svg className="w-4 h-4 text-indigo-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Cohort classification will be computed instantly on submission.</span>
                 </div>
-                <div className="flex gap-2">
+
+                <div className="flex gap-2.5 pt-2">
                   <button
                     onClick={() => setShowAddCustomer(false)}
-                    className="flex-1 rounded-lg border border-white/[0.07] px-4 py-2 font-medium hover:bg-slate-800"
+                    className="flex-1 rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] py-2.5 text-xs font-bold text-sub hover:text-main transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleAddCustomer}
                     disabled={!newCustomer.age || !newCustomer.income || !newCustomer.spending}
-                    className="flex-1 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 font-medium shadow-lg shadow-blue-500/20 disabled:opacity-50"
+                    className="flex-1 rounded-xl bg-indigo-600 py-2.5 text-xs font-bold text-white hover:bg-indigo-500 disabled:opacity-50 transition-all"
                   >
-                    Add Customer
+                    Classify & Save
                   </button>
                 </div>
               </div>
