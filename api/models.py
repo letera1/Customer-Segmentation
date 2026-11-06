@@ -1,9 +1,9 @@
 """
 Pydantic models for request/response validation.
 """
-from pydantic import BaseModel, Field, validator
-from typing import Optional, List
-from datetime import datetime
+from pydantic import BaseModel, Field, field_validator, ConfigDict
+from typing import Optional, List, Dict, Any
+from datetime import datetime, timezone
 
 
 class CustomerInput(BaseModel):
@@ -12,26 +12,29 @@ class CustomerInput(BaseModel):
     annual_income: float = Field(..., ge=0, le=500, description="Annual income in thousands")
     spending_score: int = Field(..., ge=1, le=100, description="Spending score (1-100)")
     
-    @validator('age')
-    def validate_age(cls, v):
+    @field_validator("age")
+    @classmethod
+    def validate_age(cls, v: int) -> int:
         if not 18 <= v <= 100:
-            raise ValueError('Age must be between 18 and 100')
+            raise ValueError("Age must be between 18 and 100")
         return v
     
-    @validator('spending_score')
-    def validate_spending(cls, v):
+    @field_validator("spending_score")
+    @classmethod
+    def validate_spending(cls, v: int) -> int:
         if not 1 <= v <= 100:
-            raise ValueError('Spending score must be between 1 and 100')
+            raise ValueError("Spending score must be between 1 and 100")
         return v
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "age": 35,
                 "annual_income": 75.0,
-                "spending_score": 65
+                "spending_score": 65,
             }
         }
+    )
 
 
 class PredictionResponse(BaseModel):
@@ -41,19 +44,20 @@ class PredictionResponse(BaseModel):
     segment_description: str
     marketing_strategy: str
     confidence: float
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "cluster_id": 1,
                 "segment_name": "High Value",
                 "segment_description": "High income, high spending customers",
                 "marketing_strategy": "VIP programs, premium products",
                 "confidence": 0.95,
-                "timestamp": "2025-04-05T12:00:00Z"
+                "timestamp": "2025-04-05T12:00:00Z",
             }
         }
+    )
 
 
 class SegmentProfile(BaseModel):
@@ -62,18 +66,19 @@ class SegmentProfile(BaseModel):
     name: str
     description: str
     strategy: str
-    characteristics: dict
+    characteristics: Dict[str, Any]
     target_percentage: Optional[float] = None
 
 
 class BatchPredictionRequest(BaseModel):
     """Request schema for batch predictions."""
-    customers: List[CustomerInput] = Field(..., max_items=100)
+    customers: List[CustomerInput] = Field(..., max_length=100)
     
-    @validator('customers')
-    def validate_batch_size(cls, v):
+    @field_validator("customers")
+    @classmethod
+    def validate_batch_size(cls, v: List[CustomerInput]) -> List[CustomerInput]:
         if len(v) > 100:
-            raise ValueError('Maximum 100 customers per batch')
+            raise ValueError("Maximum 100 customers per batch")
         return v
 
 
@@ -97,4 +102,4 @@ class ErrorResponse(BaseModel):
     """Error response schema."""
     error: str
     detail: Optional[str] = None
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

@@ -4,7 +4,7 @@ Clustering models for customer segmentation.
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 import joblib
 
 
@@ -47,7 +47,7 @@ class CustomerSegmentation:
             elbow_idx = second_derivatives.index(max(second_derivatives)) + 1
             self.optimal_k = list(k_range)[elbow_idx]
         else:
-            self.optimal_k = 4  # Default fallback
+            self.optimal_k = 5  # Default fallback
         
         return self.optimal_k, self.inertias
     
@@ -72,7 +72,7 @@ class CustomerSegmentation:
         plt.tight_layout()
         return plt.gcf()
     
-    def fit(self, X: np.ndarray, n_clusters: int = None):
+    def fit(self, X: np.ndarray, n_clusters: Optional[int] = None):
         """
         Fit K-Means model.
         
@@ -87,6 +87,7 @@ class CustomerSegmentation:
         
         self.model = KMeans(n_clusters=n_clusters, random_state=self.random_state, n_init=10)
         self.model.fit(X)
+        self.optimal_k = n_clusters
         
         return self
     
@@ -95,6 +96,12 @@ class CustomerSegmentation:
         if self.model is None:
             raise ValueError("Model not fitted. Call fit() first.")
         return self.model.predict(X)
+    
+    def transform(self, X: np.ndarray) -> np.ndarray:
+        """Transform X to cluster-distance space."""
+        if self.model is None:
+            raise ValueError("Model not fitted. Call fit() first.")
+        return self.model.transform(X)
     
     def get_cluster_centers(self) -> np.ndarray:
         """Get cluster centroids."""
