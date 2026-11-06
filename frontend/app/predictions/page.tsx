@@ -39,7 +39,7 @@ export default function Predictions() {
             history.map((item, i) => (
               <div
                 key={i}
-                className="rounded-xl border border-slate-800 bg-slate-900 p-6"
+                className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6"
               >
                 <div className="flex items-start justify-between">
                   <div>
@@ -74,7 +74,7 @@ export default function Predictions() {
               </div>
             ))
           ) : (
-            <div className="rounded-xl border border-slate-800 bg-slate-900 p-12 text-center">
+            <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-12 text-center">
               <p className="text-slate-400">No predictions yet</p>
             </div>
           )}

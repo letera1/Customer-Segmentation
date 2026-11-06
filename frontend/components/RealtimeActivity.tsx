@@ -1,57 +1,63 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function RealtimeActivity() {
-  const [activities, setActivities] = useState([
-    { type: "prediction", user: "System", action: "New prediction", time: "2s ago", icon: "🔮" },
-    { type: "segment", user: "Admin", action: "Updated segment", time: "1m ago", icon: "🎯" },
-    { type: "customer", user: "API", action: "New customer added", time: "3m ago", icon: "👤" },
-    { type: "report", user: "System", action: "Generated report", time: "5m ago", icon: "📊" },
+  const [activities] = useState([
+    { type: "prediction", user: "Inference Engine", action: "Assigned to High Value", time: "just now", icon: "⚡" },
+    { type: "segment", user: "K-Means Pipeline", action: "Centroids convergence (k=5)", time: "2m ago", icon: "🎯" },
+    { type: "customer", user: "REST API", action: "Bulk dataset ingestion", time: "8m ago", icon: "👥" },
+    { type: "report", user: "Analytics Job", action: "Profiling report cached", time: "14m ago", icon: "📊" },
   ]);
 
+  // Fixed static heights for activity trend to prevent hydration mismatches
+  const trendHeights = [35, 60, 45, 80, 50, 90, 65, 40, 75, 85, 70, 95];
+
   return (
-    <div className="panel p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-white">Real-time Activity</h2>
-        <span className="flex items-center space-x-2">
-          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-          <span className="text-green-400 text-sm">Live</span>
-        </span>
+    <div className="panel p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-base font-bold text-white dark:text-[#ECEEF2] tracking-tight">
+          System Activity
+        </h2>
+        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+          <span>Active</span>
+        </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {activities.map((activity, index) => (
           <div
             key={index}
-            className="flex items-center space-x-3 rounded-xl border border-slate-800/60 bg-slate-950/30 p-3 transition-all hover:border-green-500/30"
+            className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-[#181A20] p-2.5 transition-all hover:border-white/[0.12]"
           >
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500/20 to-blue-500/20 flex items-center justify-center text-xl">
+            <div className="w-8 h-8 rounded-lg bg-[#20222A] border border-white/[0.06] flex items-center justify-center text-sm">
               {activity.icon}
             </div>
-            <div className="flex-1">
-              <p className="text-white text-sm font-medium">{activity.action}</p>
-              <p className="text-gray-400 text-xs">{activity.user}</p>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold text-[#ECEEF2] truncate">{activity.action}</p>
+              <p className="text-[10px] font-medium text-[#848CA2]">{activity.user}</p>
             </div>
-            <span className="text-gray-500 text-xs">{activity.time}</span>
+            <span className="text-[10px] font-semibold text-[#5F667A] whitespace-nowrap">{activity.time}</span>
           </div>
         ))}
       </div>
 
-      {/* Activity Chart */}
-      <div className="mt-6 pt-6 border-t border-slate-800/60">
-        <h3 className="text-white font-medium mb-4 text-sm">Activity Trend</h3>
-        <div className="flex items-end justify-between h-20 space-x-1">
-          {Array.from({ length: 12 }).map((_, i) => {
-            const height = Math.random() * 100;
-            return (
-              <div
-                key={i}
-                className="flex-1 bg-gradient-to-t from-green-500 to-blue-500 rounded-t opacity-70 hover:opacity-100 transition-all"
-                style={{ height: `${height}%` }}
-              ></div>
-            );
-          })}
+      {/* Activity Trend Frequency Bar Chart */}
+      <div className="mt-5 pt-4 border-t border-white/[0.06]">
+        <div className="flex items-center justify-between text-[11px] font-bold text-[#848CA2] mb-3">
+          <span>Inference Frequency</span>
+          <span className="text-indigo-400">99.8% Uptime</span>
+        </div>
+        <div className="flex items-end justify-between h-14 gap-1.5">
+          {trendHeights.map((height, i) => (
+            <div
+              key={i}
+              className="flex-1 bg-gradient-to-t from-indigo-600/40 to-purple-500 rounded-t-sm transition-all hover:opacity-100 opacity-75"
+              style={{ height: `${height}%` }}
+              title={`Slot ${i + 1}: ${height}% load`}
+            />
+          ))}
         </div>
       </div>
     </div>

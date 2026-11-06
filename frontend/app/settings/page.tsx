@@ -62,7 +62,7 @@ export default function Settings() {
             className={`rounded-lg px-6 py-2.5 font-medium transition-all ${
               saved
                 ? "bg-emerald-600 text-white"
-                : "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/20"
+                : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-blue-500/20"
             }`}
           >
             {saved ? "✓ Saved!" : "Save Changes"}
@@ -83,7 +83,7 @@ export default function Settings() {
                   type="text"
                   value={apiEndpoint}
                   onChange={(e) => setApiEndpoint(e.target.value)}
-                  className="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 focus:border-blue-600 focus:outline-none"
+                  className="w-full rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
                   placeholder="http://localhost:8000"
                 />
               </div>
@@ -92,7 +92,7 @@ export default function Settings() {
                 <select
                   value={modelVersion}
                   onChange={(e) => setModelVersion(e.target.value)}
-                  className="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 focus:border-blue-600 focus:outline-none"
+                  className="w-full rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
                 >
                   <option value="v2.0">v2.0 (Current - Recommended)</option>
                   <option value="v1.5">v1.5 (Stable)</option>
@@ -190,7 +190,7 @@ export default function Settings() {
                 <select
                   value={dataRetention}
                   onChange={(e) => setDataRetention(e.target.value)}
-                  className="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 focus:border-blue-600 focus:outline-none"
+                  className="w-full rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
                 >
                   <option value="30">30 days</option>
                   <option value="90">90 days</option>
@@ -228,7 +228,7 @@ export default function Settings() {
                     type="password"
                     value="••••••••••••••••"
                     readOnly
-                    className="flex-1 rounded-lg border border-slate-800 bg-slate-900 px-4 py-2"
+                    className="flex-1 rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2"
                   />
                   <button className="rounded-lg bg-slate-800 px-4 py-2 text-sm hover:bg-slate-700">
                     Regenerate

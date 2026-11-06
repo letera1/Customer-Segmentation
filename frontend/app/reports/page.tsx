@@ -70,7 +70,7 @@ export default function Reports() {
             <h2 className="text-2xl font-bold">Reports Center</h2>
             <p className="text-sm text-slate-400">Generate and manage your reports</p>
           </div>
-          <button className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-2.5 font-medium shadow-lg shadow-blue-500/20">
+          <button className="rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-2.5 font-medium shadow-lg shadow-blue-500/20">
             + New Custom Report
           </button>
         </div>
@@ -82,7 +82,7 @@ export default function Reports() {
             {reports.map((report) => (
               <div
                 key={report.id}
-                className="group rounded-xl border border-slate-800/50 bg-[#151B2B] p-6 hover:border-blue-500/50 transition-all cursor-pointer"
+                className="group rounded-xl border border-white/[0.07] bg-[#181A20] p-6 hover:border-blue-500/50 transition-all cursor-pointer"
                 onClick={() => setSelectedReport(report.id)}
               >
                 <div className="flex items-start justify-between mb-4">
@@ -114,7 +114,7 @@ export default function Reports() {
         {/* Recent Reports */}
         <div>
           <h3 className="mb-4 font-semibold">Recent Reports</h3>
-          <div className="rounded-xl border border-slate-800/50 bg-[#151B2B]">
+          <div className="rounded-xl border border-white/[0.07] bg-[#181A20]">
             <div className="divide-y divide-slate-800/50">
               {recentReports.map((report, i) => (
                 <div key={i} className="flex items-center justify-between p-4 hover:bg-slate-800/30 transition-colors">
@@ -144,7 +144,7 @@ export default function Reports() {
 
         {/* Schedule Reports */}
         <div className="grid gap-6 lg:grid-cols-2">
-          <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+          <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
             <h3 className="mb-4 font-semibold">Scheduled Reports</h3>
             <div className="space-y-3">
               {["Weekly Performance", "Monthly Segment Analysis", "Quarterly Review"].map((name, i) => (
@@ -159,7 +159,7 @@ export default function Reports() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+          <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
             <h3 className="mb-4 font-semibold">Export Options</h3>
             <div className="space-y-3">
               {["PDF Document", "Excel Spreadsheet", "CSV Data", "JSON Format"].map((format, i) => (

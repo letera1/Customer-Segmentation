@@ -167,7 +167,7 @@ export default function Customers() {
             </button>
             <button
               onClick={() => setShowAddCustomer(true)}
-              className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-medium shadow-lg shadow-blue-500/20 transition-all hover:shadow-blue-500/40"
+              className="rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 text-sm font-medium shadow-lg shadow-blue-500/20 transition-all hover:shadow-blue-500/40"
             >
               + Add Customer
             </button>
@@ -176,23 +176,23 @@ export default function Customers() {
 
         {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-4">
-          <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-4">
+          <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-4">
             <p className="text-sm text-slate-400">Total Customers</p>
             <p className="mt-2 text-2xl font-bold">{customers.length}</p>
           </div>
-          <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-4">
+          <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-4">
             <p className="text-sm text-slate-400">Avg Income</p>
             <p className="mt-2 text-2xl font-bold">
               ${(customers.reduce((sum, c) => sum + parseFloat(c.income), 0) / customers.length || 0).toFixed(0)}k
             </p>
           </div>
-          <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-4">
+          <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-4">
             <p className="text-sm text-slate-400">Avg Spending</p>
             <p className="mt-2 text-2xl font-bold">
               {(customers.reduce((sum, c) => sum + parseFloat(c.spending), 0) / customers.length || 0).toFixed(0)}/100
             </p>
           </div>
-          <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-4">
+          <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-4">
             <p className="text-sm text-slate-400">Segments</p>
             <p className="mt-2 text-2xl font-bold">5</p>
           </div>
@@ -206,13 +206,13 @@ export default function Customers() {
               placeholder="🔍 Search by ID or gender..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+              className="w-full rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
             />
           </div>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+            className="rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
           >
             <option value="all">All Segments</option>
             <option value="0">Budget Conscious</option>
@@ -224,7 +224,7 @@ export default function Customers() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+            className="rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
           >
             <option value="income">Sort by Income</option>
             <option value="spending">Sort by Spending</option>
@@ -232,16 +232,16 @@ export default function Customers() {
           </select>
           <button
             onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-            className="rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 hover:bg-slate-800"
+            className="rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 hover:bg-slate-800"
           >
             {sortOrder === "asc" ? "↑" : "↓"}
           </button>
         </div>
 
         {/* Table */}
-        <div className="overflow-hidden rounded-xl border border-slate-800/50 bg-[#151B2B]">
+        <div className="overflow-hidden rounded-xl border border-white/[0.07] bg-[#181A20]">
           <table className="w-full">
-            <thead className="border-b border-slate-800 bg-slate-800/50">
+            <thead className="border-b border-white/[0.07] bg-slate-800/50">
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-medium">ID</th>
                 <th className="px-6 py-3 text-left text-sm font-medium">Gender</th>
@@ -282,7 +282,7 @@ export default function Customers() {
                     <div className="flex items-center gap-2">
                       <div className="h-2 w-24 overflow-hidden rounded-full bg-slate-800">
                         <div
-                          className="h-full bg-gradient-to-r from-blue-600 to-purple-600"
+                          className="h-full bg-gradient-to-r from-indigo-600 to-purple-600"
                           style={{ width: `${customer.spending}%` }}
                         />
                       </div>
@@ -324,7 +324,7 @@ export default function Customers() {
             <button
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              className="rounded-lg border border-slate-800 px-4 py-2 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-lg border border-white/[0.07] px-4 py-2 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Previous
             </button>
@@ -338,7 +338,7 @@ export default function Customers() {
                     className={`rounded-lg px-3 py-2 ${
                       currentPage === page
                         ? "bg-blue-600 text-white"
-                        : "border border-slate-800 hover:bg-slate-800"
+                        : "border border-white/[0.07] hover:bg-slate-800"
                     }`}
                   >
                     {page}
@@ -349,7 +349,7 @@ export default function Customers() {
             <button
               onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
-              className="rounded-lg border border-slate-800 px-4 py-2 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-lg border border-white/[0.07] px-4 py-2 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Next
             </button>
@@ -363,7 +363,7 @@ export default function Customers() {
             onClick={() => setSelectedCustomer(null)}
           >
             <div
-              className="w-full max-w-2xl rounded-xl border border-slate-800 bg-[#0B1120] p-6"
+              className="w-full max-w-2xl rounded-xl border border-white/[0.07] bg-[#141519] p-6"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="mb-6 flex items-center justify-between">
@@ -376,23 +376,23 @@ export default function Customers() {
                 </button>
               </div>
               <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-lg border border-slate-800 bg-[#151B2B] p-4">
+                <div className="rounded-lg border border-white/[0.07] bg-[#181A20] p-4">
                   <p className="text-sm text-slate-400">Gender</p>
                   <p className="mt-2 text-lg font-medium">{selectedCustomer.gender}</p>
                 </div>
-                <div className="rounded-lg border border-slate-800 bg-[#151B2B] p-4">
+                <div className="rounded-lg border border-white/[0.07] bg-[#181A20] p-4">
                   <p className="text-sm text-slate-400">Age</p>
                   <p className="mt-2 text-lg font-medium">{selectedCustomer.age} years</p>
                 </div>
-                <div className="rounded-lg border border-slate-800 bg-[#151B2B] p-4">
+                <div className="rounded-lg border border-white/[0.07] bg-[#181A20] p-4">
                   <p className="text-sm text-slate-400">Annual Income</p>
                   <p className="mt-2 text-lg font-medium text-emerald-400">${selectedCustomer.income}k</p>
                 </div>
-                <div className="rounded-lg border border-slate-800 bg-[#151B2B] p-4">
+                <div className="rounded-lg border border-white/[0.07] bg-[#181A20] p-4">
                   <p className="text-sm text-slate-400">Spending Score</p>
                   <p className="mt-2 text-lg font-medium">{selectedCustomer.spending}/100</p>
                 </div>
-                <div className="md:col-span-2 rounded-lg border border-slate-800 bg-[#151B2B] p-4">
+                <div className="md:col-span-2 rounded-lg border border-white/[0.07] bg-[#181A20] p-4">
                   <p className="text-sm text-slate-400">Customer Segment</p>
                   <p className="mt-2 text-lg font-medium">{segmentNames[selectedCustomer.cluster]}</p>
                   <p className="mt-2 text-sm text-slate-400">
@@ -408,7 +408,7 @@ export default function Customers() {
                 <button className="flex-1 rounded-lg bg-blue-600 px-4 py-2 font-medium hover:bg-blue-700">
                   Edit Customer
                 </button>
-                <button className="flex-1 rounded-lg border border-slate-800 px-4 py-2 font-medium hover:bg-slate-800">
+                <button className="flex-1 rounded-lg border border-white/[0.07] px-4 py-2 font-medium hover:bg-slate-800">
                   View History
                 </button>
               </div>
@@ -423,7 +423,7 @@ export default function Customers() {
             onClick={() => setShowAddCustomer(false)}
           >
             <div
-              className="w-full max-w-md rounded-xl border border-slate-800 bg-[#0B1120] p-6"
+              className="w-full max-w-md rounded-xl border border-white/[0.07] bg-[#141519] p-6"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="mb-6 flex items-center justify-between">
@@ -442,7 +442,7 @@ export default function Customers() {
                   <select
                     value={newCustomer.gender}
                     onChange={(e) => setNewCustomer({ ...newCustomer, gender: e.target.value })}
-                    className="w-full rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+                    className="w-full rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -454,7 +454,7 @@ export default function Customers() {
                     type="number"
                     value={newCustomer.age}
                     onChange={(e) => setNewCustomer({ ...newCustomer, age: e.target.value })}
-                    className="w-full rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+                    className="w-full rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
                     placeholder="Enter age (18-70)"
                     min="18"
                     max="70"
@@ -466,7 +466,7 @@ export default function Customers() {
                     type="number"
                     value={newCustomer.income}
                     onChange={(e) => setNewCustomer({ ...newCustomer, income: e.target.value })}
-                    className="w-full rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+                    className="w-full rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
                     placeholder="Enter income (15-140)"
                     min="15"
                     max="140"
@@ -478,7 +478,7 @@ export default function Customers() {
                     type="number"
                     value={newCustomer.spending}
                     onChange={(e) => setNewCustomer({ ...newCustomer, spending: e.target.value })}
-                    className="w-full rounded-lg border border-slate-800 bg-[#151B2B] px-4 py-2 focus:border-blue-600 focus:outline-none"
+                    className="w-full rounded-lg border border-white/[0.07] bg-[#181A20] px-4 py-2 focus:border-blue-600 focus:outline-none"
                     placeholder="Enter spending score"
                     min="1"
                     max="100"
@@ -490,14 +490,14 @@ export default function Customers() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setShowAddCustomer(false)}
-                    className="flex-1 rounded-lg border border-slate-800 px-4 py-2 font-medium hover:bg-slate-800"
+                    className="flex-1 rounded-lg border border-white/[0.07] px-4 py-2 font-medium hover:bg-slate-800"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleAddCustomer}
                     disabled={!newCustomer.age || !newCustomer.income || !newCustomer.spending}
-                    className="flex-1 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 font-medium shadow-lg shadow-blue-500/20 disabled:opacity-50"
+                    className="flex-1 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 font-medium shadow-lg shadow-blue-500/20 disabled:opacity-50"
                   >
                     Add Customer
                   </button>

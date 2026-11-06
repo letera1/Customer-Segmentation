@@ -30,7 +30,7 @@ function safeReadPredictionHistory(): any[] {
 
 export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats>({
-    totalCustomers: 2543,
+    totalCustomers: 250,
     activeSegments: 5,
     avgConfidence: 94.2,
     predictions: 0,
@@ -42,25 +42,32 @@ export default function Dashboard() {
   }, []);
 
   const headerSubtitle = useMemo(
-    () => "Run segmentation predictions and track recent results",
+    () => "Real-time AI customer segmentation, behavioral analytics and cohort intelligence",
     []
   );
 
   return (
     <LayoutV2>
       <div className="space-y-6">
-        <div className="flex items-end justify-between">
+        {/* Top Page Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-semibold text-white">Dashboard</h1>
-            <p className="mt-1 text-sm text-slate-400">{headerSubtitle}</p>
+            <h1 className="text-2xl font-black tracking-tight text-white dark:text-[#ECEEF2]">
+              Intelligence Dashboard
+            </h1>
+            <p className="mt-1 text-xs text-[#848CA2] font-medium">{headerSubtitle}</p>
           </div>
-          <div className="hidden sm:block text-xs text-slate-500">
-            API: {API_BASE_URL}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/[0.08] bg-[#181A20] text-xs font-semibold text-[#CAD1DE]">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[#848CA2]">API:</span>
+            <span className="font-mono text-[11px] text-[#ECEEF2]">{API_BASE_URL}</span>
           </div>
         </div>
 
+        {/* Top 4 KPI Metric Cards */}
         <StatsCards stats={stats} />
 
+        {/* Main Grid: Analyzer & Cohort Distribution + Side Feeds */}
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             <SegmentationAnalyzer
@@ -84,6 +91,7 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Bottom Demographic Insights & 35-day Heatmap */}
         <CustomerInsights />
       </div>
     </LayoutV2>

@@ -113,7 +113,7 @@ export default function Analytics() {
                 onClick={() => setTimeRange(range)}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                   timeRange === range
-                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/20"
+                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-blue-500/20"
                     : "bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-white"
                 }`}
               >
@@ -176,7 +176,7 @@ export default function Analytics() {
         {/* AI Insights Panel */}
         <div className="rounded-xl border border-blue-500/30 bg-gradient-to-br from-blue-600/10 to-purple-600/10 p-6">
           <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600">
               <span className="text-xl">🤖</span>
             </div>
             <div>
@@ -232,7 +232,7 @@ function MetricCard({ title, value, change, trend, onClick, selected, comparison
       className={`cursor-pointer rounded-xl border p-6 transition-all hover:scale-105 ${
         selected
           ? "border-blue-500 bg-gradient-to-br from-blue-600/10 to-purple-600/10 shadow-lg shadow-blue-500/20"
-          : "border-slate-800/50 bg-[#151B2B] hover:border-slate-700"
+          : "border-white/[0.07] bg-[#181A20] hover:border-slate-700"
       }`}
     >
       <p className="text-sm text-slate-400">{title}</p>
@@ -249,7 +249,7 @@ function MetricCard({ title, value, change, trend, onClick, selected, comparison
         </div>
       )}
       {selected && (
-        <div className="mt-3 h-1 w-full rounded-full bg-gradient-to-r from-blue-600 to-purple-600" />
+        <div className="mt-3 h-1 w-full rounded-full bg-gradient-to-r from-indigo-600 to-purple-600" />
       )}
     </div>
   );
@@ -266,7 +266,7 @@ function UserFlowChart({ timeRange }: any) {
   ];
 
   return (
-    <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
       <div className="mb-6 flex items-center justify-between">
         <h3 className="font-semibold">User Flow Funnel</h3>
         <span className="text-sm text-slate-400">{timeRange}</span>
@@ -285,7 +285,7 @@ function UserFlowChart({ timeRange }: any) {
             </div>
             <div className="relative h-10 overflow-hidden rounded-lg bg-slate-800">
               <div
-                className="h-full bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-500"
+                className="h-full bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-500"
                 style={{ width: `${step.value}%` }}
               />
               {hoveredStep === i && (
@@ -316,7 +316,7 @@ function DeviceBreakdown() {
   ];
 
   return (
-    <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
       <h3 className="mb-6 font-semibold">Device Breakdown</h3>
       <div className="mb-6 flex items-center justify-center">
         <div className="relative h-48 w-48">
@@ -399,7 +399,7 @@ function TrafficTrend({ timeRange }: any) {
   const maxValue = Math.max(...data.map(d => d.value));
 
   return (
-    <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
       <div className="mb-6 flex items-center justify-between">
         <h3 className="font-semibold">Traffic Trend</h3>
         <div className="flex gap-2 text-xs">
@@ -445,7 +445,7 @@ function TrafficTrend({ timeRange }: any) {
               cy={200 - (d.value / maxValue) * 180}
               r={hoveredPoint === i ? "6" : "4"}
               fill="#3b82f6"
-              stroke="#151B2B"
+              stroke="#181A20"
               strokeWidth="2"
               className="cursor-pointer transition-all"
               onMouseEnter={() => setHoveredPoint(i)}
@@ -482,7 +482,7 @@ function TrafficSources() {
   ];
 
   return (
-    <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
       <h3 className="mb-6 font-semibold">Traffic Sources</h3>
       <div className="space-y-4">
         {sources.map((source, i) => (
@@ -526,7 +526,7 @@ function TopPages() {
   );
 
   return (
-    <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
       <div className="mb-6 flex items-center justify-between">
         <h3 className="font-semibold">Top Pages</h3>
         <select
@@ -570,7 +570,7 @@ function GeographicDistribution() {
   ];
 
   return (
-    <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
       <h3 className="mb-6 font-semibold">Geographic Distribution</h3>
       <div className="space-y-3">
         {countries.map((country, i) => (
@@ -585,7 +585,7 @@ function GeographicDistribution() {
               </div>
               <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
                 <div
-                  className="h-full bg-gradient-to-r from-blue-600 to-purple-600"
+                  className="h-full bg-gradient-to-r from-indigo-600 to-purple-600"
                   style={{ width: `${country.percentage}%` }}
                 />
               </div>
@@ -604,7 +604,7 @@ function ActivityHeatmap() {
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
   return (
-    <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
       <div className="mb-6 flex items-center justify-between">
         <h3 className="font-semibold">Activity Heatmap</h3>
         <div className="flex items-center gap-2 text-xs text-slate-400">
@@ -686,7 +686,7 @@ function RealtimeActivity() {
     : activities.filter(a => a.type === filter);
 
   return (
-    <div className="rounded-xl border border-slate-800/50 bg-[#151B2B] p-6">
+    <div className="rounded-xl border border-white/[0.07] bg-[#181A20] p-6">
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h3 className="font-semibold">Real-time Activity</h3>
@@ -726,7 +726,7 @@ function RealtimeActivity() {
               activity.type === "predict" ? "bg-gradient-to-br from-purple-500 to-pink-600" :
               activity.type === "download" ? "bg-gradient-to-br from-emerald-500 to-teal-600" :
               activity.type === "update" ? "bg-gradient-to-br from-orange-500 to-red-600" :
-              "bg-gradient-to-br from-blue-500 to-purple-600"
+              "bg-gradient-to-br from-indigo-500 to-purple-600"
             }`} />
             <div className="flex-1">
               <p className="text-sm font-medium">{activity.user}</p>
