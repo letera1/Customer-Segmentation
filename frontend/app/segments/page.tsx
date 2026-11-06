@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import LayoutV2 from "@/components/LayoutV2";
+import { API_BASE_URL } from "@/lib/config";
 
 export default function Segments() {
   const [segments, setSegments] = useState<any[]>([]);
@@ -12,7 +13,7 @@ export default function Segments() {
 
   const fetchSegments = async () => {
     try {
-      const res = await fetch("http://localhost:8000/segments");
+      const res = await fetch(`${API_BASE_URL}/segments`);
       if (res.ok) {
         setSegments(await res.json());
       }

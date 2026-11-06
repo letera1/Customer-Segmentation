@@ -8,6 +8,7 @@ import SegmentDistribution from "@/components/SegmentDistribution";
 import PredictionHistory from "@/components/PredictionHistory";
 import RealtimeActivity from "@/components/RealtimeActivity";
 import CustomerInsights from "@/components/CustomerInsights";
+import { API_BASE_URL } from "@/lib/config";
 
 type DashboardStats = {
   totalCustomers: number;
@@ -54,7 +55,7 @@ export default function Dashboard() {
             <p className="mt-1 text-sm text-slate-400">{headerSubtitle}</p>
           </div>
           <div className="hidden sm:block text-xs text-slate-500">
-            API: http://localhost:8000
+            API: {API_BASE_URL}
           </div>
         </div>
 

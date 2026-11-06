@@ -193,7 +193,7 @@ segmentai-pro/
 │   │   └── Layout.tsx        # Main layout wrapper
 │   └── package.json
 ├── train_model.py            # Model training script
-├── test_api.py              # API testing suite
+├── run_project.py            # Project runner CLI
 └── requirements.txt
 ```
 
@@ -260,14 +260,14 @@ GET /health
 
 ---
 
-## 🧪 Testing
+## 🧪 Model Training & Verification
 
 ```bash
-# Test API endpoints
-python test_api.py
+# Train the model and generate outputs
+python train_model.py
 
-# Run with custom data
-# Edit train_model.py with your CSV file
+# Launch interactive project manager
+python run_project.py
 ```
 
 ---

@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import LayoutV2 from "@/components/LayoutV2";
+import { API_BASE_URL } from "@/lib/config";
 
 export default function Settings() {
-  const [apiEndpoint, setApiEndpoint] = useState("http://localhost:8000");
+  const [apiEndpoint, setApiEndpoint] = useState(API_BASE_URL);
   const [modelVersion, setModelVersion] = useState("v2.0");
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [notifications, setNotifications] = useState(true);
