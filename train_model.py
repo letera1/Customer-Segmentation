@@ -3,10 +3,15 @@ Standalone script to train the customer segmentation model.
 Run this before starting the API server.
 """
 import sys
+import os
 import pandas as pd
 import numpy as np
 from pathlib import Path
 import joblib
+
+# Ensure UTF-8 output on Windows consoles
+if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 # Add project root to path
 sys.path.append('.')
@@ -75,49 +80,49 @@ def main():
     print("\n1. Generating customer dataset with 5 target clusters...")
     df_raw = generate_segmented_dataset(n_samples=250, seed=42)
     df_raw.to_csv('data/raw/mall_customers.csv', index=False)
-    print(f"   ✓ Created dataset with {len(df_raw)} customers")
+    print(f"   [+] Created dataset with {len(df_raw)} customers")
 
     # Step 2: Clean data
     print("\n2. Cleaning data...")
     processor = DataProcessor()
     df_clean = processor.clean_data(df_raw)
-    print(f"   ✓ Data cleaned: {len(df_clean)} records")
+    print(f"   [+] Data cleaned: {len(df_clean)} records")
 
     # Step 3: Prepare features
     print("\n3. Preparing and scaling features...")
     feature_cols = ['Age', 'Annual Income (k$)', 'Spending Score (1-100)']
     df_processed, X_scaled = processor.prepare_features(df_clean, feature_cols)
-    print(f"   ✓ Features scaled: {X_scaled.shape}")
+    print(f"   [+] Features scaled: {X_scaled.shape}")
 
     # Step 4: Find optimal clusters / elbow
     print("\n4. Evaluating clusters (Elbow Method)...")
     segmentation_model = CustomerSegmentation(random_state=42)
     optimal_k, inertias = segmentation_model.find_optimal_clusters(X_scaled, k_range=range(2, 11))
-    print(f"   ✓ Optimal curvature k: {optimal_k}")
+    print(f"   [+] Optimal curvature k: {optimal_k}")
 
     # Step 5: Fit 5 clusters to align with 5 business personas
     n_clusters = 5
     print(f"\n5. Fitting K-Means model with {n_clusters} clusters...")
     segmentation_model.fit(X_scaled, n_clusters=n_clusters)
     df_processed['Cluster'] = segmentation_model.predict(X_scaled)
-    print("   ✓ Model trained successfully")
+    print("   [+] Model trained successfully")
 
     # Step 6: Save model and scaler
     print("\n6. Saving model artifacts...")
     segmentation_model.save_model('data/outputs/segmentation_model.pkl')
-    print("   ✓ Model saved to data/outputs/segmentation_model.pkl")
+    print("   [+] Model saved to data/outputs/segmentation_model.pkl")
 
     joblib.dump(processor.scaler, 'data/outputs/scaler.pkl')
-    print("   ✓ Scaler saved to data/outputs/scaler.pkl")
+    print("   [+] Scaler saved to data/outputs/scaler.pkl")
 
     # Step 7: Save processed data
     df_processed.to_csv('data/processed/customers_with_clusters.csv', index=False)
-    print("   ✓ Processed data saved to data/processed/customers_with_clusters.csv")
+    print("   [+] Processed data saved to data/processed/customers_with_clusters.csv")
 
     # Step 8: Generate cluster report
     print("\n7. Generating cluster report...")
     save_cluster_report(df_processed, 'Cluster', 'data/outputs/cluster_report.json')
-    print("   ✓ Cluster report saved to data/outputs/cluster_report.json")
+    print("   [+] Cluster report saved to data/outputs/cluster_report.json")
 
     # Step 9: Display cluster summary
     print("\n" + "=" * 60)
@@ -132,7 +137,7 @@ def main():
         print(f"  Avg Spending: {cluster_data['Spending Score (1-100)'].mean():.1f}/100")
 
     print("\n" + "=" * 60)
-    print("✓ TRAINING COMPLETE!")
+    print("[+] TRAINING COMPLETE!")
     print("=" * 60)
 
 
@@ -140,7 +145,7 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        print(f"\n✗ Error: {e}")
+        print(f"\n[-] Error: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

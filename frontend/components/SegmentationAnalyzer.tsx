@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { API_BASE_URL } from "@/lib/config";
 
 interface SegmentationAnalyzerProps {
   onPredict: (data: any) => void;
@@ -18,7 +19,7 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://localhost:8000/predict", {
+      const response = await fetch(`${API_BASE_URL}/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -37,18 +38,32 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
       setPrediction(result);
       onPredict(result);
       
-      // Save to history
-      const history = JSON.parse(localStorage.getItem("prediction_history") || "[]");
-      history.unshift({ ...result, timestamp: new Date().toISOString(), age, income, spendingScore });
-      localStorage.setItem("prediction_history", JSON.stringify(history.slice(0, 10)));
-    } catch (error) {
+      // Save to history in localStorage
+      if (typeof window !== "undefined") {
+        try {
+          const stored = localStorage.getItem("prediction_history");
+          const history = stored ? JSON.parse(stored) : [];
+          const validHistory = Array.isArray(history) ? history : [];
+          validHistory.unshift({
+            ...result,
+            timestamp: new Date().toISOString(),
+            age,
+            income,
+            spendingScore,
+          });
+          localStorage.setItem("prediction_history", JSON.stringify(validHistory.slice(0, 10)));
+        } catch {
+          // localStorage failure fallback
+        }
+      }
+    } catch {
       setError("Failed to get prediction. Make sure the API is running and the model is trained.");
     } finally {
       setLoading(false);
     }
   };
 
-  const segmentColors: any = {
+  const segmentColors: Record<number, string> = {
     0: "from-yellow-500 to-orange-500",
     1: "from-purple-500 to-pink-500",
     2: "from-blue-500 to-cyan-500",
@@ -135,7 +150,7 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
             <div className="space-y-4">
               <div
                 className={`bg-gradient-to-r ${
-                  segmentColors[prediction.cluster_id]
+                  segmentColors[prediction.cluster_id] || "from-blue-500 to-purple-500"
                 } p-4 rounded-lg`}
               >
                 <h3 className="text-white font-bold text-xl mb-2">

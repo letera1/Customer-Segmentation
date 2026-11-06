@@ -13,6 +13,7 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         protected_namespaces=("settings_",),
+        extra="ignore"
     )
     
     # API Settings
@@ -25,12 +26,17 @@ class Settings(BaseSettings):
     port: int = 8000
     
     # CORS Settings
-    cors_origins: list[str] = ["http://localhost:3000", "http://localhost:3001"]
+    cors_origins: list[str] = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3001"
+    ]
     cors_methods: list[str] = ["GET", "POST", "OPTIONS"]
     cors_headers: list[str] = ["Authorization", "Content-Type", "X-Requested-With"]
 
     # Host and request constraints
-    trusted_hosts: list[str] = ["localhost", "127.0.0.1", "*.localhost"]
+    trusted_hosts: list[str] = ["localhost", "127.0.0.1", "*.localhost", "api", "testserver", "*"]
     max_request_size_mb: int = 2
     
     # Model Settings
@@ -46,7 +52,8 @@ class Settings(BaseSettings):
     # Logging
     log_level: str = "INFO"
     log_file: str = "logs/api.log"
-    
+
+
 @lru_cache()
 def get_settings() -> Settings:
     """Get cached settings instance."""
