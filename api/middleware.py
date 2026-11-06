@@ -7,7 +7,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from time import time
 import logging
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
 
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
-    """Rate limiting middleware."""
+    """Rate limiting middleware with bounded memory management."""
     
     def __init__(self, app, max_requests: int = 60, window_seconds: int = 60):
         super().__init__(app)
@@ -57,18 +57,27 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self.requests = defaultdict(list)
     
     async def dispatch(self, request: Request, call_next):
-        # Skip rate limiting for health checks
+        # Skip rate limiting for health checks and documentation
         if request.url.path in ["/health", "/", "/docs", "/redoc", "/openapi.json"]:
             return await call_next(request)
         
         client_ip = request.client.host if request.client else "unknown"
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         
-        # Clean old requests
+        # Clean old requests for current client
         self.requests[client_ip] = [
             req_time for req_time in self.requests[client_ip]
             if now - req_time < timedelta(seconds=self.window_seconds)
         ]
+        
+        # Periodic purge of stale client keys to avoid unbounded memory growth
+        if len(self.requests) > 500:
+            stale_ips = [
+                ip for ip, reqs in self.requests.items()
+                if not reqs or (now - reqs[-1] >= timedelta(seconds=self.window_seconds))
+            ]
+            for ip in stale_ips:
+                self.requests.pop(ip, None)
         
         # Check rate limit
         if len(self.requests[client_ip]) >= self.max_requests:

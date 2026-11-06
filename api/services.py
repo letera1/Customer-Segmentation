@@ -4,9 +4,9 @@ Business logic and services layer.
 import joblib
 import numpy as np
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List, Dict, Any
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 from .models import CustomerInput, PredictionResponse, SegmentProfile
 from .config import get_settings
@@ -38,7 +38,7 @@ class ModelService:
             else:
                 return False, f"Scaler not found at {self.settings.scaler_path}"
             
-            self.load_time = datetime.utcnow()
+            self.load_time = datetime.now(timezone.utc)
             return True, "Models loaded successfully"
             
         except Exception as e:
@@ -59,15 +59,30 @@ class ModelService:
             customer.age,
             customer.annual_income,
             customer.spending_score
-        ]])
+        ]], dtype=float)
         
         # Scale and predict
         features_scaled = self.scaler.transform(features)
         cluster_id = int(self.model.predict(features_scaled)[0])
         
         # Calculate confidence (distance to cluster center)
-        distances = self.model.transform(features_scaled)[0]
-        confidence = 1.0 / (1.0 + distances[cluster_id])
+        if hasattr(self.model, "transform"):
+            distances = self.model.transform(features_scaled)[0]
+        elif hasattr(self.model, "model") and hasattr(self.model.model, "transform"):
+            distances = self.model.model.transform(features_scaled)[0]
+        else:
+            centers = (
+                self.model.get_cluster_centers()
+                if hasattr(self.model, "get_cluster_centers")
+                else getattr(self.model, "cluster_centers_", None)
+            )
+            if centers is not None:
+                distances = np.linalg.norm(centers - features_scaled, axis=1)
+            else:
+                distances = [0.0]
+        
+        cluster_dist = float(distances[cluster_id]) if cluster_id < len(distances) else float(distances[0])
+        confidence = 1.0 / (1.0 + cluster_dist)
         
         # Get segment info
         segment_info = SegmentService.get_segment_info(cluster_id)
@@ -84,7 +99,7 @@ class ModelService:
 class SegmentService:
     """Service for segment information."""
     
-    SEGMENTS = {
+    SEGMENTS: Dict[int, Dict[str, Any]] = {
         0: {
             'name': 'Budget Conscious',
             'description': 'Price-sensitive customers seeking value and deals',
@@ -97,7 +112,7 @@ class SegmentService:
             }
         },
         1: {
-            'name': 'Premium Customers',
+            'name': 'High Value',
             'description': 'High-value customers with strong purchasing power',
             'strategy': 'VIP programs, exclusive products, premium services',
             'characteristics': {
@@ -108,7 +123,7 @@ class SegmentService:
             }
         },
         2: {
-            'name': 'Growth Potential',
+            'name': 'Potential Growth',
             'description': 'High-income customers with untapped spending potential',
             'strategy': 'Personalized engagement, product discovery, incentives',
             'characteristics': {
@@ -119,7 +134,7 @@ class SegmentService:
             }
         },
         3: {
-            'name': 'Standard Customers',
+            'name': 'Average Customers',
             'description': 'Balanced customers with moderate income and spending',
             'strategy': 'Regular promotions, cross-selling, retention programs',
             'characteristics': {
@@ -130,7 +145,7 @@ class SegmentService:
             }
         },
         4: {
-            'name': 'Emerging Segment',
+            'name': 'Young Savers',
             'description': 'Young customers building their purchasing habits',
             'strategy': 'Digital engagement, trend-focused campaigns, growth nurturing',
             'characteristics': {
@@ -143,12 +158,12 @@ class SegmentService:
     }
     
     @classmethod
-    def get_segment_info(cls, cluster_id: int) -> dict:
+    def get_segment_info(cls, cluster_id: int) -> Dict[str, Any]:
         """Get segment information by cluster ID."""
         return cls.SEGMENTS.get(cluster_id, cls.SEGMENTS[0])
     
     @classmethod
-    def get_all_segments(cls) -> list[SegmentProfile]:
+    def get_all_segments(cls) -> List[SegmentProfile]:
         """Get all segment profiles."""
         segments = []
         for cluster_id, info in cls.SEGMENTS.items():
