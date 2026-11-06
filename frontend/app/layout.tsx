@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
+import { Lato } from "next/font/google";
 import "./globals.css";
 
+const lato = Lato({
+  subsets: ["latin"],
+  weight: ["300", "400", "700", "900"],
+  variable: "--font-lato",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Customer Segmentation Platform",
-  description: "Advanced customer segmentation and analytics",
+  title: "SegmentAI Pro | AI Customer Segmentation Platform",
+  description: "Advanced AI-powered customer segmentation platform with precision analytics",
 };
 
 export default function RootLayout({
@@ -12,8 +20,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="theme-dark">
-      <body suppressHydrationWarning>
+    <html lang="en" className={`theme-dark ${lato.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="font-lato antialiased transition-colors duration-300" suppressHydrationWarning>
         {children}
       </body>
     </html>
