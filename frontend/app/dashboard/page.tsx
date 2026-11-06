@@ -52,15 +52,15 @@ export default function Dashboard() {
         {/* Top Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-black tracking-tight text-white dark:text-[#ECEEF2]">
+            <h1 className="text-2xl font-black tracking-tight text-main">
               Intelligence Dashboard
             </h1>
-            <p className="mt-1 text-xs text-[#848CA2] font-medium">{headerSubtitle}</p>
+            <p className="mt-1 text-xs text-sub font-medium">{headerSubtitle}</p>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/[0.08] bg-[#181A20] text-xs font-semibold text-[#CAD1DE]">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] text-xs font-semibold text-main">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[#848CA2]">API:</span>
-            <span className="font-mono text-[11px] text-[#ECEEF2]">{API_BASE_URL}</span>
+            <span className="text-sub font-medium">Gateway:</span>
+            <span className="font-mono text-[11px] text-main">{API_BASE_URL}</span>
           </div>
         </div>
 
