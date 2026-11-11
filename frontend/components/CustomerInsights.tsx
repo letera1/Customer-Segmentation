@@ -44,17 +44,17 @@ export default function CustomerInsights() {
     <div className="panel p-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h2 className="text-lg font-bold tracking-tight text-white dark:text-[#ECEEF2]">
+          <h2 className="text-lg font-bold tracking-tight text-main">
             Behavioral Intelligence & Activity Heatmap
           </h2>
-          <p className="text-xs text-[#848CA2]">
+          <p className="text-xs text-sub mt-0.5">
             High-level demographic indicators and user classification frequency
           </p>
         </div>
         <select
           value={timeframe}
           onChange={(e) => setTimeframe(e.target.value)}
-          className="rounded-xl border border-white/[0.08] bg-[#181A20] px-3.5 py-1.5 text-xs font-bold text-[#CAD1DE] focus:outline-none focus:border-indigo-500/60"
+          className="rounded-xl border border-subtle bg-surface px-3.5 py-1.5 text-xs font-bold text-main focus:outline-none focus:border-indigo-500/60"
         >
           <option>Last 30 days</option>
           <option>Last 90 days</option>
@@ -67,17 +67,17 @@ export default function CustomerInsights() {
         {insights.map((insight, index) => (
           <div
             key={index}
-            className="rounded-xl border border-white/[0.07] bg-[#181A20] p-4 card-hover"
+            className="rounded-xl border border-subtle bg-surface p-4 card-hover"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#848CA2]">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-sub">
                 {insight.metric}
               </span>
               <span
                 className={`text-[11px] font-black px-2 py-0.5 rounded-md ${
                   insight.positive
-                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                    : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                    ? "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/20"
+                    : "bg-rose-500/10 text-rose-500 dark:text-rose-400 border border-rose-500/20"
                 }`}
               >
                 {insight.trend}
@@ -85,27 +85,27 @@ export default function CustomerInsights() {
             </div>
 
             <div className="flex items-baseline gap-1 mt-1">
-              <span className="text-2xl font-black tracking-tight text-white dark:text-[#ECEEF2]">
+              <span className="text-2xl font-black tracking-tight text-main">
                 {insight.value}
               </span>
-              <span className="text-xs font-bold text-[#848CA2]">{insight.unit}</span>
+              <span className="text-xs font-bold text-sub">{insight.unit}</span>
             </div>
 
-            <p className="text-[10px] font-medium text-[#5F667A] mt-1">{insight.subtext}</p>
+            <p className="text-[10px] font-medium text-muted mt-1">{insight.subtext}</p>
           </div>
         ))}
       </div>
 
       {/* Activity Heatmap Grid */}
-      <div className="mt-6 pt-5 border-t border-white/[0.06]">
+      <div className="mt-6 pt-5 border-t border-subtle">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-[#848CA2]">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-sub">
             Segmentation Pipeline Activity Matrix (35-Day Window)
           </h3>
-          <div className="flex items-center gap-2 text-[10px] text-[#5F667A] font-bold">
+          <div className="flex items-center gap-2 text-[10px] text-muted font-bold">
             <span>Low</span>
             <div className="flex gap-1">
-              <div className="w-2.5 h-2.5 rounded bg-[#20222A]" />
+              <div className="w-2.5 h-2.5 rounded bg-elevated" />
               <div className="w-2.5 h-2.5 rounded bg-emerald-500/30" />
               <div className="w-2.5 h-2.5 rounded bg-emerald-500/60" />
               <div className="w-2.5 h-2.5 rounded bg-emerald-400" />
@@ -127,7 +127,7 @@ export default function CustomerInsights() {
                     ? "bg-emerald-500/50 border-emerald-500/30"
                     : intensityIndex > 2
                     ? "bg-emerald-500/25 border-emerald-500/20"
-                    : "bg-[#20222A] border-white/[0.04]"
+                    : "bg-elevated border-subtle"
                 }`}
                 title={`Day ${i + 1} - Activity Tier ${intensityIndex}`}
               />

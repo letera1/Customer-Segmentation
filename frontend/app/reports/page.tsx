@@ -148,13 +148,13 @@ export default function Reports() {
                 <div
                   key={report.id}
                   onClick={() => setSelectedReport(report.id)}
-                  className={`panel card-hover p-5 flex flex-col justify-between cursor-pointer border border-charcoal-700/60 dark:border-white/[0.06] ${
+                  className={`panel card-hover p-5 flex flex-col justify-between cursor-pointer border border-subtle ${
                     selectedReport === report.id ? "ring-2 ring-indigo-500/50" : ""
                   }`}
                 >
                   <div>
                     <div className="flex items-start justify-between mb-3.5">
-                      <div className="w-10 h-10 rounded-xl bg-softgray-100 dark:bg-[#20222A] border border-charcoal-700/40 dark:border-white/[0.08] flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-xl bg-elevated border border-subtle flex items-center justify-center">
                         {getTemplateIcon(report.id)}
                       </div>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border border-indigo-500/20">
@@ -176,7 +176,7 @@ export default function Reports() {
                       generateReport(report.id, report.name);
                     }}
                     disabled={generatingId !== null}
-                    className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-softgray-100 dark:bg-[#20222A] hover:bg-softgray-200 dark:hover:bg-[#272A34] text-main border border-charcoal-700/40 dark:border-white/[0.06] py-2 text-xs font-bold transition-all disabled:opacity-50"
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-surface hover:bg-elevated text-main border border-subtle py-2 text-xs font-bold transition-all disabled:opacity-50"
                   >
                     {isGenerating ? (
                       <>
@@ -210,11 +210,11 @@ export default function Reports() {
             <span className="text-xs font-semibold text-muted">{generatedReports.length} Available</span>
           </div>
 
-          <div className="divide-y divide-charcoal-700/40 dark:divide-white/[0.06] border-t border-charcoal-700/40 dark:border-white/[0.06]">
+          <div className="divide-y divide-subtle border-t border-subtle">
             {generatedReports.map((report, i) => (
-              <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between py-3.5 gap-3 hover:bg-softgray-100/40 dark:hover:bg-white/[0.02] px-2 rounded-lg transition-colors">
+              <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between py-3.5 gap-3 hover:bg-surface px-2 rounded-lg transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-softgray-100 dark:bg-[#20222A] border border-charcoal-700/40 dark:border-white/[0.08] flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-lg bg-elevated border border-subtle flex items-center justify-center shrink-0">
                     <svg className="w-4 h-4 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
@@ -228,12 +228,12 @@ export default function Reports() {
                 </div>
 
                 <div className="flex items-center gap-2 self-end sm:self-auto">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-black tracking-wider uppercase bg-softgray-100 dark:bg-[#20222A] text-sub border border-charcoal-700/40 dark:border-white/[0.06]">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-black tracking-wider uppercase bg-elevated text-sub border border-subtle">
                     {report.format}
                   </span>
                   <button
                     onClick={() => downloadReport(report)}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100/80 dark:bg-[#20222A] px-3 py-1.5 text-xs font-semibold text-main hover:border-indigo-500/40 transition-all"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-subtle bg-surface px-3 py-1.5 text-xs font-semibold text-main hover:border-indigo-500/40 transition-all"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -259,7 +259,7 @@ export default function Reports() {
                 { name: "Silhouette Drift & Retraining Review", schedule: "1st of every month", channel: "Data Science Queue" },
                 { name: "Quarterly Cohort Value Realization", schedule: "Quarter end close", channel: "Executive Boardroom" },
               ].map((item, i) => (
-                <div key={i} className="flex items-center justify-between rounded-xl bg-softgray-100/60 dark:bg-[#181A20] p-3 border border-charcoal-700/40 dark:border-white/[0.05]">
+                <div key={i} className="flex items-center justify-between rounded-xl bg-surface p-3 border border-subtle">
                   <div>
                     <p className="text-xs font-bold text-main">{item.name}</p>
                     <p className="text-[11px] text-muted font-medium mt-0.5">{item.schedule} • {item.channel}</p>
@@ -286,7 +286,7 @@ export default function Reports() {
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="rounded-xl border border-charcoal-700/40 dark:border-white/[0.05] bg-softgray-100/60 dark:bg-[#181A20] p-3"
+                  className="rounded-xl border border-subtle bg-surface p-3"
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs font-bold text-main">{item.ext}</span>

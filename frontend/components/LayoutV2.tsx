@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -96,10 +96,12 @@ function applyRootTheme(theme: ThemeMode, brightness: number): void {
 
 export default function LayoutV2({ children }: LayoutProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [theme, setTheme] = useState<ThemeMode>("dark");
   const [brightness, setBrightness] = useState(1);
   const [mounted, setMounted] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const savedTheme = localStorage.getItem(THEME_KEY);
@@ -126,64 +128,37 @@ export default function LayoutV2({ children }: LayoutProps) {
     localStorage.setItem(BRIGHTNESS_KEY, brightness.toString());
   }, [theme, brightness, mounted]);
 
-  const isLight = theme === "light";
-
-  const classes = useMemo(
-    () => ({
-      shell: isLight ? "bg-[#ECEEF2] text-[#171B23]" : "bg-[#131418] text-[#ECEEF2]",
-      sidebar: isLight
-        ? "border-[#D8DCE4] bg-[#F4F5F8]"
-        : "border-white/[0.07] bg-[#181A20]",
-      logoBorder: isLight ? "border-[#D8DCE4]" : "border-white/[0.07]",
-      navInactive: isLight
-        ? "text-[#4F5666] hover:bg-[#EAECEF] hover:text-[#171B23]"
-        : "text-[#9AA2B2] hover:bg-[#20222A] hover:text-[#ECEEF2]",
-      bottomBorder: isLight ? "border-[#D8DCE4]" : "border-white/[0.07]",
-      sidebarButton: isLight
-        ? "bg-[#EAECEF] text-[#4F5666] hover:bg-[#DFE2E8] hover:text-[#171B23]"
-        : "bg-[#20222A] text-[#9AA2B2] hover:bg-[#282B36] hover:text-[#ECEEF2]",
-      header: isLight
-        ? "border-[#D8DCE4] bg-[#F4F5F8]/90"
-        : "border-white/[0.07] bg-[#181A20]/80",
-      title: isLight ? "text-[#171B23]" : "text-[#ECEEF2]",
-      search: isLight
-        ? "border-[#D8DCE4] bg-[#FFFFFF] text-[#171B23] placeholder-[#7A8293] focus:border-indigo-500/70"
-        : "border-white/[0.08] bg-[#20222A] text-[#ECEEF2] placeholder-[#646B7C] focus:border-indigo-500/70",
-      subtleButton: isLight
-        ? "bg-[#EAECEF] text-[#4F5666] hover:bg-[#DFE2E8] hover:text-[#171B23]"
-        : "bg-[#20222A] text-[#9AA2B2] hover:bg-[#282B36] hover:text-[#ECEEF2]",
-      profile: isLight ? "bg-[#EAECEF] border-[#D8DCE4]" : "bg-[#20222A] border-white/[0.07]",
-      profileMeta: isLight ? "text-[#4F5666]" : "text-[#9AA2B2]",
-      main: isLight ? "bg-[#ECEEF2]" : "bg-[#131418]",
-      brightnessLabel: isLight ? "text-[#4F5666]" : "text-[#9AA2B2]",
-    }),
-    [isLight]
-  );
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/customers?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   return (
-    <div className={`flex h-screen overflow-hidden font-lato ${classes.shell}`}>
+    <div className="flex h-screen overflow-hidden font-lato bg-canvas text-main">
       {/* Sidebar Navigation */}
       <aside
         className={`${
           sidebarOpen ? "w-64" : "w-20"
-        } flex flex-col border-r ${classes.sidebar} transition-all duration-300 z-20`}
+        } flex flex-col border-r border-subtle bg-sidebar transition-all duration-300 z-20`}
       >
         {/* Brand Header */}
-        <div className={`flex h-16 items-center justify-between px-5 border-b ${classes.logoBorder}`}>
+        <div className="flex h-16 items-center justify-between px-5 border-b border-subtle">
           {sidebarOpen ? (
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-700 shadow-md shadow-indigo-600/20 text-white font-black text-sm">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 shadow-sm text-white font-black text-sm">
                 S
               </div>
               <div>
                 <h1 className="text-sm font-black tracking-tight leading-none text-main">SegmentAI</h1>
                 <p className="text-[10px] font-bold tracking-wider uppercase text-muted mt-1">
-                  Enterprise
+                  Enterprise ML
                 </p>
               </div>
             </div>
           ) : (
-            <div className="flex h-9 w-9 mx-auto items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-700 shadow-md shadow-indigo-600/20 text-white font-black text-sm">
+            <div className="flex h-9 w-9 mx-auto items-center justify-center rounded-xl bg-indigo-600 shadow-sm text-white font-black text-sm">
               S
             </div>
           )}
@@ -199,12 +174,12 @@ export default function LayoutV2({ children }: LayoutProps) {
                 href={item.href}
                 className={`flex items-center gap-3 rounded-xl px-3 py-2 text-xs font-bold transition-all duration-200 ${
                   isActive
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-600/20"
-                    : classes.navInactive
+                    ? "bg-indigo-600 text-white shadow-sm"
+                    : "text-sub hover:bg-surface hover:text-main"
                 }`}
                 title={!sidebarOpen ? item.name : undefined}
               >
-                <div className={`flex items-center justify-center ${isActive ? "text-white" : "opacity-80"}`}>
+                <div className={`flex items-center justify-center ${isActive ? "text-white" : "text-sub"}`}>
                   {item.icon}
                 </div>
                 {sidebarOpen && <span className="tracking-tight">{item.name}</span>}
@@ -214,10 +189,10 @@ export default function LayoutV2({ children }: LayoutProps) {
         </nav>
 
         {/* Sidebar Collapse Action */}
-        <div className={`border-t ${classes.bottomBorder} p-3`}>
+        <div className="border-t border-subtle p-3">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className={`flex w-full items-center justify-center gap-2 rounded-xl py-2 text-[11px] font-bold transition-all ${classes.sidebarButton}`}
+            className="flex w-full items-center justify-center gap-2 rounded-xl py-2 text-[11px] font-bold transition-all bg-surface text-sub hover:text-main"
             aria-label="Toggle Sidebar Navigation"
           >
             <svg
@@ -236,7 +211,7 @@ export default function LayoutV2({ children }: LayoutProps) {
       {/* Main Content Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top Header */}
-        <header className={`flex h-16 items-center justify-between border-b px-8 backdrop-blur-md z-10 ${classes.header}`}>
+        <header className="flex h-16 items-center justify-between border-b border-subtle px-8 bg-sidebar/90 backdrop-blur-md z-10">
           <div className="flex items-center gap-3">
             <h2 className="text-base font-extrabold tracking-tight text-main">
               {navigation.find((item) => item.href === pathname)?.name || "Dashboard"}
@@ -244,10 +219,10 @@ export default function LayoutV2({ children }: LayoutProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Theme Toggle Button (Clean Vector Icons, No Emojis) */}
+            {/* Theme Toggle Button */}
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className={`flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-bold transition-all border ${classes.subtleButton}`}
+              className="flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-bold transition-all border border-subtle bg-surface text-sub hover:text-main"
               aria-label="Toggle Theme"
             >
               {theme === "dark" ? (
@@ -259,7 +234,7 @@ export default function LayoutV2({ children }: LayoutProps) {
                 </>
               ) : (
                 <>
-                  <svg className="w-3.5 h-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-3.5 h-3.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                   </svg>
                   <span>Charcoal</span>
@@ -277,7 +252,7 @@ export default function LayoutV2({ children }: LayoutProps) {
                 step={0.05}
                 value={brightness}
                 onChange={(e) => setBrightness(clampBrightness(Number.parseFloat(e.target.value)))}
-                className="h-1.5 w-16 cursor-pointer accent-indigo-500 rounded-lg bg-gray-600/40"
+                className="h-1.5 w-16 cursor-pointer accent-indigo-500 rounded-lg bg-gray-500/30"
                 aria-label="Adjust interface brightness"
               />
               <span className="w-8 text-right text-[11px] font-mono font-bold text-sub">
@@ -286,33 +261,28 @@ export default function LayoutV2({ children }: LayoutProps) {
             </div>
 
             {/* Quick Search */}
-            <div className="relative hidden lg:block">
+            <form onSubmit={handleSearch} className="relative hidden lg:block">
               <input
                 type="text"
-                placeholder="Search telemetry..."
-                className={`h-8 w-52 rounded-xl border px-3 pl-8 pr-8 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-indigo-500 ${classes.search}`}
+                placeholder="Search customers..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-8 w-52 rounded-xl border border-subtle bg-surface px-3 pl-8 pr-8 text-xs font-medium text-main placeholder-muted focus:outline-none focus:ring-1 focus:ring-indigo-500"
               />
               <svg className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-sub" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              <span className="absolute right-2 top-1/2 -translate-y-1/2 rounded border border-subtle px-1 py-0.2 text-[9px] font-mono font-bold text-sub">
-                /
-              </span>
-            </div>
-
-            {/* Notification Bell (Clean SVG, No Emoji) */}
-            <button
-              className={`relative flex h-8 w-8 items-center justify-center rounded-xl transition-all border ${classes.subtleButton}`}
-              aria-label="System Notifications"
-            >
-              <svg className="w-3.5 h-3.5 text-sub" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-              <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-indigo-500" />
-            </button>
+              <button
+                type="submit"
+                aria-label="Search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold text-sub hover:text-main"
+              >
+                ↵
+              </button>
+            </form>
 
             {/* User Profile Pill */}
-            <div className={`flex items-center gap-2 rounded-xl px-2.5 py-1 border ${classes.profile}`}>
+            <div className="flex items-center gap-2 rounded-xl px-2.5 py-1 border border-subtle bg-surface">
               <div className="h-6 w-6 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-[11px] font-bold">
                 A
               </div>
@@ -325,7 +295,7 @@ export default function LayoutV2({ children }: LayoutProps) {
         </header>
 
         {/* Content Body */}
-        <main className={`flex-1 overflow-y-auto p-6 md:p-8 ${classes.main}`}>
+        <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-canvas">
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>
       </div>

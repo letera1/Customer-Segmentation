@@ -23,6 +23,11 @@ export default function Customers() {
 
   useEffect(() => {
     loadCustomers();
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get("search");
+      if (q) setSearch(q);
+    }
   }, []);
 
   const loadCustomers = async () => {

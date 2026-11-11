@@ -82,9 +82,9 @@ export default function Settings() {
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* API Configuration */}
-          <div className="panel p-5 border border-charcoal-700/60 dark:border-white/[0.06]">
+          <div className="panel p-5 border border-subtle">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-softgray-100 dark:bg-[#20222A] border border-charcoal-700/40 dark:border-white/[0.08] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-elevated border border-subtle flex items-center justify-center">
                 <svg className="w-4 h-4 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                 </svg>
@@ -104,7 +104,7 @@ export default function Settings() {
                   type="text"
                   value={apiEndpoint}
                   onChange={(e) => setApiEndpoint(e.target.value)}
-                  className="w-full rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] px-3.5 py-2.5 text-xs font-semibold text-main focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-xl border border-subtle bg-surface px-3.5 py-2.5 text-xs font-semibold text-main focus:border-indigo-500 focus:outline-none"
                   placeholder="http://localhost:8000"
                 />
               </div>
@@ -116,7 +116,7 @@ export default function Settings() {
                 <select
                   value={modelVersion}
                   onChange={(e) => setModelVersion(e.target.value)}
-                  className="w-full rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] px-3.5 py-2.5 text-xs font-semibold text-main focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-xl border border-subtle bg-surface px-3.5 py-2.5 text-xs font-semibold text-main focus:border-indigo-500 focus:outline-none"
                 >
                   <option value="v2.0">v2.0 — K-Means 5-Cluster Centroids (Production)</option>
                   <option value="v1.5">v1.5 — High-Variance Fallback Model</option>
@@ -124,7 +124,7 @@ export default function Settings() {
                 </select>
               </div>
 
-              <div className="flex items-center justify-between rounded-xl bg-softgray-100/70 dark:bg-[#181A20] p-3 border border-charcoal-700/30 dark:border-white/[0.05]">
+              <div className="flex items-center justify-between rounded-xl bg-surface p-3 border border-subtle">
                 <div>
                   <p className="text-xs font-bold text-main">Telemetry Auto-Refresh</p>
                   <p className="text-[11px] text-sub mt-0.5">Poll backend diagnostics every 30 seconds</p>
@@ -133,7 +133,7 @@ export default function Settings() {
                   type="button"
                   onClick={() => setAutoRefresh(!autoRefresh)}
                   className={`relative h-6 w-11 rounded-full transition-colors ${
-                    autoRefresh ? "bg-indigo-600" : "bg-charcoal-700 dark:bg-charcoal-800"
+                    autoRefresh ? "bg-indigo-600" : "bg-elevated"
                   }`}
                 >
                   <span
@@ -147,9 +147,9 @@ export default function Settings() {
           </div>
 
           {/* System Telemetry & Preferences */}
-          <div className="panel p-5 border border-charcoal-700/60 dark:border-white/[0.06]">
+          <div className="panel p-5 border border-subtle">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-softgray-100 dark:bg-[#20222A] border border-charcoal-700/40 dark:border-white/[0.08] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-elevated border border-subtle flex items-center justify-center">
                 <svg className="w-4 h-4 text-cyan-500 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                 </svg>
@@ -161,7 +161,7 @@ export default function Settings() {
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between rounded-xl bg-softgray-100/70 dark:bg-[#181A20] p-3 border border-charcoal-700/30 dark:border-white/[0.05]">
+              <div className="flex items-center justify-between rounded-xl bg-surface p-3 border border-subtle">
                 <div>
                   <p className="text-xs font-bold text-main">System Event Notifications</p>
                   <p className="text-[11px] text-sub mt-0.5">Emit toast alerts on new cohort classification</p>
@@ -170,7 +170,7 @@ export default function Settings() {
                   type="button"
                   onClick={() => setNotifications(!notifications)}
                   className={`relative h-6 w-11 rounded-full transition-colors ${
-                    notifications ? "bg-indigo-600" : "bg-charcoal-700 dark:bg-charcoal-800"
+                    notifications ? "bg-indigo-600" : "bg-elevated"
                   }`}
                 >
                   <span
@@ -188,7 +188,7 @@ export default function Settings() {
                 <select
                   value={dataRetention}
                   onChange={(e) => setDataRetention(e.target.value)}
-                  className="w-full rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] px-3.5 py-2.5 text-xs font-semibold text-main focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-xl border border-subtle bg-surface px-3.5 py-2.5 text-xs font-semibold text-main focus:border-indigo-500 focus:outline-none"
                 >
                   <option value="30">30 days — Standard Retention</option>
                   <option value="90">90 days — Quarterly Compliance</option>
@@ -197,7 +197,7 @@ export default function Settings() {
                 </select>
               </div>
 
-              <div className="p-3 rounded-xl bg-softgray-100/70 dark:bg-[#181A20] border border-charcoal-700/30 dark:border-white/[0.05]">
+              <div className="p-3 rounded-xl bg-surface border border-subtle">
                 <p className="text-xs font-bold text-main mb-1">Theme Palette Reference</p>
                 <p className="text-[11px] text-sub">
                   Charcoal Gray (<span className="font-mono text-indigo-400">#131418</span>) &amp; Smooth Light Gray (<span className="font-mono text-indigo-400">#ECEEF2</span>) in Lato typeface. Toggle available in the sidebar navigation.
@@ -207,9 +207,9 @@ export default function Settings() {
           </div>
 
           {/* Data Management */}
-          <div className="panel p-5 border border-charcoal-700/60 dark:border-white/[0.06]">
+          <div className="panel p-5 border border-subtle">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-softgray-100 dark:bg-[#20222A] border border-charcoal-700/40 dark:border-white/[0.08] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-elevated border border-subtle flex items-center justify-center">
                 <svg className="w-4 h-4 text-emerald-500 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
                 </svg>
@@ -223,7 +223,7 @@ export default function Settings() {
             <div className="space-y-2.5">
               <button
                 onClick={handleExport}
-                className="w-full inline-flex items-center justify-between rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100/70 dark:bg-[#181A20] px-4 py-2.5 text-xs font-bold text-main hover:border-indigo-500/40 transition-all"
+                className="w-full inline-flex items-center justify-between rounded-xl border border-subtle bg-surface px-4 py-2.5 text-xs font-bold text-main hover:border-indigo-500/40 transition-all"
               >
                 <span>Export Configuration Backup</span>
                 <svg className="w-4 h-4 text-sub" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -249,9 +249,9 @@ export default function Settings() {
           </div>
 
           {/* Security & Access */}
-          <div className="panel p-5 border border-charcoal-700/60 dark:border-white/[0.06]">
+          <div className="panel p-5 border border-subtle">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-softgray-100 dark:bg-[#20222A] border border-charcoal-700/40 dark:border-white/[0.08] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-elevated border border-subtle flex items-center justify-center">
                 <svg className="w-4 h-4 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
@@ -263,14 +263,14 @@ export default function Settings() {
             </div>
 
             <div className="space-y-3">
-              <div className="rounded-xl bg-softgray-100/70 dark:bg-[#181A20] p-3 border border-charcoal-700/30 dark:border-white/[0.05]">
+              <div className="rounded-xl bg-surface p-3 border border-subtle">
                 <p className="text-xs font-bold text-main">API Access Key</p>
                 <div className="mt-2 flex gap-2">
                   <input
                     type="password"
                     value="sgmt_live_k8f921a00e572d4"
                     readOnly
-                    className="flex-1 rounded-lg border border-charcoal-700/50 dark:border-white/[0.08] bg-white dark:bg-[#20222A] px-3 py-1.5 text-xs font-mono text-sub"
+                    className="flex-1 rounded-lg border border-subtle bg-elevated px-3 py-1.5 text-xs font-mono text-sub"
                   />
                   <button
                     onClick={() => alert("API Token copied to clipboard.")}
@@ -288,24 +288,24 @@ export default function Settings() {
         </div>
 
         {/* System Overview */}
-        <div className="panel p-5 border border-charcoal-700/60 dark:border-white/[0.06]">
+        <div className="panel p-5 border border-subtle">
           <h2 className="text-xs font-bold uppercase tracking-wider text-sub mb-3">
             System Environment Diagnostics
           </h2>
           <div className="grid gap-3 sm:grid-cols-4">
-            <div className="rounded-xl bg-softgray-100/70 dark:bg-[#181A20] p-3 border border-charcoal-700/30 dark:border-white/[0.05]">
+            <div className="rounded-xl bg-surface p-3 border border-subtle">
               <span className="text-[10px] uppercase font-bold text-muted">Engine</span>
               <p className="mt-1 text-xs font-bold text-main">FastAPI v0.115</p>
             </div>
-            <div className="rounded-xl bg-softgray-100/70 dark:bg-[#181A20] p-3 border border-charcoal-700/30 dark:border-white/[0.05]">
+            <div className="rounded-xl bg-surface p-3 border border-subtle">
               <span className="text-[10px] uppercase font-bold text-muted">Frontend Architecture</span>
               <p className="mt-1 text-xs font-bold text-main">Next.js 15 App Router</p>
             </div>
-            <div className="rounded-xl bg-softgray-100/70 dark:bg-[#181A20] p-3 border border-charcoal-700/30 dark:border-white/[0.05]">
+            <div className="rounded-xl bg-surface p-3 border border-subtle">
               <span className="text-[10px] uppercase font-bold text-muted">Design System</span>
               <p className="mt-1 text-xs font-bold text-main">Lato + Charcoal Gray</p>
             </div>
-            <div className="rounded-xl bg-softgray-100/70 dark:bg-[#181A20] p-3 border border-charcoal-700/30 dark:border-white/[0.05]">
+            <div className="rounded-xl bg-surface p-3 border border-subtle">
               <span className="text-[10px] uppercase font-bold text-muted">Cluster Algorithm</span>
               <p className="mt-1 text-xs font-bold text-main">K-Means (k=5 Centroids)</p>
             </div>

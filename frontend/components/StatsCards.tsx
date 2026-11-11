@@ -84,10 +84,10 @@ export default function StatsCards({ stats }: StatsCardsProps) {
           />
 
           <div className="flex items-center justify-between mb-3 relative z-10">
-            <div className={`w-10 h-10 rounded-xl bg-charcoal-800/80 dark:bg-[#20222A] flex items-center justify-center border ${card.accent}`}>
+            <div className={`w-10 h-10 rounded-xl bg-elevated flex items-center justify-center border ${card.accent}`}>
               {card.icon}
             </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border border-emerald-500/20 bg-emerald-500/10 text-emerald-500 dark:text-emerald-400">
               <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
               </svg>

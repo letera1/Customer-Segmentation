@@ -65,9 +65,9 @@ export default function RealtimeActivity() {
         {activities.map((activity, index) => (
           <div
             key={index}
-            className="flex items-center gap-3 rounded-xl border border-charcoal-700/60 dark:border-white/[0.06] bg-softgray-100/60 dark:bg-[#181A20] p-2.5 transition-all hover:border-indigo-500/30"
+            className="flex items-center gap-3 rounded-xl border border-subtle bg-surface p-2.5 transition-all hover:border-indigo-500/30"
           >
-            <div className="w-8 h-8 rounded-lg bg-white dark:bg-[#20222A] border border-charcoal-700/40 dark:border-white/[0.06] flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-elevated border border-subtle flex items-center justify-center shrink-0">
               {renderIcon(activity.type)}
             </div>
             <div className="flex-1 min-w-0">
@@ -80,10 +80,10 @@ export default function RealtimeActivity() {
       </div>
 
       {/* Activity Trend Frequency Bar Chart */}
-      <div className="mt-5 pt-4 border-t border-charcoal-700/40 dark:border-white/[0.06]">
+      <div className="mt-5 pt-4 border-t border-subtle">
         <div className="flex items-center justify-between text-[11px] font-bold text-sub mb-3">
           <span>Inference Frequency</span>
-          <span className="text-indigo-400 font-semibold">99.8% Uptime</span>
+          <span className="text-indigo-500 dark:text-indigo-400 font-semibold">99.8% Uptime</span>
         </div>
         <div className="flex items-end justify-between h-14 gap-1.5">
           {trendHeights.map((height, i) => (

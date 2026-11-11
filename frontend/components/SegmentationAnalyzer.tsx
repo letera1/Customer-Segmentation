@@ -102,7 +102,7 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               <label className="text-[11px] font-bold uppercase tracking-wider text-sub">
                 Customer Age
               </label>
-              <span className="text-xs font-black px-2 py-0.5 rounded bg-black/20 text-indigo-400 border border-indigo-500/20 font-mono">
+              <span className="text-xs font-black px-2 py-0.5 rounded bg-elevated text-indigo-500 dark:text-indigo-400 border border-indigo-500/20 font-mono">
                 {age} yrs
               </span>
             </div>
@@ -112,7 +112,7 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               max="70"
               value={age}
               onChange={(e) => setAge(Number(e.target.value))}
-              className="w-full h-1.5 bg-[#14151A] rounded-lg appearance-none cursor-pointer accent-indigo-500"
+              className="w-full h-1.5 bg-elevated rounded-lg appearance-none cursor-pointer accent-indigo-500"
             />
             <div className="flex justify-between text-[10px] text-muted mt-1 font-mono">
               <span>18</span>
@@ -126,7 +126,7 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               <label className="text-[11px] font-bold uppercase tracking-wider text-sub">
                 Annual Income
               </label>
-              <span className="text-xs font-black px-2 py-0.5 rounded bg-black/20 text-emerald-400 border border-emerald-500/20 font-mono">
+              <span className="text-xs font-black px-2 py-0.5 rounded bg-elevated text-emerald-500 dark:text-emerald-400 border border-emerald-500/20 font-mono">
                 ${income}k
               </span>
             </div>
@@ -136,7 +136,7 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               max="140"
               value={income}
               onChange={(e) => setIncome(Number(e.target.value))}
-              className="w-full h-1.5 bg-[#14151A] rounded-lg appearance-none cursor-pointer accent-emerald-500"
+              className="w-full h-1.5 bg-elevated rounded-lg appearance-none cursor-pointer accent-emerald-500"
             />
             <div className="flex justify-between text-[10px] text-muted mt-1 font-mono">
               <span>$15k</span>
@@ -150,7 +150,7 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               <label className="text-[11px] font-bold uppercase tracking-wider text-sub">
                 Spending Score
               </label>
-              <span className="text-xs font-black px-2 py-0.5 rounded bg-black/20 text-purple-400 border border-purple-500/20 font-mono">
+              <span className="text-xs font-black px-2 py-0.5 rounded bg-elevated text-purple-500 dark:text-purple-400 border border-purple-500/20 font-mono">
                 {spendingScore} / 100
               </span>
             </div>
@@ -160,7 +160,7 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               max="100"
               value={spendingScore}
               onChange={(e) => setSpendingScore(Number(e.target.value))}
-              className="w-full h-1.5 bg-[#14151A] rounded-lg appearance-none cursor-pointer accent-purple-500"
+              className="w-full h-1.5 bg-elevated rounded-lg appearance-none cursor-pointer accent-purple-500"
             />
             <div className="flex justify-between text-[10px] text-muted mt-1 font-mono">
               <span>Conservative (1)</span>
@@ -171,7 +171,7 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
           <button
             onClick={handlePredict}
             disabled={loading}
-            className="w-full mt-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-indigo-600/20 transition-all hover:opacity-90 disabled:opacity-50"
+            className="w-full mt-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all disabled:opacity-50"
           >
             {loading ? "Analyzing Dimensions..." : "Execute Segment Prediction"}
           </button>
@@ -187,7 +187,7 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
                     Predicted Classification
                   </span>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs font-mono font-black px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                    <span className="text-xs font-mono font-black px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border border-indigo-500/20">
                       {segmentBadges[prediction.cluster_id]?.code || "C0"}
                     </span>
                     <h3 className="text-lg font-black text-main tracking-tight">
@@ -205,16 +205,16 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
               </p>
 
               {/* Confidence Percentage Bar */}
-              <div className="space-y-1.5 p-3 rounded-lg border border-subtle bg-black/15">
+              <div className="space-y-1.5 p-3 rounded-lg border border-subtle bg-elevated">
                 <div className="flex justify-between text-xs font-bold">
                   <span className="text-sub">Confidence Metric</span>
-                  <span className="text-emerald-400 font-mono font-black">
+                  <span className="text-emerald-500 dark:text-emerald-400 font-mono font-black">
                     {typeof prediction.confidence === "number"
                       ? `${(prediction.confidence * 100).toFixed(1)}%`
                       : String(prediction.confidence)}
                   </span>
                 </div>
-                <div className="w-full bg-[#14151A] rounded-full h-1.5 overflow-hidden">
+                <div className="w-full bg-canvas rounded-full h-1.5 overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500"
                     style={{

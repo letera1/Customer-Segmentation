@@ -32,7 +32,7 @@ export default function PredictionHistory() {
   return (
     <div className="panel p-5">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-base font-bold text-white dark:text-[#ECEEF2] tracking-tight">
+        <h2 className="text-base font-bold text-main tracking-tight">
           Recent Predictions
         </h2>
         {history.length > 0 && (
@@ -43,7 +43,7 @@ export default function PredictionHistory() {
               }
               setHistory([]);
             }}
-            className="text-xs font-semibold text-[#848CA2] hover:text-rose-400 transition-colors"
+            className="text-xs font-semibold text-sub hover:text-rose-400 transition-colors"
           >
             Clear History
           </button>
@@ -57,7 +57,7 @@ export default function PredictionHistory() {
             return (
               <div
                 key={index}
-                className="rounded-xl border border-charcoal-700/60 dark:border-white/[0.06] bg-softgray-100/60 dark:bg-[#181A20] p-3 transition-all hover:border-indigo-500/30"
+                className="rounded-xl border border-subtle bg-surface p-3 transition-all hover:border-indigo-500/30"
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
@@ -74,7 +74,7 @@ export default function PredictionHistory() {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between text-[11px] font-bold text-sub bg-white dark:bg-[#20222A] px-2.5 py-1.5 rounded-lg border border-charcoal-700/40 dark:border-white/[0.04]">
+                <div className="flex items-center justify-between text-[11px] font-bold text-sub bg-elevated px-2.5 py-1.5 rounded-lg border border-subtle">
                   <span>Age: <strong className="text-main">{item.age}</strong></span>
                   <span>Inc: <strong className="text-main">${item.income}k</strong></span>
                   <span>Score: <strong className="text-main">{item.spendingScore}</strong></span>
@@ -85,7 +85,7 @@ export default function PredictionHistory() {
         </div>
       ) : (
         <div className="text-center py-8">
-          <div className="w-10 h-10 mx-auto mb-2 rounded-xl border border-charcoal-700/60 dark:border-white/10 bg-charcoal-800/40 dark:bg-[#181A20] flex items-center justify-center text-charcoal-400 dark:text-[#848CA2]">
+          <div className="w-10 h-10 mx-auto mb-2 rounded-xl border border-subtle bg-surface flex items-center justify-center text-sub">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>

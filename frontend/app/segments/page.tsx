@@ -109,14 +109,14 @@ export default function Segments() {
               return (
                 <div
                   key={segment.cluster_id}
-                  className={`panel card-hover p-6 flex flex-col justify-between relative overflow-hidden transition-all border border-charcoal-700/60 dark:border-white/[0.06] ${accent.border}`}
+                  className={`panel card-hover p-6 flex flex-col justify-between relative overflow-hidden transition-all border border-subtle ${accent.border}`}
                 >
                   <div>
                     <div className="flex items-start justify-between mb-4">
                       <div className={`w-11 h-11 rounded-xl ${accent.badge} border flex items-center justify-center shadow-sm`}>
                         {accent.icon}
                       </div>
-                      <span className="px-2.5 py-1 rounded-md text-[11px] font-black uppercase tracking-wider bg-softgray-100 dark:bg-[#20222A] text-sub border border-charcoal-700/40 dark:border-white/[0.08]">
+                      <span className="px-2.5 py-1 rounded-md text-[11px] font-black uppercase tracking-wider bg-elevated text-sub border border-subtle">
                         Cluster {segment.cluster_id}
                       </span>
                     </div>
@@ -130,11 +130,11 @@ export default function Segments() {
 
                     {segment.characteristics && (
                       <div className="grid grid-cols-2 gap-2 mt-4 text-[11px] font-semibold text-main">
-                        <div className="bg-softgray-100/70 dark:bg-[#181A20] p-2.5 rounded-lg border border-charcoal-700/40 dark:border-white/[0.05]">
+                        <div className="bg-surface p-2.5 rounded-lg border border-subtle">
                           <span className="text-muted block text-[10px] uppercase font-bold tracking-wider">Income Tier</span>
                           <span className="mt-0.5 block">{segment.characteristics.income_level || "Moderate"}</span>
                         </div>
-                        <div className="bg-softgray-100/70 dark:bg-[#181A20] p-2.5 rounded-lg border border-charcoal-700/40 dark:border-white/[0.05]">
+                        <div className="bg-surface p-2.5 rounded-lg border border-subtle">
                           <span className="text-muted block text-[10px] uppercase font-bold tracking-wider">Price Sensitivity</span>
                           <span className="mt-0.5 block">{segment.characteristics.price_sensitivity || "Medium"}</span>
                         </div>
@@ -142,7 +142,7 @@ export default function Segments() {
                     )}
                   </div>
 
-                  <div className="mt-5 pt-4 border-t border-charcoal-700/40 dark:border-white/[0.06]">
+                  <div className="mt-5 pt-4 border-t border-subtle">
                     <div className="rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-3.5">
                       <p className="text-[10px] font-black uppercase tracking-wider text-indigo-500 dark:text-indigo-400 mb-1">
                         Recommended Playbook

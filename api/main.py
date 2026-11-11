@@ -41,9 +41,9 @@ async def lifespan(app: FastAPI):
     # Load ML models
     success, message = model_service.load_models()
     if success:
-        logger.info("✓ ML models loaded successfully")
+        logger.info("[+] ML models loaded successfully")
     else:
-        logger.warning(f"⚠ ML model loading issue: {message}")
+        logger.warning(f"[!] ML model loading issue: {message}")
     
     yield
     
@@ -140,6 +140,8 @@ async def root():
 @app.get("/health", response_model=HealthResponse, tags=["General"])
 async def health_check():
     """Health check endpoint for monitoring."""
+    if not model_service.is_ready():
+        model_service.load_models()
     uptime = (datetime.now(timezone.utc) - startup_time).total_seconds()
     
     return HealthResponse(
@@ -180,6 +182,8 @@ async def predict_segment(customer: CustomerInput):
     - Segment characteristics
     """
     if not model_service.is_ready():
+        model_service.load_models()
+    if not model_service.is_ready():
         raise HTTPException(
             status_code=503,
             detail="ML models not loaded. Please ensure models are trained and available."
@@ -201,6 +205,8 @@ async def batch_predict(request: BatchPredictionRequest):
     **Limits:**
     - Maximum 100 customers per batch
     """
+    if not model_service.is_ready():
+        model_service.load_models()
     if not model_service.is_ready():
         raise HTTPException(
             status_code=503,

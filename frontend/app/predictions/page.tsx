@@ -59,14 +59,14 @@ export default function Predictions() {
             history.map((item, i) => (
               <div
                 key={i}
-                className="panel p-5 border border-charcoal-700/60 dark:border-white/[0.06] hover:border-indigo-500/30 transition-all"
+                className="panel p-5 border border-subtle hover:border-indigo-500/30 transition-all"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2 mb-1.5">
                       <span className="w-2 h-2 rounded-full bg-indigo-500" />
                       <h3 className="text-base font-bold text-main">{item.segment_name}</h3>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-softgray-100 dark:bg-[#20222A] text-sub border border-charcoal-700/40 dark:border-white/[0.08]">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-elevated text-sub border border-subtle">
                         Cluster #{item.cluster_id}
                       </span>
                     </div>
@@ -75,15 +75,15 @@ export default function Predictions() {
                     </p>
 
                     <div className="mt-3.5 flex flex-wrap items-center gap-3 text-xs">
-                      <div className="bg-softgray-100 dark:bg-[#181A20] px-3 py-1.5 rounded-lg border border-charcoal-700/30 dark:border-white/[0.05]">
+                      <div className="bg-surface px-3 py-1.5 rounded-lg border border-subtle">
                         <span className="text-muted text-[10px] uppercase font-bold tracking-wider mr-1.5">Age</span>
                         <strong className="text-main">{item.age} yrs</strong>
                       </div>
-                      <div className="bg-softgray-100 dark:bg-[#181A20] px-3 py-1.5 rounded-lg border border-charcoal-700/30 dark:border-white/[0.05]">
+                      <div className="bg-surface px-3 py-1.5 rounded-lg border border-subtle">
                         <span className="text-muted text-[10px] uppercase font-bold tracking-wider mr-1.5">Annual Income</span>
                         <strong className="text-main">${item.income}k</strong>
                       </div>
-                      <div className="bg-softgray-100 dark:bg-[#181A20] px-3 py-1.5 rounded-lg border border-charcoal-700/30 dark:border-white/[0.05]">
+                      <div className="bg-surface px-3 py-1.5 rounded-lg border border-subtle">
                         <span className="text-muted text-[10px] uppercase font-bold tracking-wider mr-1.5">Spending Score</span>
                         <strong className="text-main">{item.spendingScore} / 100</strong>
                       </div>
@@ -99,8 +99,8 @@ export default function Predictions() {
               </div>
             ))
           ) : (
-            <div className="panel p-12 text-center border border-charcoal-700/60 dark:border-white/[0.06]">
-              <div className="w-10 h-10 mx-auto mb-3 rounded-xl border border-charcoal-700/60 dark:border-white/10 bg-softgray-100 dark:bg-[#181A20] flex items-center justify-center text-sub">
+            <div className="panel p-12 text-center border border-subtle">
+              <div className="w-10 h-10 mx-auto mb-3 rounded-xl border border-subtle bg-surface flex items-center justify-center text-sub">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>

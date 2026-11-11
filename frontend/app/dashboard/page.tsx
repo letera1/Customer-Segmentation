@@ -57,7 +57,7 @@ export default function Dashboard() {
             </h1>
             <p className="mt-1 text-xs text-sub font-medium">{headerSubtitle}</p>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-charcoal-700/50 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] text-xs font-semibold text-main">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-subtle bg-surface text-xs font-semibold text-main">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-sub font-medium">Gateway:</span>
             <span className="font-mono text-[11px] text-main">{API_BASE_URL}</span>

@@ -213,8 +213,8 @@ function MetricCard({
       onClick={onClick}
       className={`cursor-pointer rounded-xl border p-5 transition-all duration-200 ${
         selected
-          ? "border-indigo-500/50 bg-[#1A1D25] dark:bg-[#1A1D25] shadow-lg shadow-black/25 ring-1 ring-indigo-500/30"
-          : "card-bg hover:border-white/[0.14]"
+          ? "border-indigo-500/50 bg-elevated shadow-md ring-1 ring-indigo-500/30"
+          : "card-bg hover:border-indigo-500/30"
       }`}
     >
       <div className="flex items-center justify-between mb-2">
@@ -279,7 +279,7 @@ function ExecutiveFunnel({ timeRange }: { timeRange: string }) {
             Conversion Volume
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#2A2E3B]" />
+            <span className="w-2 h-2 rounded-full bg-elevated" />
             Drop-off Capacity
           </span>
         </div>
@@ -288,16 +288,16 @@ function ExecutiveFunnel({ timeRange }: { timeRange: string }) {
       {/* Structured Clean Table List of Stages */}
       <div className="space-y-4">
         {funnelStages.map((stage, idx) => (
-          <div key={idx} className="p-3.5 rounded-xl border border-subtle bg-surface hover:bg-white/[0.02] transition-colors">
+          <div key={idx} className="p-3.5 rounded-xl border border-subtle bg-surface hover:bg-elevated/40 transition-colors">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2">
               <div className="flex items-center gap-3">
-                <span className="text-xs font-black font-mono px-2 py-0.5 rounded bg-black/20 text-indigo-400 border border-indigo-500/20">
+                <span className="text-xs font-black font-mono px-2 py-0.5 rounded bg-elevated text-indigo-500 dark:text-indigo-400 border border-indigo-500/20">
                   {stage.stage}
                 </span>
                 <span className="text-xs font-bold text-main tracking-tight">
                   {stage.name}
                 </span>
-                <span className="text-[10px] uppercase font-bold text-muted bg-[#232631] px-2 py-0.5 rounded">
+                <span className="text-[10px] uppercase font-bold text-muted bg-elevated px-2 py-0.5 rounded">
                   {stage.rate}
                 </span>
               </div>
@@ -306,11 +306,11 @@ function ExecutiveFunnel({ timeRange }: { timeRange: string }) {
                 <span className="font-bold text-main">
                   {stage.visitors.toLocaleString()} <span className="text-[11px] font-normal text-muted">users</span>
                 </span>
-                <span className="font-black text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
+                <span className="font-black text-indigo-500 dark:text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
                   {stage.conversion.toFixed(1)}%
                 </span>
                 {stage.drop > 0 && (
-                  <span className="text-[11px] font-bold text-rose-400">
+                  <span className="text-[11px] font-bold text-rose-500 dark:text-rose-400">
                     -{stage.drop.toFixed(1)}% drop
                   </span>
                 )}
@@ -318,9 +318,9 @@ function ExecutiveFunnel({ timeRange }: { timeRange: string }) {
             </div>
 
             {/* Precision Dual-Layer Progress Meter (No oversized chunky blocks) */}
-            <div className="w-full bg-[#14151A] rounded-full h-2 overflow-hidden flex">
+            <div className="w-full bg-elevated rounded-full h-2 overflow-hidden flex">
               <div
-                className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
+                className="h-full bg-indigo-600 rounded-full transition-all duration-500"
                 style={{ width: `${stage.conversion}%` }}
               />
             </div>
@@ -397,7 +397,7 @@ function TrafficTrend({ timeRange }: { timeRange: string }) {
               cy={200 - (d.value / maxValue) * 180}
               r="4"
               fill="#6366F1"
-              stroke="#131418"
+              className="stroke-canvas"
               strokeWidth="2"
             />
           ))}
@@ -444,7 +444,7 @@ function DeviceBreakdown() {
                 <span className="font-black text-main font-mono">{device.share}%</span>
               </div>
             </div>
-            <div className="w-full bg-[#14151A] rounded-full h-1.5 overflow-hidden">
+            <div className="w-full bg-elevated rounded-full h-1.5 overflow-hidden">
               <div
                 className={`h-full ${device.color} rounded-full`}
                 style={{ width: `${device.share}%` }}
@@ -467,21 +467,21 @@ function ExecutiveInsights() {
       title: "Elevated High-Value Engagement",
       description: "Cluster #1 (High Value) shows 3.8x higher session depth and consistent weekly recurring interaction.",
       impact: "High Impact",
-      impactColor: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      impactColor: "text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
     },
     {
       label: "CONVERSION VELOCITY",
       title: "Catalog to Consideration Transition",
       description: "Drop-off occurs primarily between search and checkout initiation. Recommended strategy: inline cart prompts.",
       impact: "Optimization Target",
-      impactColor: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      impactColor: "text-amber-500 dark:text-amber-400 bg-amber-500/10 border-amber-500/20",
     },
     {
       label: "INFRASTRUCTURE TELEMETRY",
       title: "Model Inference Latency Baseline",
       description: "Average feature normalization and centroid prediction executing under 3.5ms across all API instances.",
       impact: "System Healthy",
-      impactColor: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
+      impactColor: "text-indigo-500 dark:text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
     },
   ];
 
@@ -544,7 +544,7 @@ function TopPages() {
             <div className="flex items-center gap-4 text-sub font-mono">
               <span>{page.views.toLocaleString()} visits</span>
               <span className="text-muted">{page.avgTime}</span>
-              <span className="text-indigo-400 font-bold">{page.bounce}</span>
+              <span className="text-indigo-500 dark:text-indigo-400 font-bold">{page.bounce}</span>
             </div>
           </div>
         ))}
@@ -576,7 +576,7 @@ function TrafficSources() {
               <span className="font-bold text-main">{src.name}</span>
               <span className="font-mono font-bold text-sub">{src.share}%</span>
             </div>
-            <div className="w-full bg-[#14151A] rounded-full h-1.5 overflow-hidden">
+            <div className="w-full bg-elevated rounded-full h-1.5 overflow-hidden">
               <div className={`h-full ${src.color} rounded-full`} style={{ width: `${src.share}%` }} />
             </div>
           </div>
@@ -606,12 +606,12 @@ function GeographicDistribution() {
         {regions.map((r, i) => (
           <div key={i} className="p-3 rounded-lg border border-subtle bg-surface flex items-center justify-between text-xs">
             <div className="flex items-center gap-2.5">
-              <span className="text-[10px] font-black font-mono px-2 py-0.5 rounded bg-black/20 text-sub border border-subtle">
+              <span className="text-[10px] font-black font-mono px-2 py-0.5 rounded bg-elevated text-sub border border-subtle">
                 {r.code}
               </span>
               <span className="font-bold text-main">{r.region}</span>
             </div>
-            <span className="font-mono font-bold text-indigo-400">{r.share}%</span>
+            <span className="font-mono font-bold text-indigo-500 dark:text-indigo-400">{r.share}%</span>
           </div>
         ))}
       </div>
