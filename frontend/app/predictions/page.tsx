@@ -2,9 +2,24 @@
 
 import { useState, useEffect } from "react";
 import LayoutV2 from "@/components/LayoutV2";
+import { batchPredictCustomers, BatchPredictionResponse, CustomerInput } from "@/lib/api";
+
+const SAMPLE_BATCH: CustomerInput[] = [
+  { age: 25, annual_income: 28, spending_score: 82 },
+  { age: 48, annual_income: 88, spending_score: 22 },
+  { age: 36, annual_income: 92, spending_score: 85 },
+  { age: 58, annual_income: 34, spending_score: 16 },
+  { age: 40, annual_income: 56, spending_score: 52 },
+  { age: 22, annual_income: 19, spending_score: 75 },
+  { age: 51, annual_income: 110, spending_score: 30 },
+  { age: 32, annual_income: 78, spending_score: 79 },
+];
 
 export default function Predictions() {
   const [history, setHistory] = useState<any[]>([]);
+  const [batchResults, setBatchResults] = useState<BatchPredictionResponse | null>(null);
+  const [loadingBatch, setLoadingBatch] = useState(false);
+  const [batchError, setBatchError] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -17,96 +32,201 @@ export default function Predictions() {
           }
         }
       } catch {
-        // fallback
+        // ignore
       }
     }
   }, []);
 
-  const clearHistory = () => {
+  const handleRunSampleBatch = async () => {
+    setLoadingBatch(true);
+    setBatchError(null);
+    try {
+      const res = await batchPredictCustomers(SAMPLE_BATCH);
+      setBatchResults(res);
+    } catch (err: any) {
+      setBatchError(err?.message || "Failed to execute batch prediction. Verify API service is reachable.");
+    } finally {
+      setLoadingBatch(false);
+    }
+  };
+
+  const handleClearHistory = () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("prediction_history");
-      setHistory([]);
     }
+    setHistory([]);
+  };
+
+  const handleExportHistory = () => {
+    const data = JSON.stringify(history, null, 2);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `inference_telemetry_history_${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
     <LayoutV2>
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-subtle">
           <div>
-            <h1 className="text-2xl font-black tracking-tight text-main">
-              Inference Telemetry Log
+            <h1 className="text-xl font-bold tracking-tight text-main">
+              Batch Inference & Telemetry Ledger
             </h1>
-            <p className="mt-1 text-xs text-sub font-medium">
-              Historical ledger of customer segmentation classifications and feature telemetry
+            <p className="text-xs text-sub mt-0.5">
+              High-throughput ML batch predictions and historical classification records
             </p>
           </div>
-          {history.length > 0 && (
+
+          <div className="flex items-center gap-2">
+            {history.length > 0 && (
+              <>
+                <button
+                  onClick={handleExportHistory}
+                  className="btn-secondary"
+                >
+                  Export History (JSON)
+                </button>
+                <button
+                  onClick={handleClearHistory}
+                  className="btn-secondary text-sub hover:text-rose-400"
+                >
+                  Clear Log
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Real Batch Prediction Workbench */}
+        <div className="panel p-5 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-subtle">
+            <div>
+              <h2 className="text-sm font-semibold tracking-tight text-main">
+                Batch Scoring Workbench (POST /batch-predict)
+              </h2>
+              <p className="text-xs text-sub">
+                Execute array-vectorized inferences in a single HTTP payload
+              </p>
+            </div>
             <button
-              onClick={clearHistory}
-              className="self-start sm:self-auto inline-flex items-center gap-1.5 rounded-xl border border-charcoal-700/60 dark:border-white/[0.08] bg-softgray-100 dark:bg-[#181A20] px-3.5 py-2 text-xs font-bold text-sub hover:text-rose-400 hover:border-rose-500/30 transition-all"
+              onClick={handleRunSampleBatch}
+              disabled={loadingBatch}
+              className="btn-primary"
             >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-              Clear Log History
+              {loadingBatch ? "Processing Batch..." : "Run Benchmark Batch (8 Records)"}
             </button>
+          </div>
+
+          {batchError && (
+            <div className="p-3 rounded-lg border border-subtle bg-surface text-xs text-sub">
+              <span className="font-semibold text-main">Error:</span> {batchError}
+            </div>
+          )}
+
+          {batchResults ? (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-2.5 rounded-lg bg-surface border border-subtle text-xs font-mono">
+                <span className="text-sub">
+                  Processed: <strong className="text-main">{batchResults.total_processed} records</strong>
+                </span>
+                <span className="text-sub">
+                  Execution Time: <strong className="text-main">{batchResults.processing_time_ms} ms</strong>
+                </span>
+                <span className="text-sub">
+                  Average Latency: <strong className="text-main">{(batchResults.processing_time_ms / batchResults.total_processed).toFixed(2)} ms/record</strong>
+                </span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-subtle text-muted text-[10px] uppercase font-semibold tracking-wider">
+                      <th className="py-2 px-3">#</th>
+                      <th className="py-2 px-3">Input Demographics</th>
+                      <th className="py-2 px-3">Cluster ID</th>
+                      <th className="py-2 px-3">Predicted Segment</th>
+                      <th className="py-2 px-3">Confidence</th>
+                      <th className="py-2 px-3">Recommended Strategy</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-subtle">
+                    {batchResults.predictions.map((p, idx) => {
+                      const input = SAMPLE_BATCH[idx] || { age: "-", annual_income: "-", spending_score: "-" };
+                      return (
+                        <tr key={idx} className="hover:bg-surface transition-colors">
+                          <td className="py-2.5 px-3 font-mono text-muted">{idx + 1}</td>
+                          <td className="py-2.5 px-3 font-mono text-main">
+                            {input.age} yrs | ${input.annual_income}k | {input.spending_score} score
+                          </td>
+                          <td className="py-2.5 px-3 font-mono font-medium text-main">#{p.cluster_id}</td>
+                          <td className="py-2.5 px-3 font-semibold text-main">{p.segment_name}</td>
+                          <td className="py-2.5 px-3 font-mono text-sub">{Math.round(p.confidence * 100)}%</td>
+                          <td className="py-2.5 px-3 text-sub truncate max-w-xs">{p.marketing_strategy}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : (
+            <div className="py-6 text-center text-xs text-muted">
+              Click &quot;Run Benchmark Batch&quot; to test the high-throughput inference endpoint with 8 customer vectors.
+            </div>
           )}
         </div>
 
-        <div className="grid gap-3.5">
+        {/* Historical Inferences Feed */}
+        <div className="panel p-5 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-subtle">
+            <div>
+              <h2 className="text-sm font-semibold tracking-tight text-main">
+                Single Inference History
+              </h2>
+              <p className="text-xs text-sub">
+                Client session cache of individual model classifications
+              </p>
+            </div>
+            <span className="text-xs font-mono text-muted">
+              {history.length} logged
+            </span>
+          </div>
+
           {history.length > 0 ? (
-            history.map((item, i) => (
-              <div
-                key={i}
-                className="panel p-5 border border-subtle hover:border-indigo-500/30 transition-all"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+            <div className="divide-y divide-subtle">
+              {history.map((item, idx) => (
+                <div key={idx} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                   <div>
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <span className="w-2 h-2 rounded-full bg-indigo-500" />
-                      <h3 className="text-base font-bold text-main">{item.segment_name}</h3>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-elevated text-sub border border-subtle">
-                        Cluster #{item.cluster_id}
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-mono text-muted text-[10px] px-1.5 py-0.5 rounded bg-surface border border-subtle">
+                        C{item.cluster_id}
+                      </span>
+                      <span className="font-semibold text-main">{item.segment_name}</span>
+                      <span className="text-muted text-[11px]">
+                        ({Math.round((item.confidence || 0.8) * 100)}% centroid match)
                       </span>
                     </div>
-                    <p className="text-xs text-sub leading-relaxed max-w-2xl">
-                      {item.segment_description}
-                    </p>
-
-                    <div className="mt-3.5 flex flex-wrap items-center gap-3 text-xs">
-                      <div className="bg-surface px-3 py-1.5 rounded-lg border border-subtle">
-                        <span className="text-muted text-[10px] uppercase font-bold tracking-wider mr-1.5">Age</span>
-                        <strong className="text-main">{item.age} yrs</strong>
-                      </div>
-                      <div className="bg-surface px-3 py-1.5 rounded-lg border border-subtle">
-                        <span className="text-muted text-[10px] uppercase font-bold tracking-wider mr-1.5">Annual Income</span>
-                        <strong className="text-main">${item.income}k</strong>
-                      </div>
-                      <div className="bg-surface px-3 py-1.5 rounded-lg border border-subtle">
-                        <span className="text-muted text-[10px] uppercase font-bold tracking-wider mr-1.5">Spending Score</span>
-                        <strong className="text-main">{item.spendingScore} / 100</strong>
-                      </div>
+                    <div className="text-[11px] font-mono text-sub">
+                      Age: {item.age} yrs | Income: ${item.income}k | Spending Score: {item.spendingScore}
                     </div>
                   </div>
 
-                  <div className="text-left sm:text-right shrink-0">
-                    <p className="text-[11px] font-mono text-muted">
-                      {new Date(item.timestamp).toLocaleString()}
-                    </p>
+                  <div className="text-right shrink-0">
+                    <span className="text-[10px] font-mono text-muted">
+                      {item.timestamp ? new Date(item.timestamp).toLocaleTimeString() : "Recent"}
+                    </span>
                   </div>
                 </div>
-              </div>
-            ))
+              ))}
+            </div>
           ) : (
-            <div className="panel p-12 text-center border border-subtle">
-              <div className="w-10 h-10 mx-auto mb-3 rounded-xl border border-subtle bg-surface flex items-center justify-center text-sub">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <p className="text-sm font-bold text-main">No Inference Logs Recorded</p>
-              <p className="text-xs text-sub mt-1">Classifications generated from the dashboard will be chronologically logged here</p>
+            <div className="py-8 text-center text-xs text-muted">
+              No individual predictions recorded in this session. Use the Dashboard to run classifications.
             </div>
           )}
         </div>

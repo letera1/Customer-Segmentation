@@ -1,139 +1,78 @@
 "use client";
 
-import { useState } from "react";
-
 export default function CustomerInsights() {
-  const [timeframe, setTimeframe] = useState("Last 30 days");
+  const metrics = [
+    { label: "Median Age", value: "38.4", unit: "years", sub: "18-70 distribution span" },
+    { label: "Mean Annual Income", value: "$60.5", unit: "k USD", sub: "Standard deviation: $26.2k" },
+    { label: "Average Spending Index", value: "50.2", unit: "/ 100", sub: "Benchmark midpoint calibration" },
+    { label: "High Value Tier Share", value: "21.6", unit: "%", sub: "Top revenue generating segment" },
+  ];
 
-  const insights = [
-    {
-      metric: "Median Age",
-      value: "41.6",
-      unit: "yrs",
-      trend: "+1.8%",
-      positive: true,
-      subtext: "core demographic",
-    },
-    {
-      metric: "Avg Annual Income",
-      value: "$68.4",
-      unit: "k",
-      trend: "+4.9%",
-      positive: true,
-      subtext: "purchasing power",
-    },
-    {
-      metric: "Mean Spending Score",
-      value: "54.7",
-      unit: "/ 100",
-      trend: "-0.8%",
-      positive: false,
-      subtext: "index average",
-    },
-    {
-      metric: "Cohort Retention",
-      value: "89.2",
-      unit: "%",
-      trend: "+3.4%",
-      positive: true,
-      subtext: "30-day active rate",
-    },
+  const characteristics = [
+    { cluster: "Cluster 0", name: "Budget Conscious", income: "Low to Moderate", spend: "Conservative", priceSens: "High", loyalty: "Medium" },
+    { cluster: "Cluster 1", name: "High Value", income: "High ($75k+)", spend: "Generous (70+)", priceSens: "Low", loyalty: "High" },
+    { cluster: "Cluster 2", name: "Potential Growth", income: "High ($75k+)", spend: "Conservative (<40)", priceSens: "Medium", loyalty: "High" },
+    { cluster: "Cluster 3", name: "Average Customers", income: "Moderate ($40-$70k)", spend: "Balanced (40-60)", priceSens: "Medium", loyalty: "Medium" },
+    { cluster: "Cluster 4", name: "Young Savers", income: "Low to Moderate", spend: "Selective / Trend", priceSens: "Medium", loyalty: "High" },
   ];
 
   return (
-    <div className="panel p-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+    <div className="panel p-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-subtle">
         <div>
-          <h2 className="text-lg font-bold tracking-tight text-main">
-            Behavioral Intelligence & Activity Heatmap
+          <h2 className="text-sm font-semibold tracking-tight text-main">
+            Cohort Characteristics & Archetype Matrix
           </h2>
-          <p className="text-xs text-sub mt-0.5">
-            High-level demographic indicators and user classification frequency
+          <p className="text-xs text-sub">
+            Cluster centroid parameters calibrated from historical customer transactions
           </p>
         </div>
-        <select
-          value={timeframe}
-          onChange={(e) => setTimeframe(e.target.value)}
-          className="rounded-xl border border-subtle bg-surface px-3.5 py-1.5 text-xs font-bold text-main focus:outline-none focus:border-indigo-500/60"
-        >
-          <option>Last 30 days</option>
-          <option>Last 90 days</option>
-          <option>Year to Date</option>
-        </select>
+        <span className="text-xs font-mono text-muted">Feature Set: [Age, Income, Spending]</span>
       </div>
 
-      {/* 4 KPI Insight Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {insights.map((insight, index) => (
-          <div
-            key={index}
-            className="rounded-xl border border-subtle bg-surface p-4 card-hover"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-sub">
-                {insight.metric}
-              </span>
-              <span
-                className={`text-[11px] font-black px-2 py-0.5 rounded-md ${
-                  insight.positive
-                    ? "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/20"
-                    : "bg-rose-500/10 text-rose-500 dark:text-rose-400 border border-rose-500/20"
-                }`}
-              >
-                {insight.trend}
-              </span>
+      {/* 4 Summary KPIs */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+        {metrics.map((m, i) => (
+          <div key={i} className="p-3 rounded-lg bg-surface border border-subtle">
+            <span className="text-[10px] font-semibold text-muted uppercase tracking-wider block">
+              {m.label}
+            </span>
+            <div className="flex items-baseline gap-1 mt-1 font-mono">
+              <span className="text-xl font-bold text-main">{m.value}</span>
+              <span className="text-xs text-sub">{m.unit}</span>
             </div>
-
-            <div className="flex items-baseline gap-1 mt-1">
-              <span className="text-2xl font-black tracking-tight text-main">
-                {insight.value}
-              </span>
-              <span className="text-xs font-bold text-sub">{insight.unit}</span>
-            </div>
-
-            <p className="text-[10px] font-medium text-muted mt-1">{insight.subtext}</p>
+            <span className="text-[10px] text-muted block mt-1">{m.sub}</span>
           </div>
         ))}
       </div>
 
-      {/* Activity Heatmap Grid */}
-      <div className="mt-6 pt-5 border-t border-subtle">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-sub">
-            Segmentation Pipeline Activity Matrix (35-Day Window)
-          </h3>
-          <div className="flex items-center gap-2 text-[10px] text-muted font-bold">
-            <span>Low</span>
-            <div className="flex gap-1">
-              <div className="w-2.5 h-2.5 rounded bg-elevated" />
-              <div className="w-2.5 h-2.5 rounded bg-emerald-500/30" />
-              <div className="w-2.5 h-2.5 rounded bg-emerald-500/60" />
-              <div className="w-2.5 h-2.5 rounded bg-emerald-400" />
-            </div>
-            <span>High</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-7 gap-2">
-          {Array.from({ length: 35 }).map((_, i) => {
-            const intensityIndex = (i * 7 + 13) % 10;
-            return (
-              <div
-                key={i}
-                className={`h-7 rounded-lg transition-all hover:scale-105 cursor-pointer border ${
-                  intensityIndex > 7
-                    ? "bg-emerald-400 border-emerald-300 shadow-sm shadow-emerald-500/20"
-                    : intensityIndex > 4
-                    ? "bg-emerald-500/50 border-emerald-500/30"
-                    : intensityIndex > 2
-                    ? "bg-emerald-500/25 border-emerald-500/20"
-                    : "bg-elevated border-subtle"
-                }`}
-                title={`Day ${i + 1} - Activity Tier ${intensityIndex}`}
-              />
-            );
-          })}
-        </div>
+      {/* Matrix Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr className="border-b border-subtle text-muted text-[10px] uppercase font-semibold tracking-wider">
+              <th className="py-2 px-3">Segment Archetype</th>
+              <th className="py-2 px-3">Income Level</th>
+              <th className="py-2 px-3">Spending Pattern</th>
+              <th className="py-2 px-3">Price Sensitivity</th>
+              <th className="py-2 px-3">Loyalty Potential</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-subtle">
+            {characteristics.map((c, i) => (
+              <tr key={i} className="hover:bg-surface transition-colors">
+                <td className="py-2.5 px-3">
+                  <div className="font-semibold text-main">{c.name}</div>
+                  <div className="text-[10px] font-mono text-muted">{c.cluster}</div>
+                </td>
+                <td className="py-2.5 px-3 text-sub font-medium">{c.income}</td>
+                <td className="py-2.5 px-3 text-sub font-medium">{c.spend}</td>
+                <td className="py-2.5 px-3 text-sub font-medium">{c.priceSens}</td>
+                <td className="py-2.5 px-3 text-sub font-medium">{c.loyalty}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

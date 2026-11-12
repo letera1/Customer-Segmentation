@@ -1,40 +1,78 @@
 "use client";
 
 import { useState } from "react";
-import { API_BASE_URL } from "@/lib/config";
+import { predictCustomer, PredictionResponse } from "@/lib/api";
 
 interface SegmentationAnalyzerProps {
-  onPredict: (data: any) => void;
+  onPredict: (data: PredictionResponse) => void;
 }
 
+const FINANCE_STRATEGIES: Record<number, { title: string; options: string[] }> = {
+  0: {
+    title: "Budget Conscious Financial Advisory",
+    options: [
+      "Zero-annual-fee debit & credit products",
+      "Tiered cashback on essential household expenses",
+      "Flexible split-payment financing (0% APR promo)",
+      "Automated bill-pay discount incentives",
+    ],
+  },
+  1: {
+    title: "High Value Wealth & Credit Management",
+    options: [
+      "Dedicated relationship manager & VIP concierge",
+      "High-limit platinum revolving lines & travel perks",
+      "Private equity & wealth management consultation",
+      "Zero foreign transaction fee multi-currency accounts",
+    ],
+  },
+  2: {
+    title: "Potential Growth Expansion Strategy",
+    options: [
+      "Pre-approved credit line enhancements",
+      "Targeted luxury retail partnership cash-back (up to 5%)",
+      "Wealth accumulation starter portfolios & CD ladders",
+      "Premium tier upgrade with fee waiver upon qualifying spend",
+    ],
+  },
+  3: {
+    title: "Average Customer Engagement & Retention",
+    options: [
+      "Standard balanced reward points program",
+      "Installment loans for mid-tier consumer purchases",
+      "Quarterly loyalty bonuses upon sustained account activity",
+      "Consolidated banking package with reduced ATM fees",
+    ],
+  },
+  4: {
+    title: "Young Savers Digital Growth Pipeline",
+    options: [
+      "High-yield digital savings with automated round-ups",
+      "Secured credit builder card with zero security deposit",
+      "Micro-investing fractional share access with educational tools",
+      "Student & young professional referral reward bonuses",
+    ],
+  },
+};
+
 export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzerProps) {
-  const [age, setAge] = useState(35);
-  const [income, setIncome] = useState(75);
-  const [spendingScore, setSpendingScore] = useState(65);
+  const [age, setAge] = useState(36);
+  const [income, setIncome] = useState(72);
+  const [spendingScore, setSpendingScore] = useState(58);
   const [loading, setLoading] = useState(false);
-  const [prediction, setPrediction] = useState<any>(null);
+  const [prediction, setPrediction] = useState<PredictionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handlePredict = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}/predict`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          age,
-          annual_income: income,
-          spending_score: spendingScore,
-        }),
+      const result = await predictCustomer({
+        age,
+        annual_income: income,
+        spending_score: spendingScore,
       });
 
-      if (!response.ok) {
-        const message = await response.text();
-        throw new Error(message || "Prediction failed");
-      }
-
-      const result = await response.json();
       setPrediction(result);
       onPredict(result);
 
@@ -45,207 +83,195 @@ export default function SegmentationAnalyzer({ onPredict }: SegmentationAnalyzer
           const validHistory = Array.isArray(history) ? history : [];
           validHistory.unshift({
             ...result,
-            timestamp: new Date().toISOString(),
             age,
             income,
             spendingScore,
+            timestamp: new Date().toISOString(),
           });
-          localStorage.setItem("prediction_history", JSON.stringify(validHistory.slice(0, 10)));
+          localStorage.setItem("prediction_history", JSON.stringify(validHistory.slice(0, 15)));
         } catch {
-          // fallback
+          // ignore localStorage error
         }
       }
-    } catch {
-      setError("Failed to get prediction. Make sure the API is running and the model is trained.");
+    } catch (err: any) {
+      setError(err?.message || "Prediction request failed. Verify the backend API is running.");
     } finally {
       setLoading(false);
     }
   };
 
-  const segmentBadges: Record<number, { bg: string; border: string; text: string; code: string }> = {
-    0: { bg: "bg-amber-500/10", border: "border-amber-500/30", text: "text-amber-400", code: "C0" },
-    1: { bg: "bg-indigo-500/10", border: "border-indigo-500/30", text: "text-indigo-400", code: "C1" },
-    2: { bg: "bg-cyan-500/10", border: "border-cyan-500/30", text: "text-cyan-400", code: "C2" },
-    3: { bg: "bg-emerald-500/10", border: "border-emerald-500/30", text: "text-emerald-400", code: "C3" },
-    4: { bg: "bg-rose-500/10", border: "border-rose-500/30", text: "text-rose-400", code: "C4" },
-  };
+  const currentFinance = prediction ? FINANCE_STRATEGIES[prediction.cluster_id] : null;
 
   return (
-    <div className="panel p-6">
-      <div className="flex items-center justify-between mb-5">
+    <div className="panel p-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-subtle">
         <div>
-          <h2 className="text-base font-bold tracking-tight text-main">
-            Customer Segment Classifier
+          <h2 className="text-sm font-semibold tracking-tight text-main">
+            Realtime Segment Classifier
           </h2>
-          <p className="mt-0.5 text-xs text-sub">
-            Adjust behavioral dimensions for real-time model inference
+          <p className="text-xs text-sub">
+            Infer demographic cluster and automated financial strategy via ML
           </p>
         </div>
-        <div className="flex items-center gap-2 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 border border-emerald-500/25 text-emerald-400">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span>Pipeline Online</span>
+        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono text-sub bg-surface border border-subtle">
+          <span>Model: K-Means (k=5)</span>
         </div>
       </div>
 
       {error && (
-        <div className="mb-5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-300">
-          {error}
+        <div className="mb-4 p-3 rounded-lg border border-subtle bg-surface text-xs text-sub">
+          <span className="font-semibold text-main">Notice:</span> {error}
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Input Parameters Controls */}
-        <div className="space-y-4 p-4 rounded-xl border border-subtle bg-surface">
-          {/* Age Slider */}
-          <div>
-            <div className="flex justify-between items-center mb-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-sub">
-                Customer Age
-              </label>
-              <span className="text-xs font-black px-2 py-0.5 rounded bg-elevated text-indigo-500 dark:text-indigo-400 border border-indigo-500/20 font-mono">
-                {age} yrs
-              </span>
+        <div className="space-y-4 p-4 rounded-lg bg-surface border border-subtle">
+          <div className="text-xs font-semibold text-main tracking-tight uppercase">
+            Feature Telemetry Inputs
+          </div>
+
+          {/* Age Input */}
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-xs">
+              <label className="text-sub font-medium">Customer Age</label>
+              <span className="font-mono font-semibold text-main">{age} yrs</span>
             </div>
             <input
               type="range"
-              min="18"
-              max="70"
+              min={18}
+              max={85}
               value={age}
               onChange={(e) => setAge(Number(e.target.value))}
-              className="w-full h-1.5 bg-elevated rounded-lg appearance-none cursor-pointer accent-indigo-500"
+              className="w-full h-1.5 rounded-lg bg-elevated cursor-pointer"
             />
-            <div className="flex justify-between text-[10px] text-muted mt-1 font-mono">
-              <span>18</span>
-              <span>70</span>
+            <div className="flex justify-between text-[10px] text-muted font-mono">
+              <span>18 yrs</span>
+              <span>50 yrs</span>
+              <span>85 yrs</span>
             </div>
           </div>
 
-          {/* Income Slider */}
-          <div>
-            <div className="flex justify-between items-center mb-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-sub">
-                Annual Income
-              </label>
-              <span className="text-xs font-black px-2 py-0.5 rounded bg-elevated text-emerald-500 dark:text-emerald-400 border border-emerald-500/20 font-mono">
-                ${income}k
-              </span>
+          {/* Income Input */}
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-xs">
+              <label className="text-sub font-medium">Annual Income ($k)</label>
+              <span className="font-mono font-semibold text-main">${income},000</span>
             </div>
             <input
               type="range"
-              min="15"
-              max="140"
+              min={15}
+              max={150}
               value={income}
               onChange={(e) => setIncome(Number(e.target.value))}
-              className="w-full h-1.5 bg-elevated rounded-lg appearance-none cursor-pointer accent-emerald-500"
+              className="w-full h-1.5 rounded-lg bg-elevated cursor-pointer"
             />
-            <div className="flex justify-between text-[10px] text-muted mt-1 font-mono">
+            <div className="flex justify-between text-[10px] text-muted font-mono">
               <span>$15k</span>
-              <span>$140k</span>
+              <span>$80k</span>
+              <span>$150k</span>
             </div>
           </div>
 
-          {/* Spending Score Slider */}
-          <div>
-            <div className="flex justify-between items-center mb-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-sub">
-                Spending Score
-              </label>
-              <span className="text-xs font-black px-2 py-0.5 rounded bg-elevated text-purple-500 dark:text-purple-400 border border-purple-500/20 font-mono">
-                {spendingScore} / 100
-              </span>
+          {/* Spending Score Input */}
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-xs">
+              <label className="text-sub font-medium">Spending Score (1-100)</label>
+              <span className="font-mono font-semibold text-main">{spendingScore} / 100</span>
             </div>
             <input
               type="range"
-              min="1"
-              max="100"
+              min={1}
+              max={100}
               value={spendingScore}
               onChange={(e) => setSpendingScore(Number(e.target.value))}
-              className="w-full h-1.5 bg-elevated rounded-lg appearance-none cursor-pointer accent-purple-500"
+              className="w-full h-1.5 rounded-lg bg-elevated cursor-pointer"
             />
-            <div className="flex justify-between text-[10px] text-muted mt-1 font-mono">
-              <span>Conservative (1)</span>
-              <span>Generous (100)</span>
+            <div className="flex justify-between text-[10px] text-muted font-mono">
+              <span>1 (Conservative)</span>
+              <span>50</span>
+              <span>100 (Generous)</span>
             </div>
           </div>
 
           <button
             onClick={handlePredict}
             disabled={loading}
-            className="w-full mt-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all disabled:opacity-50"
+            className="btn-primary w-full mt-2"
           >
-            {loading ? "Analyzing Dimensions..." : "Execute Segment Prediction"}
+            {loading ? (
+              <span>Running Inference...</span>
+            ) : (
+              <span>Execute ML Classification</span>
+            )}
           </button>
         </div>
 
-        {/* Prediction Results Panel */}
-        <div className="rounded-xl border border-subtle bg-surface p-4 min-h-[250px] flex flex-col justify-center">
+        {/* Prediction Results & Financial Strategy Output */}
+        <div className="p-4 rounded-lg bg-surface border border-subtle flex flex-col justify-between">
           {prediction ? (
-            <div className="space-y-3.5 animate-fadeIn">
-              <div className="flex items-start justify-between">
+            <div className="space-y-3.5">
+              <div className="flex items-center justify-between pb-2 border-b border-subtle">
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted">
-                    Predicted Classification
+                  <span className="text-[10px] font-semibold text-muted uppercase tracking-wider block">
+                    Assigned Cluster
                   </span>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs font-mono font-black px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border border-indigo-500/20">
-                      {segmentBadges[prediction.cluster_id]?.code || "C0"}
-                    </span>
-                    <h3 className="text-lg font-black text-main tracking-tight">
-                      {prediction.segment_name}
-                    </h3>
-                  </div>
+                  <h3 className="text-base font-bold text-main tracking-tight">
+                    {prediction.segment_name}
+                  </h3>
                 </div>
-                <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold border border-subtle text-sub">
-                  Cluster #{prediction.cluster_id}
-                </span>
+                <div className="text-right">
+                  <span className="text-[10px] font-mono text-muted block">Cluster ID</span>
+                  <span className="text-xs font-mono font-bold text-main px-2 py-0.5 rounded bg-elevated border border-subtle">
+                    #{prediction.cluster_id}
+                  </span>
+                </div>
               </div>
 
-              <p className="text-xs text-sub leading-relaxed">
+              <div className="text-xs text-sub leading-relaxed">
                 {prediction.segment_description}
-              </p>
-
-              {/* Confidence Percentage Bar */}
-              <div className="space-y-1.5 p-3 rounded-lg border border-subtle bg-elevated">
-                <div className="flex justify-between text-xs font-bold">
-                  <span className="text-sub">Confidence Metric</span>
-                  <span className="text-emerald-500 dark:text-emerald-400 font-mono font-black">
-                    {typeof prediction.confidence === "number"
-                      ? `${(prediction.confidence * 100).toFixed(1)}%`
-                      : String(prediction.confidence)}
-                  </span>
-                </div>
-                <div className="w-full bg-canvas rounded-full h-1.5 overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500"
-                    style={{
-                      width: `${
-                        typeof prediction.confidence === "number"
-                          ? Math.min(100, Math.max(15, prediction.confidence * 100))
-                          : 75
-                      }%`,
-                    }}
-                  />
-                </div>
               </div>
 
-              {/* Recommended Action Strategy */}
-              <div className="rounded-lg border border-indigo-500/20 bg-indigo-500/10 p-3">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-indigo-400 mb-1">
-                  Strategic Playbook
-                </p>
-                <p className="text-xs font-medium text-main leading-snug">
+              <div className="p-2.5 rounded bg-elevated border border-subtle space-y-1">
+                <span className="text-[10px] uppercase font-bold text-muted tracking-wider block">
+                  Recommended Marketing Strategy
+                </span>
+                <p className="text-xs font-medium text-main">
                   {prediction.marketing_strategy}
                 </p>
               </div>
+
+              {currentFinance && (
+                <div className="p-2.5 rounded bg-elevated border border-subtle space-y-1.5">
+                  <span className="text-[10px] uppercase font-bold text-muted tracking-wider block">
+                    {currentFinance.title}
+                  </span>
+                  <ul className="space-y-1">
+                    {currentFinance.options.map((opt, i) => (
+                      <li key={i} className="text-[11px] text-sub flex items-start gap-1.5">
+                        <span className="text-muted">•</span>
+                        <span>{opt}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between pt-2 border-t border-subtle text-[11px]">
+                <span className="text-muted">Centroid Confidence</span>
+                <span className="font-mono font-bold text-main">
+                  {Math.round(prediction.confidence * 100)}%
+                </span>
+              </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center text-center p-6 text-muted">
-              <svg className="w-8 h-8 text-muted mb-2 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div className="flex flex-col items-center justify-center h-full text-center py-8 text-sub">
+              <svg className="w-8 h-8 text-muted mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <h4 className="text-xs font-bold text-main mb-1">Awaiting Telemetry Parameters</h4>
-              <p className="text-[11px] max-w-xs text-sub">
-                Adjust Age, Income, and Spending score to trigger realtime K-Means classification.
+              <span className="text-xs font-medium text-main">Model Idle</span>
+              <p className="text-[11px] text-muted mt-1 max-w-xs">
+                Adjust features on the left and click &quot;Execute ML Classification&quot; to inspect real-time cluster assignments and financial recommendations.
               </p>
             </div>
           )}

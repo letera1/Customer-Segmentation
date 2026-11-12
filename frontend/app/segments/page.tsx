@@ -2,159 +2,261 @@
 
 import { useState, useEffect } from "react";
 import LayoutV2 from "@/components/LayoutV2";
-import { API_BASE_URL } from "@/lib/config";
+import { fetchSegments, SegmentProfile } from "@/lib/api";
+
+interface FinanceDetail {
+  tier: string;
+  creditRisk: string;
+  recommendedProducts: string[];
+  pricingModel: string;
+  projectedLtv: string;
+}
+
+const FINANCE_PROFILES: Record<number, FinanceDetail> = {
+  0: {
+    tier: "Essential / Value Banking",
+    creditRisk: "Moderate to Sensitive",
+    recommendedProducts: [
+      "Zero annual fee debit & starter credit card",
+      "Point-of-sale split-payment (0% APR introductory promo)",
+      "Automated micro-savings round-up account",
+      "Essential retail cash-back partnership (1.5%)",
+    ],
+    pricingModel: "Transaction-driven / interchange fee model",
+    projectedLtv: "$1,850 - $2,400",
+  },
+  1: {
+    tier: "Private Wealth & Platinum Tier",
+    creditRisk: "Minimal / Prime Ultra",
+    recommendedProducts: [
+      "Platinum metal card with $50,000+ revolving limit",
+      "Dedicated wealth manager & discretionary portfolio service",
+      "Multi-currency treasury with zero FX markups",
+      "Complimentary airport concierge & premium lounge membership",
+    ],
+    pricingModel: "Annual membership fee + AUM management basis points",
+    projectedLtv: "$18,500 - $35,000",
+  },
+  2: {
+    tier: "Preferred Growth & Investment Tier",
+    creditRisk: "Low / Prime",
+    recommendedProducts: [
+      "Pre-approved flexible credit line upgrade ($25,000)",
+      "High-yield automated certificates of deposit (CD ladders)",
+      "Luxury lifestyle cashback rewards (3% on dining & travel)",
+      "Mortgage & asset-backed financing pre-qualification",
+    ],
+    pricingModel: "Interest margin on credit facilities + cross-sell products",
+    projectedLtv: "$7,200 - $12,500",
+  },
+  3: {
+    tier: "Standard Commercial / Consumer Banking",
+    creditRisk: "Low to Moderate / Near Prime",
+    recommendedProducts: [
+      "Classic rewards credit card with tiered points catalog",
+      "Fixed-rate personal installment loans ($5,000 - $20,000)",
+      "Quarterly active user cash reward bonuses",
+      "Fee-waived overdraft protection buffer",
+    ],
+    pricingModel: "Net interest margin + core deposit balance spread",
+    projectedLtv: "$3,600 - $5,800",
+  },
+  4: {
+    tier: "Digital Fintech & NextGen Starter Tier",
+    creditRisk: "Emerging / Thin File",
+    recommendedProducts: [
+      "Secured credit builder card with zero annual deposit requirement",
+      "High-yield mobile savings with automated weekly deposit sweeps",
+      "Commission-free fractional index investing",
+      "Peer-to-peer instant digital payment rewards",
+    ],
+    pricingModel: "Deposit float + future lifecycle product expansion",
+    projectedLtv: "$2,200 - $4,500 (High 10-yr CAGR)",
+  },
+};
 
 export default function Segments() {
-  const [segments, setSegments] = useState<any[]>([]);
+  const [segments, setSegments] = useState<SegmentProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCluster, setSelectedCluster] = useState<number | null>(null);
 
   useEffect(() => {
-    fetchSegments();
+    fetchSegments()
+      .then((data) => {
+        setSegments(data);
+        if (data.length > 0) {
+          setSelectedCluster(data[0].cluster_id);
+        }
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  const fetchSegments = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/segments`);
-      if (res.ok) {
-        setSegments(await res.json());
-      }
-    } catch (error) {
-      console.error("Failed to fetch segments", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const segmentAccents = [
-    {
-      badge: "border-amber-500/30 bg-amber-500/10 text-amber-500 dark:text-amber-400",
-      pill: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/20",
-      border: "hover:border-amber-500/40",
-      icon: (
-        <svg className="w-5 h-5 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-      ),
-    },
-    {
-      badge: "border-indigo-500/30 bg-indigo-500/10 text-indigo-500 dark:text-indigo-400",
-      pill: "bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/20",
-      border: "hover:border-indigo-500/40",
-      icon: (
-        <svg className="w-5 h-5 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-        </svg>
-      ),
-    },
-    {
-      badge: "border-cyan-500/30 bg-cyan-500/10 text-cyan-500 dark:text-cyan-400",
-      pill: "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border-cyan-500/20",
-      border: "hover:border-cyan-500/40",
-      icon: (
-        <svg className="w-5 h-5 text-cyan-500 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-        </svg>
-      ),
-    },
-    {
-      badge: "border-emerald-500/30 bg-emerald-500/10 text-emerald-500 dark:text-emerald-400",
-      pill: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
-      border: "hover:border-emerald-500/40",
-      icon: (
-        <svg className="w-5 h-5 text-emerald-500 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-      ),
-    },
-    {
-      badge: "border-rose-500/30 bg-rose-500/10 text-rose-500 dark:text-rose-400",
-      pill: "bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/20",
-      border: "hover:border-rose-500/40",
-      icon: (
-        <svg className="w-5 h-5 text-rose-500 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
-      ),
-    },
-  ];
+  const activeSegment = segments.find((s) => s.cluster_id === selectedCluster) || segments[0];
+  const activeFinance = activeSegment ? FINANCE_PROFILES[activeSegment.cluster_id] : null;
 
   return (
     <LayoutV2>
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-subtle">
           <div>
-            <h1 className="text-2xl font-black tracking-tight text-main">
-              Customer Cohort Personas
+            <h1 className="text-xl font-bold tracking-tight text-main">
+              Customer Segments & Financial Strategies
             </h1>
-            <p className="mt-1 text-xs text-sub font-medium">
-              Behavioral clusters, telemetry metrics, and targeted go-to-market strategies
+            <p className="text-xs text-sub mt-0.5">
+              Machine learning archetype profiles calibrated from unsupervised K-Means centroids
             </p>
           </div>
-          <span className="self-start sm:self-auto px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border border-indigo-500/20">
-            5 Distinct Archetypes
-          </span>
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg border border-subtle bg-surface text-xs font-mono text-sub">
+            <span>5 Calibrated Clusters</span>
+          </div>
         </div>
 
-        {loading ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="panel p-6 animate-pulse h-64" />
-            ))}
-          </div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {segments.map((segment, i) => {
-              const accent = segmentAccents[i % segmentAccents.length];
+        {/* Cluster Tabs */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+          {segments.map((seg) => {
+            const isSelected = selectedCluster === seg.cluster_id;
+            return (
+              <button
+                key={seg.cluster_id}
+                onClick={() => setSelectedCluster(seg.cluster_id)}
+                className={`p-3 rounded-lg border text-left transition-colors ${
+                  isSelected
+                    ? "bg-elevated border-subtle text-main font-semibold shadow-sm"
+                    : "bg-surface border-subtle text-sub hover:text-main"
+                }`}
+              >
+                <div className="flex items-center justify-between text-[10px] font-mono text-muted mb-1">
+                  <span>Cluster #{seg.cluster_id}</span>
+                  {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />}
+                </div>
+                <div className="text-xs font-bold truncate text-main">{seg.name}</div>
+              </button>
+            );
+          })}
+        </div>
 
-              return (
-                <div
-                  key={segment.cluster_id}
-                  className={`panel card-hover p-6 flex flex-col justify-between relative overflow-hidden transition-all border border-subtle ${accent.border}`}
-                >
+        {/* Selected Cluster Details Card */}
+        {activeSegment && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left 2 Cols: Archetype Specifications & Marketing Playbook */}
+            <div className="lg:col-span-2 space-y-6">
+              <div className="panel p-5 space-y-4">
+                <div className="flex items-start justify-between pb-3 border-b border-subtle">
                   <div>
-                    <div className="flex items-start justify-between mb-4">
-                      <div className={`w-11 h-11 rounded-xl ${accent.badge} border flex items-center justify-center shadow-sm`}>
-                        {accent.icon}
-                      </div>
-                      <span className="px-2.5 py-1 rounded-md text-[11px] font-black uppercase tracking-wider bg-elevated text-sub border border-subtle">
-                        Cluster {segment.cluster_id}
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-mono text-muted px-1.5 py-0.5 rounded bg-surface border border-subtle">
+                        Cluster #{activeSegment.cluster_id}
+                      </span>
+                      <h2 className="text-base font-bold text-main tracking-tight">
+                        {activeSegment.name}
+                      </h2>
+                    </div>
+                    <p className="text-xs text-sub leading-relaxed">
+                      {activeSegment.description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Behavioral & Demographic Metrics Matrix */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="p-3 rounded-lg bg-surface border border-subtle">
+                    <span className="text-[10px] font-semibold text-muted uppercase tracking-wider block">
+                      Income Level
+                    </span>
+                    <span className="text-xs font-bold text-main block mt-1">
+                      {activeSegment.characteristics.income_level || "Moderate"}
+                    </span>
+                  </div>
+
+                  <div className="p-3 rounded-lg bg-surface border border-subtle">
+                    <span className="text-[10px] font-semibold text-muted uppercase tracking-wider block">
+                      Spending Pattern
+                    </span>
+                    <span className="text-xs font-bold text-main block mt-1">
+                      {activeSegment.characteristics.spending_pattern || "Standard"}
+                    </span>
+                  </div>
+
+                  <div className="p-3 rounded-lg bg-surface border border-subtle">
+                    <span className="text-[10px] font-semibold text-muted uppercase tracking-wider block">
+                      Price Sensitivity
+                    </span>
+                    <span className="text-xs font-bold text-main block mt-1">
+                      {activeSegment.characteristics.price_sensitivity || "Medium"}
+                    </span>
+                  </div>
+
+                  <div className="p-3 rounded-lg bg-surface border border-subtle">
+                    <span className="text-[10px] font-semibold text-muted uppercase tracking-wider block">
+                      Loyalty Potential
+                    </span>
+                    <span className="text-xs font-bold text-main block mt-1">
+                      {activeSegment.characteristics.loyalty_potential || "High"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Marketing & Go-To-Market Execution */}
+                <div className="p-3.5 rounded-lg bg-surface border border-subtle space-y-1.5">
+                  <span className="text-[10px] uppercase font-bold text-muted tracking-wider block">
+                    Strategic Marketing Directive
+                  </span>
+                  <p className="text-xs text-main leading-relaxed">
+                    {activeSegment.strategy}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Col: Financial Strategy & Product Recommendations */}
+            <div className="space-y-6">
+              {activeFinance && (
+                <div className="panel p-5 space-y-4">
+                  <div className="pb-3 border-b border-subtle">
+                    <span className="text-[10px] font-mono text-muted uppercase tracking-wider block">
+                      Banking & Credit Blueprint
+                    </span>
+                    <h3 className="text-sm font-bold text-main mt-0.5">
+                      {activeFinance.tier}
+                    </h3>
+                  </div>
+
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between py-1 border-b border-subtle">
+                      <span className="text-sub">Credit Risk Rating:</span>
+                      <span className="font-semibold text-main">{activeFinance.creditRisk}</span>
+                    </div>
+
+                    <div className="flex justify-between py-1 border-b border-subtle">
+                      <span className="text-sub">Pricing Architecture:</span>
+                      <span className="font-semibold text-main text-right truncate max-w-[160px]">
+                        {activeFinance.pricingModel}
                       </span>
                     </div>
 
-                    <h3 className="text-lg font-black text-main tracking-tight">
-                      {segment.name}
-                    </h3>
-                    <p className="mt-1.5 text-xs text-sub leading-relaxed">
-                      {segment.description}
-                    </p>
-
-                    {segment.characteristics && (
-                      <div className="grid grid-cols-2 gap-2 mt-4 text-[11px] font-semibold text-main">
-                        <div className="bg-surface p-2.5 rounded-lg border border-subtle">
-                          <span className="text-muted block text-[10px] uppercase font-bold tracking-wider">Income Tier</span>
-                          <span className="mt-0.5 block">{segment.characteristics.income_level || "Moderate"}</span>
-                        </div>
-                        <div className="bg-surface p-2.5 rounded-lg border border-subtle">
-                          <span className="text-muted block text-[10px] uppercase font-bold tracking-wider">Price Sensitivity</span>
-                          <span className="mt-0.5 block">{segment.characteristics.price_sensitivity || "Medium"}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="mt-5 pt-4 border-t border-subtle">
-                    <div className="rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-3.5">
-                      <p className="text-[10px] font-black uppercase tracking-wider text-indigo-500 dark:text-indigo-400 mb-1">
-                        Recommended Playbook
-                      </p>
-                      <p className="text-xs font-medium text-main leading-snug">
-                        {segment.strategy}
-                      </p>
+                    <div className="flex justify-between py-1 border-b border-subtle">
+                      <span className="text-sub">Projected 3-Yr LTV:</span>
+                      <span className="font-mono font-bold text-main">{activeFinance.projectedLtv}</span>
                     </div>
                   </div>
+
+                  <div className="space-y-2 pt-2">
+                    <span className="text-[10px] uppercase font-bold text-muted tracking-wider block">
+                      Recommended Financial Products
+                    </span>
+                    <ul className="space-y-1.5">
+                      {activeFinance.recommendedProducts.map((prod, idx) => (
+                        <li key={idx} className="text-xs text-sub flex items-start gap-2">
+                          <span className="text-muted shrink-0">•</span>
+                          <span>{prod}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-              );
-            })}
+              )}
+            </div>
           </div>
         )}
       </div>
