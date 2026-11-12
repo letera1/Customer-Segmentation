@@ -272,24 +272,45 @@ python run_project.py
 
 ---
 
-## 📚 Documentation
+## 🐳 Docker Deployment & Publishing
 
+### Quick Run with Docker Compose
+```bash
+docker compose up --build
+```
+- **Frontend Dashboard**: `http://localhost:3000`
+- **FastAPI Backend**: `http://localhost:8000`
+- **Interactive Swagger Docs**: `http://localhost:8000/docs`
+
+### Push to Docker Hub
+Use the automated cross-platform scripts:
+- **PowerShell (Windows)**:
+  ```powershell
+  .\scripts\build_and_push.ps1 -DockerHubUsername "YOUR_USERNAME" -Tag "v2.0.0"
+  ```
+- **Bash (Linux/macOS)**:
+  ```bash
+  chmod +x ./scripts/build_and_push.sh
+  ./scripts/build_and_push.sh YOUR_USERNAME v2.0.0
+  ```
+For complete details, manual build steps, and GitHub Actions CI/CD automation, see [DOCKER.md](DOCKER.md).
+
+---
+
+## 📚 Documentation & Governance
+
+- [Docker Deployment & Hub Guide](DOCKER.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Contributing Guidelines](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)
 - [API Documentation](api/README.md)
 - [Frontend Documentation](frontend/README.md)
-- [Architecture Guide](ARCHITECTURE.md)
-- [Deployment Guide](DEPLOYMENT.md)
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+We welcome contributions! Please review our [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
 
 ---
 
