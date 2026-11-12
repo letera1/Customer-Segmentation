@@ -1,37 +1,46 @@
-version: '3.8'
-
 services:
   api:
     build:
       context: .
       dockerfile: Dockerfile.api
+    image: customer-segmentation-api:latest
+    container_name: segmentai-api
+    restart: unless-stopped
     ports:
       - "8000:8000"
-    volumes:
-      - ./data:/app/data
-      - ./src:/app/src
-      - ./api:/app/api
     environment:
       - PYTHONUNBUFFERED=1
       - MODEL_PATH=/app/data/outputs/segmentation_model.pkl
       - SCALER_PATH=/app/data/outputs/scaler.pkl
-    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+      - DEBUG=False
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     networks:
-      - segmentai
+      - segmentai-network
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8000
+    image: customer-segmentation-frontend:latest
+    container_name: segmentai-frontend
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://api:8000
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
     depends_on:
-      - api
+      api:
+        condition: service_healthy
     networks:
-      - segmentai
+      - segmentai-network
 
 networks:
-  segmentai:
+  segmentai-network:
     driver: bridge
